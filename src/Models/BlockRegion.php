@@ -9,4 +9,6 @@ class BlockRegion extends Model
 {
     protected $guarded = [];
 
+    protected $perPage = 50;
+
 }

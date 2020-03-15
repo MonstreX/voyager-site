@@ -33,6 +33,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
             ])->save();
         }
 
+
         $dataType = $this->dataType('slug', 'blocks');
         if (!$dataType->exists) {
             $dataType->fill([
@@ -54,6 +55,80 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
                 ],
             ])->save();
         }
+
+
+        $dataType = $this->dataType('slug', 'forms');
+        if (!$dataType->exists) {
+            $dataType->fill([
+                'name'                  => 'forms',
+                'display_name_singular' => 'Form',
+                'display_name_plural'   => 'Forms',
+                'icon'                  => 'voyager-window-list',
+                'model_name'            => 'MonstreX\\VoyagerSite\\Models\\Form',
+                'policy_name'           => '',
+                'controller'            => '',
+                'generate_permissions'  => 1,
+                'description'           => '',
+                'details'               => [
+                    'order_column' => 'order',
+                    'order_display_column' =>'title',
+                    'order_direction' => 'asc',
+                    'default_search_key' =>null,
+                    'scope' => null,
+                ],
+            ])->save();
+        }
+
+
+        $dataType = $this->dataType('slug', 'localizations');
+        if (!$dataType->exists) {
+            $dataType->fill([
+                'name'                  => 'localizations',
+                'display_name_singular' => 'Localization',
+                'display_name_plural'   => 'Localizations',
+                'icon'                  => 'voyager-font',
+                'model_name'            => 'MonstreX\\VoyagerSite\\Models\\Localization',
+                'policy_name'           => '',
+                'controller'            => '',
+                'generate_permissions'  => 1,
+                'description'           => '',
+                'details'               => [
+                    'order_column' => null,
+                    'order_display_column' => null,
+                    'order_direction' => null,
+                    'default_search_key' =>null,
+                    'scope' => null,
+                ],
+            ])->save();
+        }
+
+
+
+        $dataType = $this->dataType('slug', 'site-settings');
+        if (!$dataType->exists) {
+            $dataType->fill([
+                'name'                  => 'site_settings',
+                'display_name_singular' => 'Site settings',
+                'display_name_plural'   => 'Site settings',
+                'icon'                  => 'voyager-tools',
+                'model_name'            => 'MonstreX\\VoyagerSite\\Models\\SiteSetting',
+                'policy_name'           => '',
+                'controller'            => '',
+                'generate_permissions'  => 1,
+                'description'           => '',
+                'details'               => [
+                    'order_column' => 'order',
+                    'order_display_column' =>'title',
+                    'order_direction' => 'asc',
+                    'default_search_key' =>null,
+                    'scope' => null,
+                ],
+            ])->save();
+        }
+
+
+
+
 
     }
 

@@ -16,21 +16,23 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         $menu = Menu::where('name', 'admin')->firstOrFail();
 
 
+        // CONTENT ROOT MENU
         $structureMenuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
-            'title'   => 'Structure',
+            'title'   => 'Content',
             'url'     => '',
         ]);
         if (!$structureMenuItem->exists) {
             $structureMenuItem->fill([
                 'target'     => '_self',
-                'icon_class' => 'voyager-puzzle',
+                'icon_class' => 'voyager-medal-rank-star',
                 'color'      => null,
                 'parent_id'  => null,
                 'order'      => 99,
             ])->save();
         }
 
+        // BLOCKS
         $menuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
             'title'   => 'Blocks and Widgets',
@@ -47,6 +49,7 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
             ])->save();
         }
 
+        // REGIONS
         $menuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
             'title'   => 'Regions',
@@ -63,43 +66,59 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
             ])->save();
         }
 
+        // FORMS
+        $menuItem = MenuItem::firstOrNew([
+            'menu_id' => $menu->id,
+            'title'   => 'Forms',
+            'url'     => '',
+            'route'   => 'voyager.forms.index',
+        ]);
+        if (!$menuItem->exists) {
+            $menuItem->fill([
+                'target'     => '_self',
+                'icon_class' => 'voyager-window-list',
+                'color'      => null,
+                'parent_id'  => $structureMenuItem->id,
+                'order'      => 3,
+            ])->save();
+        }
 
+        // LOCALIZATIONS
+        $menuItem = MenuItem::firstOrNew([
+            'menu_id' => $menu->id,
+            'title'   => 'Localizations',
+            'url'     => '',
+            'route'   => 'voyager.localizations.index',
+        ]);
+        if (!$menuItem->exists) {
+            $menuItem->fill([
+                'target'     => '_self',
+                'icon_class' => 'voyager-font',
+                'color'      => null,
+                'parent_id'  => $structureMenuItem->id,
+                'order'      => 4,
+            ])->save();
+        }
+
+        // SITE SETTINGS
+        $menuItem = MenuItem::firstOrNew([
+            'menu_id' => $menu->id,
+            'title'   => 'Site settings',
+            'url'     => '',
+            'route'   => 'voyager.site-settings.index',
+        ]);
+        if (!$menuItem->exists) {
+            $menuItem->fill([
+                'target'     => '_self',
+                'icon_class' => 'voyager-tools',
+                'color'      => null,
+                'parent_id'  => $structureMenuItem->id,
+                'order'      => 5,
+            ])->save();
+        }
 
 
         \Cache::forget('voyager_menu_'.$menu->name);
-
-
-//        $menuItem = MenuItem::firstOrNew([
-//            'menu_id' => $menu->id,
-//            'title'   => __('voyager::seeders.menu_items.compass'),
-//            'url'     => '',
-//            'route'   => 'voyager.compass.index',
-//        ]);
-//        if (!$menuItem->exists) {
-//            $menuItem->fill([
-//                'target'     => '_self',
-//                'icon_class' => 'voyager-compass',
-//                'color'      => null,
-//                'parent_id'  => $toolsMenuItem->id,
-//                'order'      => 12,
-//            ])->save();
-//        }
-//
-//        $menuItem = MenuItem::firstOrNew([
-//            'menu_id' => $menu->id,
-//            'title'   => __('voyager::seeders.menu_items.users'),
-//            'url'     => '',
-//            'route'   => 'voyager.users.index',
-//        ]);
-//        if (!$menuItem->exists) {
-//            $menuItem->fill([
-//                'target'     => '_self',
-//                'icon_class' => 'voyager-person',
-//                'color'      => null,
-//                'parent_id'  => null,
-//                'order'      => 3,
-//            ])->save();
-//        }
 
     }
 }

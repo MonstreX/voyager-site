@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use MonstreX\VoyagerSite\Models\BlockRegion as Region;
 
-class BlockRegionsTableSeeder extends Seeder
+class VoyagerSiteBlockRegionsTableSeeder extends Seeder
 {
     /**
      * Auto generated seed file.

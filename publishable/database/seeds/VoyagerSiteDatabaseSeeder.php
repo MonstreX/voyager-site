@@ -16,7 +16,7 @@ class VoyagerSiteDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->seed('BlockRegionsTableSeeder');
+        $this->seed('VoyagerSiteBlockRegionsTableSeeder');
         $this->seed('VoyagerSiteMenuItemsTableSeeder');
 
         $this->seed('VoyagerSiteDataTypesTableSeeder');
@@ -24,5 +24,7 @@ class VoyagerSiteDatabaseSeeder extends Seeder
 
         $this->seed('VoyagerSitePermissionsTableSeeder');
         $this->seed('VoyagerSitePermissionRoleTableSeeder');
+
+        $this->seed('VoyagerSiteSettingsTableSeeder');
     }
 }

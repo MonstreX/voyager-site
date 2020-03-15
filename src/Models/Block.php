@@ -16,6 +16,8 @@ class Block extends Model implements HasMedia
 {
     use HasMediaTrait;
 
+    protected $perPage = 50;
+
     /**
      * The attributes that are mass assignable.
      *
