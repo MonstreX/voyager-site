@@ -2,6 +2,7 @@
 
 namespace MonstreX\VoyagerSite;
 
+use Illuminate\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use TCG\Voyager\Facades\Voyager;
 
@@ -21,7 +22,6 @@ class VoyagerSiteServiceProvider extends ServiceProvider
             $this->registerConsoleCommands();
         }
 
-
     }
 
     /**
@@ -34,11 +34,19 @@ class VoyagerSiteServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(realpath(__DIR__.'/../migrations'));
 
+        // Bind Views
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'voyager-site');
+
         //VSeo::generate();
         //VBreadcrumbs::add($url, $title);
         //VPage::get($alias);
         //VPage::render($alias);
         //VBlock::render('block-alias');
+
+        // Create Voyager Routes
+        app(Dispatcher::class)->listen('voyager.admin.routing', function ($router) {
+            $this->addRoutes($router);
+        });
 
     }
 
@@ -69,5 +77,21 @@ class VoyagerSiteServiceProvider extends ServiceProvider
     {
         $this->commands(Commands\InstallCommand::class);
     }
+
+    /*
+     *  Add Routes
+     */
+    public function addRoutes($router){
+
+        $siteController = '\MonstreX\VoyagerSite\Http\Controllers\VoyagerSiteController';
+
+        $router->get('/site-settings/{key}/edit', $siteController . '@settingsEdit')->name('site-settings.edit')->where('key', '[A-Za-z]+');;
+
+        $router->post('/site-settings/{key}/update', $siteController . '@settingsUpdate')->name('site-settings.save');
+
+    }
+
+
+
 
 }

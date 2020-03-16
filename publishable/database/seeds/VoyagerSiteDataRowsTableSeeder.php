@@ -751,7 +751,10 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'delete'       => 1,
                 'order'        => 2,
                 'details'      => [
-                    'url' => 'edit',
+                    'route' => [
+                        'name' => 'voyager.site-settings.edit',
+                        'param_field' => 'key',
+                    ],
                     'display' => [
                         'width' => '6'
                     ]
@@ -771,12 +774,6 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'add'          => 1,
                 'delete'       => 1,
                 'order'        => 3,
-                'details'      => [
-                    'url' => 'edit',
-                    'display' => [
-                        'width' => '6'
-                    ]
-                ],
             ])->save();
         }
 

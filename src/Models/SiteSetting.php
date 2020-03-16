@@ -21,14 +21,4 @@ class SiteSetting extends Model
 
     protected $perPage = 50;
 
-//    public function setDetailsAttribute($value)
-//    {
-//        $this->attributes['details'] = json_encode($value, JSON_PRETTY_PRINT);
-//    }
-
-//    public function getDetailsAttribute($value)
-//    {
-//        return json_decode(!empty($value) ? $value : '{}');
-//    }
-
 }
