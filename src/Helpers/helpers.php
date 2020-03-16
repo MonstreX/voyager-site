@@ -1,79 +1,7 @@
 <?php
 
-
-// Makes Multi Level TREE (array) from FLAT array (adds Children elements)
-if (!function_exists('flatToTree'))
-{
-    function flatToTree($flat_array)
-    {
-        $result = $flat_array;
-        $result = buildTree($result);
-        return $result;
-    }
-}
-
-// For flatToTree($flat_array)
-if (!function_exists('buildTree'))
-{
-    function buildTree(array $elements, $parentId = null, $sort = true)
-    {
-        $branch = array();
-
-        foreach ($elements as $element)
-        {
-            if ($element['parent_id'] == $parentId) {
-                $children = buildTree($elements, $element['id']);
-                if ($children) {
-                    $element['children'] = $children;
-                }
-                $branch[] = $element;
-            }
-        }
-
-        if($sort) {
-            usort($branch, function ($item1, $item2) {
-                return $item1['order'] > $item2['order'];
-            });
-        }
-
-        return $branch;
-    }
-}
-
-// Makes FLAT Sorted Array from Multi level Sorted array TREE (excludes children elements)
-if (!function_exists('buildFlatFromTree')) {
-    function buildFlatFromTree($tree)
-    {
-        $result = [];
-        $level = 0;
-
-        buildFlatChildren($tree, $result, $level);
-
-        return $result;
-    }
-}
-
-// buildFlatFromTree($tree)
-if (!function_exists('buildFlatChildren')) {
-    function buildFlatChildren($children, &$result, &$level)
-    {
-        foreach ($children as $child) {
-            $elements = [];
-            foreach ($child as $key => $field) {
-                if($key !== 'children') {
-                    $elements[$key] = $field;
-                    $elements['level'] = $level;
-                }
-            }
-            $result[] = $elements;
-            if (isset($child['children'])) {
-                $level++;
-                buildFlatChildren($child['children'], $result, $level);
-                $level--;
-            }
-        }
-    }
-}
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('translit_ru')) {
     function translit_ru($string) {
@@ -93,5 +21,65 @@ if (!function_exists('translit_ru')) {
             "ы"=>"yi","ь"=>"","э"=>"e","ю"=>"yu","я"=>"ya"," "=>"_"
         );
         return strtr($string,$charlist);
+    }
+}
+
+if (!function_exists('get_file'))
+{
+    function get_file($file_path)
+    {
+        $ops = json_decode($file_path);
+        if($ops) {
+            return Storage::url(str_replace('\\', '/', $ops[0]->download_link));
+        } else {
+            return  Storage::url(str_replace('\\', '/', $file_path));
+        }
+    }
+
+}
+
+
+if (!function_exists('store_post_files')) {
+    function store_post_files(Request $request, $slug, $field, $public = true)
+    {
+
+        if (!$request->has($field)) {
+            return json_encode([]);
+        }
+
+        $files = Arr::wrap($request->file($field));
+
+        $filesPath = [];
+
+        foreach ($files as $file) {
+            $path = $slug . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR;
+            $filename = generate_filename($file, $path);
+
+            $file->storeAs(
+                $path,
+                $filename . '.' . $file->getClientOriginalExtension(),
+                config('voyager.storage.disk', 'public')
+            );
+
+            array_push($filesPath, [
+                'download_link' => $path . $filename . '.' . $file->getClientOriginalExtension(),
+                'original_name' => $file->getClientOriginalName(),
+            ]);
+        }
+
+        return json_encode($filesPath);
+    }
+}
+
+if (!function_exists('generate_filename')) {
+    function generate_filename($file, $path)
+    {
+        $filename = basename(translit_ru($file->getClientOriginalName()), '.' . $file->getClientOriginalExtension());
+        $filename_counter = 1;
+        // Make sure the filename does not exist, if it does make sure to add a number to the end 1, 2, 3, etc...
+        while (Storage::disk(config('voyager.storage.disk'))->exists($path . $filename . '.' . $file->getClientOriginalExtension())) {
+            $filename = basename(translit_ru($file->getClientOriginalName()), '.' . $file->getClientOriginalExtension()) . (string)($filename_counter++);
+        }
+        return $filename;
     }
 }
