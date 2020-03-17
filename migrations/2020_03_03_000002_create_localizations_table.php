@@ -17,8 +17,8 @@ class CreateLocalizationsTable extends Migration
         Schema::create('localizations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('key')->unique();
-            $table->string('en');
-            $table->string('ru');
+            $table->string('en')->nullable();
+            $table->string('ru')->nullable();
             $table->timestamps();
         });
 

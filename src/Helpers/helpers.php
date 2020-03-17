@@ -2,6 +2,15 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+
+if (!function_exists('site_setting')) {
+    function site_setting($key, $default = null)
+    {
+        return VSite::setting($key, $default);
+    }
+}
+
 
 if (!function_exists('translit_ru')) {
     function translit_ru($string) {
@@ -81,5 +90,23 @@ if (!function_exists('generate_filename')) {
             $filename = basename(translit_ru($file->getClientOriginalName()), '.' . $file->getClientOriginalExtension()) . (string)($filename_counter++);
         }
         return $filename;
+    }
+}
+
+
+if (!function_exists('site_setting_group')) {
+    function site_settings_group($key, $default = null)
+    {
+        if (\Schema::hasTable('site_settings')) {
+            $settings = DB::table('site_settings')->where('key', $key)->first();
+            $values = [];
+            foreach (json_decode($settings->details)->fields as $key => $value) {
+                if ($value->type !== 'section') {
+                    $values[$key] = $value->value;
+                }
+            }
+            return $values;
+        }
+        return null;
     }
 }

@@ -10,34 +10,201 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
      */
     public function run()
     {
+        /*
+         *  GENERAL SETTINGS
+         */
         $details =  [
             'fields' => [
-                'sec_one' => [
+                'section_main' => [
                     'type' => 'section',
                     'icon' => 'voyager-tools',
-                    'label' => 'Main site settings',
+                    'label' => __('voyager-site::seeders.settings.general.section_main_title'),
                 ],
-                'title' => [
-                    'label' => 'Site title',
+                'site_title' => [
+                    'label' => __('voyager-site::seeders.settings.general.site_title'),
                     'type' => 'text',
-                    'value' => 'The site',
+                    'value' => '',
                     'class' => 'col-md-12',
                 ],
-                'description' => [
-                    'label' => 'Site description',
+                'site_description' => [
+                    'label' => __('voyager-site::seeders.settings.general.site_description'),
                     'type' => 'text',
-                    'value' => 'Description of the site',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                //-
+                'section_pages' => [
+                    'type' => 'section',
+                    'icon' => 'voyager-documentation',
+                    'label' => __('voyager-site::seeders.settings.general.section_pages'),
+                ],
+                'site_home_page' => [
+                    'label' => __('voyager-site::seeders.settings.general.site_home_page'),
+                    'type' => 'number',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'site_403_page' => [
+                    'label' => __('voyager-site::seeders.settings.general.site_403_page'),
+                    'type' => 'number',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'site_404_page' => [
+                    'label' => __('voyager-site::seeders.settings.general.site_404_page'),
+                    'type' => 'number',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                //-
+                'section_system' => [
+                    'type' => 'section',
+                    'icon' => 'voyager-exclamation',
+                    'label' => __('voyager-site::seeders.settings.general.section_system'),
+                ],
+                'site_root_url' => [
+                    'label' => __('voyager-site::seeders.settings.general.site_root_url'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'site_debug_mode' => [
+                    'label' => __('voyager-site::seeders.settings.general.site_debug_mode'),
+                    'type' => 'checkbox',
+                    'on'   => __('voyager-site::seeders.settings.general.site_debug_mode_on'),
+                    'off'   => __('voyager-site::seeders.settings.general.site_debug_mode_off'),
+                    'value' => "1",
                     'class' => 'col-md-12',
                 ],
             ],
         ];
 
         $region = Setting::firstOrCreate([
-            'title' => 'General settings',
+            'title' => __('voyager-site::seeders.settings.general.title'),
             'key' => 'general',
             'order' => 1,
-            'details' => json_encode($details, JSON_PRETTY_PRINT),
+            'details' => json_encode($details,JSON_PRETTY_PRINT),
         ]);
+
+
+        /*
+         *  MAIL
+         */
+        $details =  [
+            'fields' => [
+                'to_address' => [
+                    'label' => __('voyager-site::seeders.settings.mail.to_address'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'from_name' => [
+                    'label' => __('voyager-site::seeders.settings.mail.from_name'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'from_address' => [
+                    'label' => __('voyager-site::seeders.settings.mail.from_address'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'section_smtp' => [
+                    'type' => 'section',
+                    'icon' => 'voyager-mail',
+                    'label' => __('voyager-site::seeders.settings.mail.section_transport'),
+                ],
+                'driver' => [
+                    'label' => __('voyager-site::seeders.settings.mail.driver'),
+                    'type' => 'dropdown',
+                    'value' => 'smtp',
+                    'options' => [
+                        'smtp' => 'SMTP',
+                        'mailgun' => 'MAILGUN',
+                    ],
+                    'class' => 'col-md-12',
+                ],
+                'host' => [
+                    'label' => __('voyager-site::seeders.settings.mail.host'),
+                    'type' => 'text',
+                    'value' => 'smtp.mailtrap.io',
+                    'class' => 'col-md-12',
+                ],
+                'port' => [
+                    'label' => __('voyager-site::seeders.settings.mail.port'),
+                    'type' => 'number',
+                    'value' => '2525',
+                    'class' => 'col-md-12',
+                ],
+                'username' => [
+                    'label' => __('voyager-site::seeders.settings.mail.username'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'password' => [
+                    'label' => __('voyager-site::seeders.settings.mail.password'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'encryption' => [
+                    'label' => __('voyager-site::seeders.settings.mail.encryption'),
+                    'type' => 'radio',
+                    'value' => 'NONE',
+                    'options' => [
+                        'NONE' => 'NONE',
+                        'SSL' => 'SSL',
+                        'TSL' => 'TSL',
+                    ],
+                    'class' => 'col-md-12',
+                ],
+
+            ],
+        ];
+
+        $region = Setting::firstOrCreate([
+            'title' => __('voyager-site::seeders.settings.mail.title'),
+            'key' => 'mail',
+            'order' => 2,
+            'details' => json_encode($details,JSON_PRETTY_PRINT),
+        ]);
+
+
+        /*
+         *  SEO
+         */
+        $details =  [
+            'fields' => [
+                'seo_title' => [
+                    'label' => __('voyager-site::seeders.settings.seo.seo_title'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'meta_description' => [
+                    'label' => __('voyager-site::seeders.settings.seo.meta_description'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'meta_keywords' => [
+                    'label' => __('voyager-site::seeders.settings.seo.meta_keywords'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+            ],
+        ];
+
+        $region = Setting::firstOrCreate([
+            'title' => __('voyager-site::seeders.settings.seo.title'),
+            'key' => 'seo',
+            'order' => 3,
+            'details' => json_encode($details,JSON_PRETTY_PRINT),
+        ]);
+
 
     }
 }

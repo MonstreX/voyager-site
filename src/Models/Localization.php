@@ -21,4 +21,17 @@ class Localization extends Model
 
     protected $perPage = 100;
 
+    public function loadLocalizations()
+    {
+        $locale = trans()->locale();
+        $locLines = [];
+        if ($locStrings = $this->all()) {
+            //dd($locStrings);
+            foreach ($locStrings as $locString) {
+                $locLines[$locString->key] = $locString->{$locale};
+            }
+            trans()->addLines($locLines, $locale);
+        }
+    }
+
 }
