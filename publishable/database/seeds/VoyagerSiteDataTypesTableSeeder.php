@@ -15,8 +15,8 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
         if (!$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'block_regions',
-                'display_name_singular' => 'Region',
-                'display_name_plural'   => 'Regions',
+                'display_name_singular' => __('voyager-site::seeders.data_types.block_regions.singular'),
+                'display_name_plural'   => __('voyager-site::seeders.data_types.block_regions.plural'),
                 'icon'                  => 'voyager-crop',
                 'model_name'            => 'MonstreX\\VoyagerSite\\Models\\BlockRegion',
                 'policy_name'           => '',
@@ -33,13 +33,12 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
             ])->save();
         }
 
-
         $dataType = $this->dataType('slug', 'blocks');
         if (!$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'blocks',
-                'display_name_singular' => 'Block',
-                'display_name_plural'   => 'Blocks',
+                'display_name_singular' => __('voyager-site::seeders.data_types.blocks.singular'),
+                'display_name_plural'   => __('voyager-site::seeders.data_types.blocks.plural'),
                 'icon'                  => 'voyager-puzzle',
                 'model_name'            => 'MonstreX\\VoyagerSite\\Models\\Block',
                 'policy_name'           => '',
@@ -56,13 +55,12 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
             ])->save();
         }
 
-
         $dataType = $this->dataType('slug', 'forms');
         if (!$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'forms',
-                'display_name_singular' => 'Form',
-                'display_name_plural'   => 'Forms',
+                'display_name_singular' => __('voyager-site::seeders.data_types.forms.singular'),
+                'display_name_plural'   => __('voyager-site::seeders.data_types.forms.plural'),
                 'icon'                  => 'voyager-window-list',
                 'model_name'            => 'MonstreX\\VoyagerSite\\Models\\Form',
                 'policy_name'           => '',
@@ -79,13 +77,12 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
             ])->save();
         }
 
-
         $dataType = $this->dataType('slug', 'localizations');
         if (!$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'localizations',
-                'display_name_singular' => 'Localization',
-                'display_name_plural'   => 'Localizations',
+                'display_name_singular' => __('voyager-site::seeders.data_types.localizations.singular'),
+                'display_name_plural'   => __('voyager-site::seeders.data_types.localizations.plural'),
                 'icon'                  => 'voyager-font',
                 'model_name'            => 'MonstreX\\VoyagerSite\\Models\\Localization',
                 'policy_name'           => '',
@@ -102,14 +99,12 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
             ])->save();
         }
 
-
-
         $dataType = $this->dataType('slug', 'site-settings');
         if (!$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'site_settings',
-                'display_name_singular' => 'Site settings',
-                'display_name_plural'   => 'Site settings',
+                'display_name_singular' => __('voyager-site::seeders.data_types.site_settings.singular'),
+                'display_name_plural'   => __('voyager-site::seeders.data_types.site_settings.plural'),
                 'icon'                  => 'voyager-tools',
                 'model_name'            => 'MonstreX\\VoyagerSite\\Models\\SiteSetting',
                 'policy_name'           => '',
@@ -125,10 +120,6 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
                 ],
             ])->save();
         }
-
-
-
-
 
     }
 

@@ -5,10 +5,12 @@ namespace MonstreX\VoyagerSite;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
+
 use MonstreX\VoyagerSite\Facades;
 use MonstreX\VoyagerSite\Models\SiteSetting as Settings;
 use MonstreX\VoyagerSite\Models\Localization;
 use Config;
+use Shortcode;
 
 class VoyagerSiteServiceProvider extends ServiceProvider
 {
@@ -58,6 +60,8 @@ class VoyagerSiteServiceProvider extends ServiceProvider
         app(Dispatcher::class)->listen('voyager.admin.routing', function ($router) {
             $this->addRoutes($router);
         });
+
+        $this->registerShortcodes();
 
     }
 
@@ -124,10 +128,20 @@ class VoyagerSiteServiceProvider extends ServiceProvider
                 'Alias' => 'vsite',
                 'Class' =>  new VoyagerSite(),
             ],
+            'VData' => [
+                'Facade' => Facades\VoyagerData::class,
+                'Alias' => 'vdata',
+                'Class' =>  new VoyagerData(),
+            ],
             'VPage' => [
                 'Facade' => Facades\VoyagerPage::class,
                 'Alias' => 'vpage',
                 'Class' =>  new VoyagerPage(),
+            ],
+            'VBlock' => [
+                'Facade' => Facades\VoyagerBlock::class,
+                'Alias' => 'vblock',
+                'Class' =>  new VoyagerBlock(),
             ],
         ];
 
@@ -138,6 +152,11 @@ class VoyagerSiteServiceProvider extends ServiceProvider
                 return $alias['Class'];
             });
         }
+
+        $this->app->booting(function() {
+            $loader = AliasLoader::getInstance();
+            $loader->alias('Shortcode', \Webwizo\Shortcodes\Facades\Shortcode::class);
+        });
 
     }
 
@@ -161,11 +180,16 @@ class VoyagerSiteServiceProvider extends ServiceProvider
 
         $general = $settings->getSettingsGroup('general');
 
-        config()->set('app.name', $general['site_title']?? config('app.name'));
+        config()->set('app.name', $general['site_app_name']?? config('app.name'));
 
         config()->set('app.debug', (int) $general['site_debug_mode'] === 1? true : false);
 
     }
 
+    protected function registerShortcodes()
+    {
+        Shortcode::register('block', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@block');
+        Shortcode::register('form', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@form');
+    }
 
 }

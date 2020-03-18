@@ -19,7 +19,7 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         // CONTENT ROOT MENU
         $structureMenuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
-            'title'   => 'Content',
+            'title'   => __('voyager-site::seeders.menu_items.content'),
             'url'     => '',
         ]);
         if (!$structureMenuItem->exists) {
@@ -35,7 +35,7 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         // BLOCKS
         $menuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
-            'title'   => 'Blocks and Widgets',
+            'title'   => __('voyager-site::seeders.menu_items.block_and_widgets'),
             'url'     => '',
             'route'   => 'voyager.blocks.index',
         ]);
@@ -52,7 +52,7 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         // REGIONS
         $menuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
-            'title'   => 'Regions',
+            'title'   => __('voyager-site::seeders.menu_items.regions'),
             'url'     => '',
             'route'   => 'voyager.block-regions.index',
         ]);
@@ -69,7 +69,7 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         // FORMS
         $menuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
-            'title'   => 'Forms',
+            'title'   => __('voyager-site::seeders.menu_items.forms'),
             'url'     => '',
             'route'   => 'voyager.forms.index',
         ]);
@@ -86,7 +86,7 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         // LOCALIZATIONS
         $menuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
-            'title'   => 'Localizations',
+            'title'   => __('voyager-site::seeders.menu_items.localizations'),
             'url'     => '',
             'route'   => 'voyager.localizations.index',
         ]);
@@ -103,7 +103,7 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         // SITE SETTINGS
         $menuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,
-            'title'   => 'Site settings',
+            'title'   => __('voyager-site::seeders.menu_items.site_settings'),
             'url'     => '',
             'route'   => 'voyager.site-settings.index',
         ]);

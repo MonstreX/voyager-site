@@ -62,8 +62,8 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                     'icon' => 'voyager-exclamation',
                     'label' => __('voyager-site::seeders.settings.general.section_system'),
                 ],
-                'site_root_url' => [
-                    'label' => __('voyager-site::seeders.settings.general.site_root_url'),
+                'site_app_name' => [
+                    'label' => __('voyager-site::seeders.settings.general.site_app_name'),
                     'type' => 'text',
                     'value' => '',
                     'class' => 'col-md-12',

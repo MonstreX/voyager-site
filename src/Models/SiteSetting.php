@@ -36,5 +36,4 @@ class SiteSetting extends Model implements HasMedia
         return $values;
     }
 
-
 }

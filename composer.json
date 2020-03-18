@@ -14,6 +14,8 @@
     "keywords": ["Laravel", "Voyager"],
     "require": {
         "monstrex/voyager-extension": "dev-master",
+        "liquid/liquid": "^1.4",
+        "webwizo/laravel-shortcodes": "1.0.*",
         "ext-json": "*"
     },
     "require-dev": {

@@ -3,14 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-
-if (!function_exists('site_setting')) {
-    function site_setting($key, $default = null)
-    {
-        return VSite::setting($key, $default);
-    }
-}
-
+use Intervention\Image\Facades\Image;
 
 if (!function_exists('translit_ru')) {
     function translit_ru($string) {
@@ -93,6 +86,13 @@ if (!function_exists('generate_filename')) {
     }
 }
 
+if (!function_exists('site_setting')) {
+    function site_setting($key, $default = null)
+    {
+        return VSite::setting($key, $default);
+    }
+}
+
 
 if (!function_exists('site_setting_group')) {
     function site_settings_group($key, $default = null)
@@ -108,5 +108,50 @@ if (!function_exists('site_setting_group')) {
             return $values;
         }
         return null;
+    }
+}
+
+
+if (!function_exists('get_image_or_create'))
+{
+    function get_image_or_create($image_path_full, $width, $height)
+    {
+
+        if(!isset($image_path_full)) {
+            return '';
+        }
+
+        $image_path_full = str_replace('/storage/','', $image_path_full);
+
+        // If JSON Coded
+        $img = json_decode($image_path_full);
+        if($img) {
+            $image_path_full = $img[0];
+        }
+
+        $path = pathinfo($image_path_full);
+
+        $target_path_full = $path['dirname'] . DIRECTORY_SEPARATOR. 'thumbnails' . DIRECTORY_SEPARATOR
+            . $path['filename']
+            . '-' . $width . 'x'
+            . $height
+            . '.' . $path['extension'];
+
+        if(!Storage::disk(config('voyager.storage.disk'))->exists($image_path_full)) {
+            return str_replace('\\', '/', $image_path_full);
+        }
+
+        if(!Storage::disk(config('voyager.storage.disk'))->exists($target_path_full)) {
+            try {
+                $image = Image::make(Voyager::image($image_path_full));
+                $image->fit($width, $height);
+                $image->encode($path['extension'], 75);
+                Storage::disk(config('voyager.storage.disk'))->put($target_path_full, (string) $image, 'public');
+            } catch (\Exception $e) {
+                debug($e);
+                return '';
+            }
+        }
+        return Storage::url(str_replace('\\', '/', $target_path_full));
     }
 }
