@@ -104,6 +104,8 @@ class VoyagerSiteServiceProvider extends ServiceProvider
 
         $router->post('/site-settings/{key}/update', $siteController . '@settingsUpdate')->name('site-settings.save');
 
+        $router->get('/site-settings/send-test-mail', $siteController . '@sendTestMail')->name('send.test-mail');
+
     }
 
 

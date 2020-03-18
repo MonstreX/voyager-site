@@ -92,6 +92,8 @@ return [
             'port' => 'Port number',
             'username' => 'User account name',
             'password' => 'Password',
+            'encryption' => 'Encryption',
+            'test_mail' => 'Send test mail',
         ],
 
         'seo' => [

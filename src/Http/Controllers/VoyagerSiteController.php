@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\VoyagerBaseController;
 use Arr;
+use MonstreX\VoyagerSite\Notifications\SendForm;
+use Notification;
+
 
 class VoyagerSiteController extends VoyagerBaseController
 {
@@ -86,6 +89,29 @@ class VoyagerSiteController extends VoyagerBaseController
         $settings->save();
 
         return redirect()->route('voyager.site-settings.index');
+    }
+
+
+    public function sendTestMail()
+    {
+        // 1
+        //$name = 'Krunal';
+        //Mail::to('fido6080net@mail.ru')->send(new InfoMailable($name));
+
+        // 2
+        //$formFields = $this->request->except(['q', '_token', '_form_alias', '_validator']);
+        $formFields = [
+            'subject' => 'New subject for email',
+            'name' => 'Test NAME',
+            'phone'  => '02392-304932034',
+            'email'  => 'fodd@mail.ru',
+            'message' => 'LONG MESSAGE TEXT',
+        ];
+
+        $emails = explode(',', 'fido6080net@mail.ru,fido6080net@gmail.com');
+        Notification::route('mail', $emails)->notify(new SendForm($formFields));
+
+        return view('voyager-site::settings.mail-sent')->with(['title' => 'Sending Test E-Mail', 'content' => 'Email has been sent successfully...']);
     }
 
 }

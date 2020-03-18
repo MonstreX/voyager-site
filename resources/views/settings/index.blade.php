@@ -127,6 +127,12 @@
                                              name="{{$key_field}}">{{ $field->value }}</div>
                                         <textarea name="{{$key_field}}" id="{{$key_field}}_textarea" class="hidden">{{ $field->value }}</textarea>
                                     </div>
+                                @elseif($field->type === 'route')
+                                    <div class="form-group {{ $class }}">
+                                        <a href="{{ route('voyager.' . $field->value) }}" class="btn btn-primary btn-add-new">
+                                            <i class="{{ $field->icon }}"></i> {{ $field->label }}
+                                        </a>
+                                    </div>
                                 @endif
                             @endif
                         @endforeach

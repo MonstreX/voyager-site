@@ -160,6 +160,13 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                     ],
                     'class' => 'col-md-12',
                 ],
+                'test_mail' => [
+                    'label' => __('voyager-site::seeders.settings.mail.test_mail'),
+                    'type' => 'route',
+                    'value' => 'send.test-mail',
+                    'icon'  => 'voyager-mail',
+                    'class' => 'col-md-12',
+                ],
 
             ],
         ];
