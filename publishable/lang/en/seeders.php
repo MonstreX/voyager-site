@@ -38,6 +38,10 @@ return [
         'enabled'          => 'Enabled',
         'disabled'         => 'Disabled',
         'show_in_menu'     => 'Show in menu',
+        'seo_group'        => 'Seo fields group',
+        'seo_title'        => 'SEO Title',
+        'meta_description' => 'META Description',
+        'meta_keywords'    => 'META Keywords',
     ],
     'data_types' => [
         'blocks'     => [

@@ -1033,6 +1033,37 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
             ])->save();
         }
 
+        $dataRow = $this->dataRow($pageDataType, 'seo');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'adv_fields_group',
+                'display_name' => __('voyager-site::seeders.data_rows.seo_group'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 10,
+                'details'      => [
+                    'fields'   => [
+                        'seo_title' => [
+                            'label' => __('voyager-site::seeders.data_rows.seo_title'),
+                            'type'  => 'text',
+                        ],
+                        'meta_description' => [
+                            'label' => __('voyager-site::seeders.data_rows.meta_description'),
+                            'type'  => 'text',
+                        ],
+                        'meta_keywords' => [
+                            'label' => __('voyager-site::seeders.data_rows.meta_keywords'),
+                            'type'  => 'text',
+                        ],
+                    ]
+                ],
+            ])->save();
+        }
+
         $dataRow = $this->dataRow($pageDataType, 'details');
         if (!$dataRow->exists) {
             $dataRow->fill([

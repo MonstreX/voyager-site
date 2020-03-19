@@ -25,7 +25,7 @@ class CreateSitePagesTable extends Migration
             $table->string('image')->nullable();
             $table->string('images')->nullable();
             $table->integer('order')->unsigned()->nullable();
-            $table->string('attr')->nullable();
+            $table->text('seo')->nullable();
             $table->text('details')->nullable();
             $table->timestamps();
         });
@@ -40,7 +40,7 @@ class CreateSitePagesTable extends Migration
             $table->string('image')->nullable();
             $table->string('images')->nullable();
             $table->integer('order')->unsigned()->nullable();
-            $table->string('attr')->nullable();
+            $table->text('seo')->nullable();
             $table->text('details')->nullable();
             $table->timestamps();
         });
