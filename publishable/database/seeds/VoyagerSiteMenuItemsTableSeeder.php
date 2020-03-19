@@ -117,6 +117,43 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         }
 
 
+        // PAGES
+        $menuItem = MenuItem::firstOrNew([
+            'menu_id' => $menu->id,
+            'title'   => __('voyager-site::seeders.menu_items.pages'),
+            'url'     => '',
+            'route'   => 'voyager.pages.index',
+        ]);
+        if (!$menuItem->exists) {
+            $menuItem->fill([
+                'target'     => '_self',
+                'icon_class' => 'voyager-file-text',
+                'color'      => null,
+                'parent_id'  => $structureMenuItem->id,
+                'order'      => 6,
+            ])->save();
+        }
+
+        // SYSTEM PAGES
+        $menuItem = MenuItem::firstOrNew([
+            'menu_id' => $menu->id,
+            'title'   => __('voyager-site::seeders.menu_items.system_pages'),
+            'url'     => '',
+            'route'   => 'voyager.system-pages.index',
+        ]);
+        if (!$menuItem->exists) {
+            $menuItem->fill([
+                'target'     => '_self',
+                'icon_class' => 'voyager-file-code',
+                'color'      => null,
+                'parent_id'  => $structureMenuItem->id,
+                'order'      => 7,
+            ])->save();
+        }
+
+
+
+
         \Cache::forget('voyager_menu_'.$menu->name);
 
     }

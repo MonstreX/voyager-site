@@ -26,13 +26,11 @@ class VoyagerSitePermissionsTableSeeder extends Seeder
         }
 
         Permission::generateFor('block_regions');
-
         Permission::generateFor('blocks');
-
         Permission::generateFor('forms');
-
         Permission::generateFor('localizations');
-
         Permission::generateFor('site_settings');
+        Permission::generateFor('pages');
+        Permission::generateFor('system_pages');
     }
 }

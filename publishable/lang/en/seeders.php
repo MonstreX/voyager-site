@@ -3,10 +3,11 @@
 return [
     'data_rows'  => [
         'id'               => 'ID',
+        'parent'           => 'Parent',
         'status'           => 'Status',
         'order'            => 'Order',
         'title'            => 'Title',
-        'subtitle'            => 'Subtitle',
+        'subtitle'         => 'Subtitle',
         'slug'             => 'Slug',
         'key'              => 'Key',
         'color'            => 'Color',
@@ -22,6 +23,7 @@ return [
         'region_position'  => 'Region position',
         'block_content'    => 'Block content',
         'form_content'     => 'Form content',
+        'image'            => 'Image',
         'images_files'     => 'Images / Files',
         'content'          => 'Content',
         'language_key'     => 'Language key',
@@ -31,6 +33,11 @@ return [
         'setting_group'    => 'Setting group',
         'created_at'       => 'Created At',
         'updated_at'       => 'Updated At',
+        'message_required' => 'The field :field is required.',
+        'message_unique'   => 'The field :field SLUG should be UNIQUE.',
+        'enabled'          => 'Enabled',
+        'disabled'         => 'Disabled',
+        'show_in_menu'     => 'Show in menu',
     ],
     'data_types' => [
         'blocks'     => [
@@ -53,6 +60,14 @@ return [
             'singular' => 'Site settings',
             'plural'   => 'Site setting',
         ],
+        'pages'     => [
+            'singular' => 'Page',
+            'plural'   => 'Pages',
+        ],
+        'system_pages'     => [
+            'singular' => 'System page',
+            'plural'   => 'System pages',
+        ],
     ],
     'menu_items' => [
         'content' => 'Content',
@@ -61,6 +76,8 @@ return [
         'forms' => 'Forms',
         'localizations' => 'Localizations',
         'site_settings' => 'Site settings',
+        'pages'         => 'Pages',
+        'system_pages'  => 'System pages',
     ],
     'settings'   => [
         'general' => [
@@ -107,5 +124,12 @@ return [
             'title' => 'Theme',
             'logo' => 'Site logo',
         ],
+    ],
+    'pages'   => [
+        'home_title' => 'Home',
+    ],
+    'system_pages'   => [
+        '403_title' => 'Error 403',
+        '404_title' => 'Error 404',
     ],
 ];

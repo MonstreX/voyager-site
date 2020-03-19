@@ -16,7 +16,8 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         $formDataType = DataType::where('slug', 'forms')->firstOrFail();
         $localizationDataType = DataType::where('slug', 'localizations')->firstOrFail();
         $settingsDataType = DataType::where('slug', 'site-settings')->firstOrFail();
-
+        $pageDataType = DataType::where('slug', 'pages')->firstOrFail();
+        $systemPageDataType = DataType::where('slug', 'system-pages')->firstOrFail();
 
         /*
          *  BLOCK REGIONS
@@ -835,6 +836,492 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'order'        => 7,
             ])->save();
         }
+
+
+
+
+
+
+
+        /*
+         *  PAGES
+         */
+        $dataRow = $this->dataRow($pageDataType, 'id');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'number',
+                'display_name' => __('voyager-site::seeders.data_rows.id'),
+                'required'     => 1,
+                'browse'       => 1,
+                'read'         => 0,
+                'edit'         => 0,
+                'add'          => 0,
+                'delete'       => 0,
+                'order'        => 1,
+                'details'      => [
+                ]
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'parent_id');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'number',
+                'display_name' => __('voyager-site::seeders.data_rows.parent'),
+                'required'     => 1,
+                'browse'       => 1,
+                'read'         => 0,
+                'edit'         => 0,
+                'add'          => 0,
+                'delete'       => 0,
+                'order'        => 2,
+                'details'      => [
+                    'browse_tree' => true,
+                ]
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'status');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'checkbox',
+                'display_name' => __('voyager-site::seeders.data_rows.status'),
+                'required'     => 0,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 3,
+                'details'      => [
+                    'browse_inline_checkbox' => true,
+                    'on'      => __('voyager-site::seeders.data_rows.enabled'),
+                    'off'     => __('voyager-site::seeders.data_rows.disabled'),
+                    'checked' => true,
+                    'display' => [
+                        'width' => '12'
+                    ]
+                ],
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'menu');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'checkbox',
+                'display_name' => __('voyager-site::seeders.data_rows.show_in_menu'),
+                'required'     => 0,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 4,
+                'details'      => [
+                    'browse_inline_checkbox' => true,
+                    'on'      => __('voyager-site::seeders.data_rows.enabled'),
+                    'off'     => __('voyager-site::seeders.data_rows.disabled'),
+                    'checked' => true,
+                    'display' => [
+                        'width' => '12'
+                    ]
+                ],
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'title');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'text',
+                'display_name' => __('voyager-site::seeders.data_rows.title'),
+                'required'     => 1,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 5,
+                'details'               => [
+                    'url' => 'edit',
+                    'validation' => [
+                        'rule' => 'required',
+                        'messages' => [
+                            'unique' => __('voyager-site::seeders.data_rows.message_required', ['field' => 'title']),
+                        ]
+                    ],
+                    'display' => [
+                        'width' => '6'
+                    ]
+                ],
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'slug');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'text',
+                'display_name' => __('voyager-site::seeders.data_rows.slug'),
+                'required'     => 1,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 6,
+                'details'               => [
+                    'validation' => [
+                        'rule' => 'unique:pages',
+                        'messages' => [
+                            'unique' => __('voyager-site::seeders.data_rows.message_unique', ['field' => 'slug']),
+                        ]
+                    ],
+                    'slugify' => [
+                        'origin' => 'title',
+                        'forceUpdate' => true,
+                    ],
+                    'display' => [
+                        'width' => '6'
+                    ]
+                ],
+            ])->save();
+        }
+
+
+        $dataRow = $this->dataRow($pageDataType, 'content');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'rich_text_box',
+                'display_name' => __('voyager-site::seeders.data_rows.content'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 7,
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'image');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'adv_image',
+                'display_name' => __('voyager-site::seeders.data_rows.image'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 8,
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'images');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'adv_media_files',
+                'display_name' => __('voyager-site::seeders.data_rows.images_files'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 9,
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'details');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'code_editor',
+                'display_name' => __('voyager-site::seeders.data_rows.options'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 10,
+                'details'      => [
+                    'language' => 'json',
+                    'theme'    => 'github',
+                ],
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'order');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'number',
+                'display_name' => __('voyager-site::seeders.data_rows.order'),
+                'required'     => 0,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 11,
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'created_at');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'timestamp',
+                'display_name' => __('voyager-site::seeders.data_rows.created_at'),
+                'required'     => 0,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 0,
+                'add'          => 0,
+                'delete'       => 0,
+                'order'        => 12,
+                'details'      => [
+                    'browse_align' => 'right',
+                    'browse_width' => '110px',
+                    'browse_font_size' => '0.9em',
+                    'format' => '%Y-%m-%d',
+                ],
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($pageDataType, 'updated_at');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'timestamp',
+                'display_name' => __('voyager-site::seeders.data_rows.updated_at'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 0,
+                'edit'         => 0,
+                'add'          => 0,
+                'delete'       => 0,
+                'order'        => 13,
+            ])->save();
+        }
+
+
+
+        /*
+         *  SYSTEM PAGES
+         */
+        $dataRow = $this->dataRow($systemPageDataType, 'id');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'number',
+                'display_name' => __('voyager-site::seeders.data_rows.id'),
+                'required'     => 1,
+                'browse'       => 1,
+                'read'         => 0,
+                'edit'         => 0,
+                'add'          => 0,
+                'delete'       => 0,
+                'order'        => 1,
+                'details'      => [
+                ]
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($systemPageDataType, 'status');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'checkbox',
+                'display_name' => __('voyager-site::seeders.data_rows.status'),
+                'required'     => 0,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 3,
+                'details'      => [
+                    'browse_inline_checkbox' => true,
+                    'checked' => true,
+                    'on'      => __('voyager-site::seeders.data_rows.enabled'),
+                    'off'     => __('voyager-site::seeders.data_rows.disabled'),
+                    'display' => [
+                        'width' => '12'
+                    ]
+                ],
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($systemPageDataType, 'title');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'text',
+                'display_name' => __('voyager-site::seeders.data_rows.title'),
+                'required'     => 1,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 4,
+                'details'               => [
+                    'url' => 'edit',
+                    'validation' => [
+                        'rule' => 'required',
+                        'messages' => [
+                            'unique' => __('voyager-site::seeders.data_rows.message_required', ['field' => 'title']),
+                        ]
+                    ],
+                    'display' => [
+                        'width' => '6'
+                    ]
+                ],
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($systemPageDataType, 'slug');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'text',
+                'display_name' => __('voyager-site::seeders.data_rows.slug'),
+                'required'     => 1,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 5,
+                'details'               => [
+                    'validation' => [
+                        'rule' => 'unique:pages',
+                        'messages' => [
+                            'unique' => __('voyager-site::seeders.data_rows.message_unique', ['field' => 'slug']),
+                        ]
+                    ],
+                    'slugify' => [
+                        'origin' => 'title',
+                        'forceUpdate' => true,
+                    ],
+                    'display' => [
+                        'width' => '6'
+                    ]
+                ],
+            ])->save();
+        }
+
+
+        $dataRow = $this->dataRow($systemPageDataType, 'content');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'rich_text_box',
+                'display_name' => __('voyager-site::seeders.data_rows.content'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 6,
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($systemPageDataType, 'image');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'adv_image',
+                'display_name' => __('voyager-site::seeders.data_rows.image'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 7,
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($systemPageDataType, 'images');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'adv_media_files',
+                'display_name' => __('voyager-site::seeders.data_rows.images_files'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 8,
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($systemPageDataType, 'details');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'code_editor',
+                'display_name' => __('voyager-site::seeders.data_rows.options'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 9,
+                'details'      => [
+                    'language' => 'json',
+                    'theme'    => 'github',
+                ],
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($systemPageDataType, 'order');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'number',
+                'display_name' => __('voyager-site::seeders.data_rows.order'),
+                'required'     => 0,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 10,
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($systemPageDataType, 'created_at');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'timestamp',
+                'display_name' => __('voyager-site::seeders.data_rows.created_at'),
+                'required'     => 0,
+                'browse'       => 1,
+                'read'         => 1,
+                'edit'         => 0,
+                'add'          => 0,
+                'delete'       => 0,
+                'order'        => 11,
+                'details'      => [
+                    'browse_align' => 'right',
+                    'browse_width' => '110px',
+                    'browse_font_size' => '0.9em',
+                    'format' => '%Y-%m-%d',
+                ],
+            ])->save();
+        }
+
+        $dataRow = $this->dataRow($systemPageDataType, 'updated_at');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'timestamp',
+                'display_name' => __('voyager-site::seeders.data_rows.updated_at'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 0,
+                'edit'         => 0,
+                'add'          => 0,
+                'delete'       => 0,
+                'order'        => 12,
+            ])->save();
+        }
+
+
 
 
 

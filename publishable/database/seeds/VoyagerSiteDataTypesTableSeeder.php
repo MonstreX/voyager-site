@@ -11,6 +11,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
     public function run()
     {
 
+        // BLOCK REGIONS
         $dataType = $this->dataType('slug', 'block-regions');
         if (!$dataType->exists) {
             $dataType->fill([
@@ -33,6 +34,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
             ])->save();
         }
 
+        // BLOCKS
         $dataType = $this->dataType('slug', 'blocks');
         if (!$dataType->exists) {
             $dataType->fill([
@@ -55,6 +57,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
             ])->save();
         }
 
+        // FORMS
         $dataType = $this->dataType('slug', 'forms');
         if (!$dataType->exists) {
             $dataType->fill([
@@ -77,6 +80,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
             ])->save();
         }
 
+        // LOCALIZATIONS
         $dataType = $this->dataType('slug', 'localizations');
         if (!$dataType->exists) {
             $dataType->fill([
@@ -99,6 +103,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
             ])->save();
         }
 
+        // SETTINGS
         $dataType = $this->dataType('slug', 'site-settings');
         if (!$dataType->exists) {
             $dataType->fill([
@@ -120,6 +125,53 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
                 ],
             ])->save();
         }
+
+        // PAGES
+        $dataType = $this->dataType('slug', 'pages');
+        if (!$dataType->exists) {
+            $dataType->fill([
+                'name'                  => 'pages',
+                'display_name_singular' => __('voyager-site::seeders.data_types.pages.singular'),
+                'display_name_plural'   => __('voyager-site::seeders.data_types.pages.plural'),
+                'icon'                  => 'voyager-file-text',
+                'model_name'            => 'MonstreX\\VoyagerSite\\Models\\Page',
+                'policy_name'           => '',
+                'controller'            => '',
+                'generate_permissions'  => 1,
+                'description'           => '',
+                'details'               => [
+                    'order_column' => null,
+                    'order_display_column' => null,
+                    'order_direction' => null,
+                    'default_search_key' =>null,
+                    'scope' => null,
+                ],
+            ])->save();
+        }
+
+        // SYSTEM PAGES
+        $dataType = $this->dataType('slug', 'system-pages');
+        if (!$dataType->exists) {
+            $dataType->fill([
+                'name'                  => 'system_pages',
+                'display_name_singular' => __('voyager-site::seeders.data_types.system_pages.singular'),
+                'display_name_plural'   => __('voyager-site::seeders.data_types.system_pages.plural'),
+                'icon'                  => 'voyager-file-code',
+                'model_name'            => 'MonstreX\\VoyagerSite\\Models\\SystemPage',
+                'policy_name'           => '',
+                'controller'            => '',
+                'generate_permissions'  => 1,
+                'description'           => '',
+                'details'               => [
+                    'order_column' => null,
+                    'order_display_column' => null,
+                    'order_direction' => null,
+                    'default_search_key' =>null,
+                    'scope' => null,
+                ],
+            ])->save();
+        }
+
 
     }
 
