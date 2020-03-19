@@ -129,8 +129,8 @@
                                     </div>
                                 @elseif($field->type === 'route')
                                     <div class="form-group {{ $class }}">
-                                        <a href="{{ route('voyager.' . $field->value) }}" class="btn btn-primary btn-add-new">
-                                            <i class="{{ $field->icon }}"></i> {{ $field->label }}
+                                        <a href="{{ route('voyager.' . $field->value) }}" class="btn btn-primary btn-setting-route">
+                                            <i class="{{ $field->icon }}"></i> <span>{{ $field->label }}</span>
                                         </a>
                                     </div>
                                 @endif

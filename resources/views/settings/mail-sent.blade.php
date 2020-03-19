@@ -19,7 +19,15 @@
     <div class="page-content code container-fluid">
         <div class="panel panel-bordered">
             <div class="panel-body">
-                {{ $content }}
+                @if($error)
+                    <div class="send-test-mail-error">
+                        {{ $error->getMessage() }}
+                    </div>
+                @else
+                    <div class="send-test-mail-success">
+                        {{ $content }}
+                    </div>
+                @endif
             </div>
         </div>
 

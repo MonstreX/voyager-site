@@ -92,26 +92,30 @@ class VoyagerSiteController extends VoyagerBaseController
     }
 
 
+    /*
+     *  Send TEST Email
+     */
     public function sendTestMail()
     {
-        // 1
-        //$name = 'Krunal';
-        //Mail::to('fido6080net@mail.ru')->send(new InfoMailable($name));
 
-        // 2
-        //$formFields = $this->request->except(['q', '_token', '_form_alias', '_validator']);
         $formFields = [
-            'subject' => 'New subject for email',
-            'name' => 'Test NAME',
-            'phone'  => '02392-304932034',
-            'email'  => 'fodd@mail.ru',
-            'message' => 'LONG MESSAGE TEXT',
+            'subject' => __('voyager-site::mail.send_test_mail_subject') . site_setting('general.site_app_name'),
+            'message' => __('voyager-site::mail.send_test_mail_message'),
         ];
 
-        $emails = explode(',', 'fido6080net@mail.ru,fido6080net@gmail.com');
-        Notification::route('mail', $emails)->notify(new SendForm($formFields));
+        $emails = explode(',', site_setting('mail.to_address'));
+        try {
+            Notification::route('mail', $emails)->notify(new SendForm($formFields));
+            $error = null;
+        } catch (\Swift_TransportException $e) {
+            $error = $e;
+        }
 
-        return view('voyager-site::settings.mail-sent')->with(['title' => 'Sending Test E-Mail', 'content' => 'Email has been sent successfully...']);
+        return view('voyager-site::settings.mail-sent')->with([
+            'title' => __('voyager-site::mail.send_test_mail_title'),
+            'content' => __('voyager-site::mail.send_test_mail_success_message'),
+            'error' => $error
+        ]);
     }
 
 }
