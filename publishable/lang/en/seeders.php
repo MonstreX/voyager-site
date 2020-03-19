@@ -102,5 +102,10 @@ return [
             'meta_description' => 'Default page description',
             'meta_keywords' => 'Default page keywords',
         ],
+
+        'theme' => [
+            'title' => 'Theme',
+            'logo' => 'Site logo',
+        ],
     ],
 ];

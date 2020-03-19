@@ -15,7 +15,6 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
     {
         $menu = Menu::where('name', 'admin')->firstOrFail();
 
-
         // CONTENT ROOT MENU
         $structureMenuItem = MenuItem::firstOrNew([
             'menu_id' => $menu->id,

@@ -71,12 +71,10 @@ class InstallCommand extends Command
         // Publish only relevant resources on install
         $tags = ['seeds'];
 
-        $this->call('vendor:publish', ['--provider' => VoyagerSiteServiceProvider::class, '--tag' => $tags]);
-
+        $this->call('vendor:publish', ['--provider' => VoyagerSiteServiceProvider::class, '--tag' => $tags, '--force' => true]);
 
         $this->info('Migrating the database tables into your application');
         $this->call('migrate', ['--force' => $this->option('force')]);
-
 
         $this->info('Seeding data into the database');
         $this->seed('VoyagerSiteDatabaseSeeder');

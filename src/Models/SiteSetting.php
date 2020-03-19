@@ -27,13 +27,16 @@ class SiteSetting extends Model implements HasMedia
     public function getSettingsGroup($key)
     {
         $settings = $this->where('key', $key)->first();
-        $values = [];
-        foreach (json_decode($settings->details)->fields as $key => $value) {
-            if ($value->type !== 'section') {
-                $values[$key] = $value->value;
+        if($settings) {
+            $values = [];
+            foreach (json_decode($settings->details)->fields as $key => $value) {
+                if ($value->type !== 'section') {
+                    $values[$key] = $value->value;
+                }
             }
+            return $values;
         }
-        return $values;
+        return null;
     }
 
 }

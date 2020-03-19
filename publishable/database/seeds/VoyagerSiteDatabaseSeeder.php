@@ -19,6 +19,8 @@ class VoyagerSiteDatabaseSeeder extends Seeder
         $this->seed('VoyagerSiteBlockRegionsTableSeeder');
         $this->seed('VoyagerSiteMenuItemsTableSeeder');
 
+        1111;
+
         $this->seed('VoyagerSiteDataTypesTableSeeder');
         $this->seed('VoyagerSiteDataRowsTableSeeder');
 

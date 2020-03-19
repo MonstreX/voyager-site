@@ -79,7 +79,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             ],
         ];
 
-        $region = Setting::firstOrCreate([
+        $record = Setting::firstOrCreate([
             'title' => __('voyager-site::seeders.settings.general.title'),
             'key' => 'general',
             'order' => 1,
@@ -171,7 +171,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             ],
         ];
 
-        $region = Setting::firstOrCreate([
+        $record = Setting::firstOrCreate([
             'title' => __('voyager-site::seeders.settings.mail.title'),
             'key' => 'mail',
             'order' => 2,
@@ -205,13 +205,34 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             ],
         ];
 
-        $region = Setting::firstOrCreate([
+        $record = Setting::firstOrCreate([
             'title' => __('voyager-site::seeders.settings.seo.title'),
             'key' => 'seo',
             'order' => 3,
             'details' => json_encode($details,JSON_PRETTY_PRINT),
         ]);
 
+
+        /*
+         *  THEME
+         */
+        $details =  [
+            'fields' => [
+                'meta_keywords' => [
+                    'label' => __('voyager-site::seeders.settings.theme.logo'),
+                    'type' => 'media',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+            ],
+        ];
+
+        $record = Setting::firstOrCreate([
+            'title' => __('voyager-site::seeders.settings.theme.title'),
+            'key' => 'theme',
+            'order' => 4,
+            'details' => json_encode($details,JSON_PRETTY_PRINT),
+        ]);
 
     }
 }

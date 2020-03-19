@@ -22,7 +22,6 @@ class VoyagerSiteServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
         $this->registerAliases();
 
         $this->loadHelpers();
@@ -31,7 +30,6 @@ class VoyagerSiteServiceProvider extends ServiceProvider
             $this->registerPublishableResources();
             $this->registerConsoleCommands();
         }
-
     }
 
     /**
@@ -49,12 +47,14 @@ class VoyagerSiteServiceProvider extends ServiceProvider
 
         $this->loadTranslationsFrom(realpath(__DIR__.'/../publishable/lang'), 'voyager-site');
 
-        // Override Mail settings and others
-        $this->overrideConfig();
+        if (!$this->app->runningInConsole()) {
+            // Override Mail settings and others
+            $this->overrideConfig();
+            // Load Localization strings
+            $localization = app(Localization::class);
+            $localization->loadLocalizations();
+        }
 
-        // Load Localization strings
-        $localization = app(Localization::class);
-        $localization->loadLocalizations();
 
         // Create Voyager Routes
         app(Dispatcher::class)->listen('voyager.admin.routing', function ($router) {
