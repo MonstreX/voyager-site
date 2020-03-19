@@ -969,6 +969,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'delete'       => 1,
                 'order'        => 6,
                 'details'               => [
+                    'browse_tree_push_right' => true,
                     'validation' => [
                         'rule' => 'unique:pages',
                         'messages' => [
