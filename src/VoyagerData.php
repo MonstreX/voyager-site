@@ -7,6 +7,40 @@ namespace MonstreX\VoyagerSite;
 class VoyagerData
 {
 
+    /*
+     * Find model record by SLUG
+     */
+    public function findBySlugOrFail(string $slug, string $modelClass = null)
+    {
+        return $this->findByField('slug', $slug, $modelClass);
+    }
+
+    /*
+     * Find model record by ID
+     */
+    public function findOrFail(string $id, string $modelClass = null)
+    {
+        return $this->findByField('id', $id, $modelClass);
+    }
+
+    /*
+     * Find model record by Field
+     */
+    public function findByField(string $field, string $value, string $modelClass = null)
+    {
+        if (!$modelClass) {
+            // Default mode is a Page
+            $modelClass = 'Page';
+        }
+
+        $model = app(config('voyager.models.namespace').$modelClass);
+        if (!$data = $model::where($field, $value)->first()) {
+            abort(404);
+        }
+
+        return $data;
+    }
+
     public function getDataSources(object $data_sources):array
     {
         if (isset($data_sources)) {

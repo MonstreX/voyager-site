@@ -5,12 +5,15 @@ namespace MonstreX\VoyagerSite;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 
 use MonstreX\VoyagerSite\Facades;
 use MonstreX\VoyagerSite\Models\SiteSetting as Settings;
 use MonstreX\VoyagerSite\Models\Localization;
 use Config;
 use Shortcode;
+use VBlock;
+use VSite;
 
 class VoyagerSiteServiceProvider extends ServiceProvider
 {
@@ -25,6 +28,8 @@ class VoyagerSiteServiceProvider extends ServiceProvider
         $this->registerAliases();
 
         $this->loadHelpers();
+
+        $this->registerConfigs();
 
         if ($this->app->runningInConsole()) {
             $this->registerPublishableResources();
@@ -63,6 +68,11 @@ class VoyagerSiteServiceProvider extends ServiceProvider
 
         $this->registerShortcodes();
 
+        $this->registerBlades();
+
+
+        $title = VSite::setting('general.site_title');
+
     }
 
 
@@ -71,6 +81,8 @@ class VoyagerSiteServiceProvider extends ServiceProvider
      */
     private function registerPublishableResources()
     {
+        $this->publishes([dirname(__DIR__).'/publishable/config/voyager-site.php' => config_path('voyager-site.php')]);
+
         $publishablePath = dirname(__DIR__).'/publishable';
 
         $publishable = [
@@ -162,6 +174,17 @@ class VoyagerSiteServiceProvider extends ServiceProvider
 
     }
 
+
+    public function registerConfigs()
+    {
+        $this->mergeConfigFrom(
+            dirname(__DIR__).'/publishable/config/voyager-site.php', 'voyager-site'
+        );
+    }
+
+    /**
+     * Override Laravel Configurations
+     */
     protected function overrideConfig()
     {
         $settings = app(Settings::class);
@@ -192,6 +215,26 @@ class VoyagerSiteServiceProvider extends ServiceProvider
     {
         Shortcode::register('block', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@block');
         Shortcode::register('form', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@form');
+    }
+
+    protected function registerBlades()
+    {
+        Blade::directive('renderBlock', function ($expression) {
+            $expression = trim($expression, "\'\"");
+            return VBlock::render($expression);
+        });
+
+        Blade::directive('renderForm', function ($expression) {
+            $args = explode(',', $expression);
+            $form = isset($args[0])? $args[0] : null;
+            $suffix = isset($args[1])? $args[1] : null;
+            return VBlock::renderForm(trim($form, "\'\" "), trim($suffix, "\'\" "));
+        });
+
+        Blade::directive('renderRegion', function ($expression) {
+            $expression = trim($expression, "\'\"");
+            return VBlock::renderRegion($expression);
+        });
     }
 
 }

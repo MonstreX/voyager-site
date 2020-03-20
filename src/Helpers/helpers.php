@@ -155,3 +155,45 @@ if (!function_exists('get_image_or_create'))
         return Storage::url(str_replace('\\', '/', $target_path_full));
     }
 }
+
+/*
+ * Returns first NOT empty element in given array
+ */
+if (!function_exists('get_first_not_empty')) {
+    function get_first_not_empty(array $values)
+    {
+        foreach ($values as $value) {
+            if (!empty($value)) {
+                return $value;
+            }
+        }
+        return null;
+    }
+}
+
+
+/*
+ * Blade templates helpers
+ */
+if (!function_exists('render_block')) {
+    function render_block($key)
+    {
+        return VBlock::render($key);
+    }
+}
+
+if (!function_exists('render_form')) {
+    function render_form($key, $suffix = null)
+    {
+        return VBlock::renderForm($key, $suffix);
+    }
+}
+
+if (!function_exists('render_region')) {
+    function render_region($key)
+    {
+        return VBlock::renderRegion($key);
+    }
+}
+
+
