@@ -113,6 +113,9 @@ class VoyagerPage
     {
         // If we don't have related Data
         if(!$contentData) {
+            if(!config('voyager-site.use_legacy_error_handler')) {
+                throw new \MonstreX\VoyagerSite\Exceptions\VoyagerSiteException(__('voyager-site.errors.error_404_message'), 404);
+            }
             abort(404);
         }
 

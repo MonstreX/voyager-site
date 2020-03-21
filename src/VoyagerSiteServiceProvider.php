@@ -2,6 +2,8 @@
 
 namespace MonstreX\VoyagerSite;
 
+use App\Exceptions\Handler;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
@@ -69,7 +71,6 @@ class VoyagerSiteServiceProvider extends ServiceProvider
         $this->registerShortcodes();
 
         $this->registerBlades();
-
 
         $title = VSite::setting('general.site_title');
 

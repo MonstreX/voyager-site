@@ -49,6 +49,11 @@ class VoyagerData
 
         // Drop 404 Error if not found or published (status = 0)
         if ((!$data && $fail) || (isset($data->status) && (int) $data->status !== 1 && $fail)) {
+
+            if(!config('voyager-site.use_legacy_error_handler')) {
+                throw new \MonstreX\VoyagerSite\Exceptions\VoyagerSiteException(__('voyager-site.errors.error_404_message'), 404);
+            }
+
             abort(404);
         }
 

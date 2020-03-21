@@ -19,6 +19,12 @@ return [
 
 
     /*
+     * Error Handling
+     */
+    'use_legacy_error_handler' => false,
+
+
+    /*
      *  Name of the Template
      */
     'template' => 'template',
