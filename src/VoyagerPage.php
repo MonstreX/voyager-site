@@ -31,6 +31,7 @@ class VoyagerPage
     protected $breadcrumbs = [];
 
     // SEO Data
+    protected $seoTitleTemplate;
     protected $seoTitle;
     protected $metaDescription;
     protected $metaKeywords;
@@ -48,7 +49,12 @@ class VoyagerPage
      */
     public function getSeoTitle()
     {
-        return $this->seoTitle;
+        $title = $this->seoTitle;
+        if ($this->settings['seo_title_template']) {
+            $title = str_replace('%site_title%', $this->settings['site_title'], $this->settings['seo_title_template']);
+            $title = str_replace('%seo_title%', $this->seoTitle, $title);
+        }
+        return $title;
     }
 
     /*
@@ -103,8 +109,13 @@ class VoyagerPage
     /*
      * Create Page
      */
-    public function create(Model $contentData, array $settings)
+    public function create($contentData, array $settings)
     {
+        // If we don't have related Data
+        if(!$contentData) {
+            abort(404);
+        }
+
         // General settings
         $this->settings = $settings;
 
@@ -193,6 +204,32 @@ class VoyagerPage
             'label' => $label,
             'url' => $url
         ];
+    }
+
+    /*
+     *  Returns rendered VIEW using PAGE Vars
+     */
+    public function view($template_layout = null)
+    {
+
+        // If layout template not present in params
+        if (!$template_layout) {
+            $template_layout = $this->settings['template'] . '.' . $this->settings['template_layout'];
+        }
+
+        return view($template_layout)->with([
+            'template_master' => $this->settings['template'] . '.' . $this->settings['template_master'],
+            'template_page' => $this->settings['template'] . '.' . $this->templatePage,
+            'breadcrumbs' => $this->breadcrumbs,
+            'title' => $this->title,
+            'page' => $this->contentData,
+            'page_data_sets' => $this->dataSets,
+            'seo' => [
+                'title' => $this->getSeoTitle(),
+                'description' => $this->getSeoDescription(),
+                'keywords' => $this->getSeoKeywords(),
+            ]
+        ])->render();
     }
 
 }

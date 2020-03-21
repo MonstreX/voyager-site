@@ -119,9 +119,10 @@ return [
 
         'seo' => [
             'title' => 'SEO',
-            'seo_title' => 'Default page title',
-            'meta_description' => 'Default page description',
-            'meta_keywords' => 'Default page keywords',
+            'seo_title_template' => 'SEO title template',
+            'seo_title' => 'Default SEO page title',
+            'meta_description' => 'Default META page description',
+            'meta_keywords' => 'Default META page keywords',
         ],
 
         'theme' => [

@@ -3,6 +3,8 @@
 
 namespace MonstreX\VoyagerSite;
 
+use Illuminate\Support\Facades\DB;
+use TCG\Voyager\Facades\Voyager;
 
 class VoyagerData
 {
@@ -10,36 +12,49 @@ class VoyagerData
     /*
      * Find model record by SLUG
      */
-    public function findBySlugOrFail(string $slug, string $modelClass = null)
+    public function find($alias, string $modelSlug = null, bool $fail = true)
     {
-        return $this->findByField('slug', $slug, $modelClass);
+        if (is_int($alias)) {
+            return $this->where('id', $alias, $modelSlug, $fail);
+        }
+        return $this->where('slug', $alias, $modelSlug, $fail);
     }
 
-    /*
-     * Find model record by ID
-     */
-    public function findOrFail(string $id, string $modelClass = null)
-    {
-        return $this->findByField('id', $id, $modelClass);
-    }
 
     /*
      * Find model record by Field
      */
-    public function findByField(string $field, string $value, string $modelClass = null)
+    public function where(string $field, string $value, string $modelSlug = null, bool $fail = true)
     {
-        if (!$modelClass) {
+        if (!$modelSlug) {
             // Default mode is a Page
-            $modelClass = 'Page';
+            $modelSlug = config('voyager-site.default_model_table');
         }
 
-        $model = app(config('voyager.models.namespace').$modelClass);
-        if (!$data = $model::where($field, $value)->first()) {
+        $dataType = Voyager::model('DataType')->where('slug', '=', $modelSlug)->first();
+
+        if ($dataType) {
+            $model = app($dataType->model_name);
+            $data = $model::where($field, $value)->first();
+        } else {
+
+            $model = app(config('voyager.models.namespace').$modelSlug);
+            $data = $model::where($field, $value)->first();
+
+            if (!$data) {
+                $data = DB::table($modelSlug)->where($field, $value)->first();
+            }
+
+        }
+
+        // Drop 404 Error if not found or published (status = 0)
+        if ((!$data && $fail) || (isset($data->status) && (int) $data->status !== 1 && $fail)) {
             abort(404);
         }
 
         return $data;
     }
+
 
     public function getDataSources(object $data_sources):array
     {
@@ -53,6 +68,7 @@ class VoyagerData
             return [];
         }
     }
+
 
     public function getDataSource(object $data_source):array
     {

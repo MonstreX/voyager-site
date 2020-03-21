@@ -8,6 +8,17 @@ return [
     'route_home_page' => 'home',
 
     /*
+     * Default model table name
+     */
+    'default_model_table' => 'pages',
+
+    /*
+     * Default slug field name
+     */
+    'default_slug_field' => 'slug',
+
+
+    /*
      *  Name of the Template
      */
     'template' => 'template',

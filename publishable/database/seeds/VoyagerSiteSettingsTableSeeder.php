@@ -184,6 +184,12 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
          */
         $details =  [
             'fields' => [
+                'seo_title_template' => [
+                    'label' => __('voyager-site::seeders.settings.seo.seo_title_template'),
+                    'type' => 'text',
+                    'value' => '%site_title% | %seo_title%',
+                    'class' => 'col-md-12',
+                ],
                 'seo_title' => [
                     'label' => __('voyager-site::seeders.settings.seo.seo_title'),
                     'type' => 'text',
