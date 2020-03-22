@@ -23,28 +23,28 @@ class VoyagerBlock
         if ($region) {
             $blocks = Block::where(['region_id' => $region->id, 'status' => 1])->get();
 
-            $current_path =  $path? $path: VSite::currentPath();
+            $current_path = $path ? $path : VSite::currentPath();
 
             $html = '';
             foreach ($blocks as $block) {
 
                 $blockShow = false;
 
-                $urls = explode(PHP_EOL, str_replace('<front>','/', $block->urls));
+                $urls = explode(PHP_EOL, str_replace('<front>', '/', $block->urls));
                 foreach ($urls as $key => $url) {
-                    if(empty($url)) {
+                    if (empty($url)) {
                         unset($urls[$key]);
                     }
                 }
 
                 // Set visibility ON EVERY PAGE
-                if($block->rules === self::EXCEPT && empty($urls)) {
+                if ($block->rules === self::EXCEPT && empty($urls)) {
                     $blockShow = true;
                     // Set visibility ON EVERY PAGE EXCEPT SELECTED
                 } elseif ($block->rules == self::EXCEPT) {
                     $blockShow = in_array($current_path, $urls);
                     // Set visibility ONLY ON SPECIFIC PAGES
-                } elseif ($block->rules == self::ONLY && !empty($urls)){
+                } elseif ($block->rules == self::ONLY && !empty($urls)) {
                     $blockShow = in_array($current_path, $urls);
                 }
 
@@ -71,7 +71,7 @@ class VoyagerBlock
 
     public function renderBlock($block, $id = null)
     {
-        if($block) {
+        if ($block) {
             // Prepare Images Vars
             $images = [];
             foreach ($block->getMedia('images') as $key => $image) {
@@ -110,7 +110,7 @@ class VoyagerBlock
     public function renderForm($key, $suffix = '')
     {
         $form = Form::where(['key' => $key, 'status' => 1])->first();
-        if($form) {
+        if ($form) {
 
             $options = json_decode($form->details);
             $vars = [];
@@ -118,7 +118,7 @@ class VoyagerBlock
             $vars['form_alias'] = $key . $suffix;
             $vars['form_route'] = route('form.send');
             $vars['csrf_token'] = csrf_token();
-            $vars['validator'] = isset($options->validator)? htmlentities(serialize($options->validator)) : '';
+            $vars['validator'] = isset($options->validator) ? htmlentities(serialize($options->validator)) : '';
 
             $template = new Template(Shortcode::compile($form->content));
             return $template->render($vars);
@@ -127,5 +127,24 @@ class VoyagerBlock
         }
     }
 
+    public function renderLayout($layout, $page)
+    {
+        $layoutFields = json_decode($layout);
+        if($layoutFields) {
+            $html = "";
+            foreach ($layoutFields as $field) {
+                if ($field->type === 'Block') {
+                    $html .= $this->render($field->key);
+                } elseif ($field->type === 'Form') {
+                    $html .= $this->renderForm($field->key);
+                } elseif ($field->type === 'Field') {
+                    $html .= $page->{$field->key};
+                }
+            }
+            return $html;
+        } else {
+            return "";
+        }
+    }
 
 }

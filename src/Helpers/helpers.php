@@ -196,4 +196,11 @@ if (!function_exists('render_form')) {
     }
 }
 
+if (!function_exists('render_layout')) {
+    function render_layout($layout, $page)
+    {
+        return VBlock::renderLayout($layout, $page);
+    }
+}
+
 
