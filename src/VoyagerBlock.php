@@ -107,16 +107,19 @@ class VoyagerBlock
         return $block;
     }
 
+
+
+
     public function renderForm($key, $suffix = '')
     {
-        $form = Form::where(['key' => $key, 'status' => 1])->first();
+        $form = $this->getFormByKey($key);
         if ($form) {
 
             $options = json_decode($form->details);
             $vars = [];
             // Prepare Vars for template
             $vars['form_alias'] = $key . $suffix;
-            $vars['form_route'] = route('form.send');
+            $vars['form_route'] = route(isset($options->route)? $options->route : 'send.form');
             $vars['csrf_token'] = csrf_token();
             $vars['validator'] = isset($options->validator) ? htmlentities(serialize($options->validator)) : '';
 
@@ -126,6 +129,12 @@ class VoyagerBlock
             return '';
         }
     }
+
+    public function getFormByKey($key)
+    {
+        return Form::where(['key' => $key, 'status' => 1])->first();
+    }
+
 
     public function renderLayout($layout, $page)
     {

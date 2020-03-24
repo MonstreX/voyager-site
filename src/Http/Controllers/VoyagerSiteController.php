@@ -2,14 +2,17 @@
 
 namespace MonstreX\VoyagerSite\Http\Controllers;
 
-use MonstreX\VoyagerSite\Models\SiteSetting as Settings;
 use Illuminate\Http\Request;
+use Notification;
+use Validator;
+use Arr;
+
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\VoyagerBaseController;
-use Arr;
-use MonstreX\VoyagerSite\Notifications\SendForm;
-use Notification;
 
+use MonstreX\VoyagerSite\Notifications\SendForm;
+use MonstreX\VoyagerSite\Models\SiteSetting as Settings;
+use VBlock;
 
 class VoyagerSiteController extends VoyagerBaseController
 {
@@ -90,6 +93,71 @@ class VoyagerSiteController extends VoyagerBaseController
 
         return redirect()->route('voyager.site-settings.index');
     }
+
+
+    /*
+     *  Send Form
+     */
+    public function sendForm(Request $request)
+    {
+        if ($request->isMethod('post')) {
+
+            $message_type = 'unknown';
+            $messages = [];
+
+            $formFields = $request->except(['_token', '_form_alias']);
+
+            if ($form = VBlock::getFormByKey($request->_form_alias)) {
+                $options = json_decode($form->details);
+            }
+
+            if (isset($options->validator)) {
+
+                $validator_messages = isset($options->messages)? (array) $options->messages : null;
+                $validator = Validator::make($request->all(), (array) $options->validator, $validator_messages);
+                if(!$validator->passes()) {
+                    $errors = $validator->errors()->all();
+                    $message_type = 'error-validation';
+                    foreach ($errors as $error) {
+                        $messages[] = $error;
+                    }
+                }
+            }
+
+            if(!isset($errors)) {
+                try {
+                    // Sending Email
+                    $to_address = str_replace(' ','', isset($options->to_address)?
+                        $options->to_address :
+                        site_setting('mail.to_address'));
+                    $emails = explode(',', $to_address);
+
+                    Notification::route('mail', $emails)->notify(new SendForm($formFields, $request));
+
+                    $message_type = 'success';
+                    $messages[] = __('site.form_send_success');
+
+                } catch (\Swift_TransportException $e)  {
+                    $message_type = 'error';
+                    $messages[] = $e->getMessage();
+                    \Log::alert('Mail Exception:'. $e->getMessage());
+                }
+            }
+
+        }
+
+        if ($request->ajax()) {
+            $messages_html = '<ul>';
+            foreach ($messages as $message) {
+                $messages_html .= '<li>'.$message.'</li>';
+            }
+            $messages_html .= '</ul>';
+            return response()->json(['type' => $message_type, 'messages' => $messages_html]);
+        } else {
+            return redirect()->back()->withInput()->withErrors($validator);
+        }
+    }
+
 
 
     /*

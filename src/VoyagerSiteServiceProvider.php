@@ -8,6 +8,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Route;
 
 use MonstreX\VoyagerSite\Facades;
 use MonstreX\VoyagerSite\Models\SiteSetting as Settings;
@@ -62,17 +63,11 @@ class VoyagerSiteServiceProvider extends ServiceProvider
             $localization->loadLocalizations();
         }
 
-
-        // Create Voyager Routes
-        app(Dispatcher::class)->listen('voyager.admin.routing', function ($router) {
-            $this->addRoutes($router);
-        });
+        $this->loadRoutesFrom(__DIR__.'./Routes/routes.php');
 
         $this->registerShortcodes();
 
         $this->registerBlades();
-
-        $title = VSite::setting('general.site_title');
 
     }
 
@@ -109,15 +104,13 @@ class VoyagerSiteServiceProvider extends ServiceProvider
     /*
      *  Add Routes
      */
-    public function addRoutes($router){
+    public function addRoutes($router, $site_controller){
 
-        $siteController = '\MonstreX\VoyagerSite\Http\Controllers\VoyagerSiteController';
+        $router->get('/site-settings/{key}/edit', $site_controller . '@settingsEdit')->name('site-settings.edit')->where('key', '[A-Za-z]+');;
 
-        $router->get('/site-settings/{key}/edit', $siteController . '@settingsEdit')->name('site-settings.edit')->where('key', '[A-Za-z]+');;
+        $router->post('/site-settings/{key}/update', $site_controller . '@settingsUpdate')->name('site-settings.save');
 
-        $router->post('/site-settings/{key}/update', $siteController . '@settingsUpdate')->name('site-settings.save');
-
-        $router->get('/site-settings/send-test-mail', $siteController . '@sendTestMail')->name('send.test-mail');
+        $router->get('/site-settings/send-test-mail', $site_controller . '@sendTestMail')->name('send.test-mail');
 
     }
 
