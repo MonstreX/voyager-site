@@ -3,6 +3,9 @@
 
 namespace MonstreX\VoyagerSite;
 
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\MessageBag;
+
 use MonstreX\VoyagerSite\Models\Block;
 use MonstreX\VoyagerSite\Models\Form;
 use MonstreX\VoyagerSite\Models\BlockRegion;
@@ -110,18 +113,20 @@ class VoyagerBlock
 
 
 
-    public function renderForm($key, $suffix = '')
+    public function renderForm($key, $subject = null, $suffix = null)
     {
         $form = $this->getFormByKey($key);
         if ($form) {
+            $errors = Session::get('errors', new MessageBag);
 
-            $options = json_decode($form->details);
             $vars = [];
-            // Prepare Vars for template
-            $vars['form_alias'] = $key . $suffix;
-            $vars['form_route'] = route(isset($options->route)? $options->route : 'send.form');
+            $vars['old'] = session()->getOldInput();
+            $vars['errors_messages'] = $errors->all();
+            $vars['errors'] = $errors->toArray();
+            $vars['form_alias'] = $key;
+            $vars['form_suffix'] = $suffix;
+            $vars['form_subject'] = $subject;
             $vars['csrf_token'] = csrf_token();
-            $vars['validator'] = isset($options->validator) ? htmlentities(serialize($options->validator)) : '';
 
             $template = new Template(Shortcode::compile($form->content));
             return $template->render($vars);

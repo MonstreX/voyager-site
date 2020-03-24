@@ -135,12 +135,12 @@ class VoyagerSiteController extends VoyagerBaseController
                     Notification::route('mail', $emails)->notify(new SendForm($formFields, $request));
 
                     $message_type = 'success';
-                    $messages[] = __('site.form_send_success');
+                    $messages[] = __('voyager-site::mail.send_for_success_message');
 
                 } catch (\Swift_TransportException $e)  {
                     $message_type = 'error';
                     $messages[] = $e->getMessage();
-                    \Log::alert('Mail Exception:'. $e->getMessage());
+                    \Log::alert('voyager-site::mail.log_error_message'. $e->getMessage());
                 }
             }
 

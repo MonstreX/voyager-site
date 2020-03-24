@@ -19,6 +19,15 @@ class Template
         });
 
         // CROP IMAGE
+        $this->template->registerFilter('route', function ($route, $param = null) {
+            if($param) {
+                return route($route, $param);
+            } else {
+                return route($route);
+            }
+        });
+
+        // CROP IMAGE
         $this->template->registerFilter('crop', function ($image, $xsize = '', $ysize = '') {
             return get_image_or_create($image, $xsize, $ysize);
         });

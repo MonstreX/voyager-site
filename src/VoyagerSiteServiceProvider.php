@@ -221,8 +221,9 @@ class VoyagerSiteServiceProvider extends ServiceProvider
         Blade::directive('renderForm', function ($expression) {
             $args = explode(',', $expression);
             $form = isset($args[0])? $args[0] : null;
-            $suffix = isset($args[1])? $args[1] : null;
-            return VBlock::renderForm(trim($form, "\'\" "), trim($suffix, "\'\" "));
+            $subject = isset($args[1])? $args[1] : null;
+            $suffix = isset($args[2])? $args[2] : null;
+            return VBlock::renderForm(trim($form, "\'\" "), $subject, trim($suffix, "\'\" "));
         });
 
         Blade::directive('renderRegion', function ($expression) {

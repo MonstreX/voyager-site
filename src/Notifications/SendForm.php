@@ -37,18 +37,18 @@ class SendForm extends Notification
             $new_mail = $new_mail->subject($this->formFields['subject']);
         }
 
-        $new_mail = $new_mail->greeting(__('mail.greeting'));
+        $new_mail = $new_mail->greeting(__('voyager-site::mail.greeting'));
 
         foreach ($this->formFields as $key => $field) {
             if (!is_array($field)) {
-                $title = __('mail.' . $key);
+                $title = __('voyager-site::mail.' . $key);
                 $new_mail = $new_mail->line(new HtmlString('<p><strong>' . $title .'</strong>: ' . $field . '</p>'));
             }
         }
 
-        $new_mail = $new_mail->salutation(__('mail.salutation'));
+        $new_mail = $new_mail->salutation(__('voyager-site::mail.salutation'));
 
-        // Attach files if present
+        // Attach all files on the given form if present
         $file_fields = $this->request->file();
         if(count($file_fields) > 0) {
             foreach ($file_fields as $key => $files) {

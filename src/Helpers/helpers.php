@@ -190,9 +190,9 @@ if (!function_exists('render_region')) {
 }
 
 if (!function_exists('render_form')) {
-    function render_form($key, $suffix = null)
+    function render_form($key, $subject = null, $suffix = null)
     {
-        return VBlock::renderForm($key, $suffix);
+        return VBlock::renderForm($key, $subject, $suffix);
     }
 }
 
