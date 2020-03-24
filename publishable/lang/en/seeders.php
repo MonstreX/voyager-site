@@ -26,6 +26,7 @@ return [
         'image'            => 'Image',
         'images_files'     => 'Images / Files',
         'content'          => 'Content',
+        'layout'           => 'Page layout',
         'language_key'     => 'Language key',
         'english'          => 'English',
         'russian'          => 'Russian',
@@ -42,6 +43,12 @@ return [
         'seo_title'        => 'SEO Title',
         'meta_description' => 'META Description',
         'meta_keywords'    => 'META Keywords',
+        'tab_images'       => 'Media',
+        'tab_layout'       => 'Page layout',
+        'tab_seo'          => 'SEO',
+        'tab_options'      => 'Options',
+        'tab_attributes'   => 'Attributes',
+
     ],
     'data_types' => [
         'blocks'     => [
@@ -92,7 +99,7 @@ return [
 
             'section_pages' => 'Special pages bindings',
             'site_home_page' => 'Home regular page ID',
-            'site_403_page' => '404 error system page ID',
+            'site_403_page' => '403 error system page ID',
             'site_404_page' => '404 error system page ID',
 
             'section_system' => 'System settings',
@@ -101,6 +108,10 @@ return [
             'site_debug_mode' => 'Debug mode',
             'site_debug_mode_on' => 'Enabled',
             'site_debug_mode_off' => 'Disabled',
+
+            'site_title_value' => 'The Voyager Site',
+            'site_description_value' => 'Voyager site description',
+            'site_app_name_value' => 'Voyager-Site',
         ],
         'mail' => [
             'title' => 'Mail',
@@ -111,6 +122,9 @@ return [
             'driver' => 'Mail driver',
             'host' => 'Host address',
             'port' => 'Port number',
+            'from_name_value' => 'Administration',
+            'from_address_value' => 'sender@example.com',
+            'to_address_value' => 'destination@example.com',
             'username' => 'User account name',
             'password' => 'Password',
             'encryption' => 'Encryption',
