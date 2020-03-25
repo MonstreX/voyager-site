@@ -4,7 +4,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 [![Build Status][ico-travis]][link-travis]
 
-This is where your description should go. Take a look at [contributing.md](contributing.md) to see a to do list.
+The package is an implementation of a simple but useful subsystem of a basic content organization for the Voyager Admin Panel package. 
 
 ## Installation
 
@@ -15,6 +15,8 @@ $ composer require monstrex/voyager-site
 ```
 
 ## Usage
+
+To be published.
 
 ## Change log
 
