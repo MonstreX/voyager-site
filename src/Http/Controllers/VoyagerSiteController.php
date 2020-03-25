@@ -163,7 +163,7 @@ class VoyagerSiteController extends VoyagerBaseController
     /*
      *  Send TEST Email
      */
-    public function sendTestMail()
+    public function sendTestMail(Request $request)
     {
 
         $formFields = [
@@ -173,7 +173,7 @@ class VoyagerSiteController extends VoyagerBaseController
 
         $emails = explode(',', site_setting('mail.to_address'));
         try {
-            Notification::route('mail', $emails)->notify(new SendForm($formFields));
+            Notification::route('mail', $emails)->notify(new SendForm($formFields, $request));
             $error = null;
         } catch (\Swift_TransportException $e) {
             $error = $e;
