@@ -37,21 +37,6 @@ class InstallCommand extends Command
         ];
     }
 
-
-    /**
-     * Get the composer command for the environment.
-     *
-     * @return string
-     */
-    protected function findComposer()
-    {
-        if (file_exists(getcwd().'/composer.phar')) {
-            return '"'.PHP_BINARY.'" '.getcwd().'/composer.phar';
-        }
-
-        return 'composer';
-    }
-
     public function fire(Filesystem $filesystem)
     {
         return $this->handle($filesystem);

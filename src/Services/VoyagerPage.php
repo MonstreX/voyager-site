@@ -1,12 +1,13 @@
 <?php
 
 
-namespace MonstreX\VoyagerSite;
+namespace MonstreX\VoyagerSite\Services;
 
+use MonstreX\VoyagerSite\Contracts\VoyagerPage as VoyagerPageContract;
 use Illuminate\Database\Eloquent\Model;
 use VSite, VData;
 
-class VoyagerPage
+class VoyagerPage implements VoyagerPageContract
 {
 
     // Settings

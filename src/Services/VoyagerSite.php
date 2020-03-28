@@ -1,17 +1,21 @@
 <?php
 
 
-namespace MonstreX\VoyagerSite;
+namespace MonstreX\VoyagerSite\Services;
 
+use MonstreX\VoyagerSite\Contracts\VoyagerSite as VoyagerSiteContract;
 use Illuminate\Database\Eloquent\Model;
 use MonstreX\VoyagerSite\Models\SiteSetting as Settings;
 
-class VoyagerSite
+class VoyagerSite implements VoyagerSiteContract
 {
+
     protected $setting_cache = [];
 
-    /*
-     * Site Settings
+    /**
+     * @param $key
+     * @param null $default
+     * @return Mixed
      */
     public function setting($key, $default = null)
     {
@@ -34,10 +38,11 @@ class VoyagerSite
     }
 
 
-    /*
+    /**
      * Returns SEO Site Settings
+     * @return array
      */
-    public function getSettings()
+    public function getSettings(): array
     {
         return [
             'template'        => config('voyager-site.template'),
@@ -54,13 +59,20 @@ class VoyagerSite
     }
 
 
+    /**
+     * @param Model $class
+     * @param $field
+     * @return string
+     */
     public function storeMediaFile(Model $class, $field):string
     {
         $result = $class->addMediaFromRequest($field)->toMediaCollection($field);
         return $result;
     }
 
-
+    /**
+     * @return string
+     */
     public function currentPath(): string
     {
         return request()->path();

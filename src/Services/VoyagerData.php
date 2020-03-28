@@ -1,12 +1,13 @@
 <?php
 
 
-namespace MonstreX\VoyagerSite;
+namespace MonstreX\VoyagerSite\Services;
 
+use MonstreX\VoyagerSite\Contracts\VoyagerData as VoyagerDataContract;
 use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Facades\Voyager;
 
-class VoyagerData
+class VoyagerData implements VoyagerDataContract
 {
 
     /*
