@@ -35,7 +35,7 @@ return [
         'created_at'       => 'Создано',
         'updated_at'       => 'Обновлено',
         'message_required' => 'Поле :field обязательно.',
-        'message_unique'   => 'Поле :field Алиас должно быть уникальным.',
+        'message_unique'   => 'Поле :field должно быть уникальным.',
         'enabled'          => 'Активно',
         'disabled'         => 'Отключено',
         'show_in_menu'     => 'Показывать в меню',

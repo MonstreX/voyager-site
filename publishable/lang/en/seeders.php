@@ -35,7 +35,7 @@ return [
         'created_at'       => 'Created At',
         'updated_at'       => 'Updated At',
         'message_required' => 'The field :field is required.',
-        'message_unique'   => 'The field :field SLUG should be UNIQUE.',
+        'message_unique'   => 'The field :field should be UNIQUE.',
         'enabled'          => 'Enabled',
         'disabled'         => 'Disabled',
         'show_in_menu'     => 'Show in menu',
