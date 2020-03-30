@@ -66,8 +66,8 @@ $mail = site_setting('mail.to_address');
 ```  
 > Some of the site settings used by internal package functions and override Laravel .env settings.
 
-In the site settings built-in SMTP mail parameters and the mail sending test function.
-
+The settings have built-in SMTP mail parameters and the mail sending test function.
+![Site settings - Mail](/docs/images/settings-mail.png)
 
 
  
