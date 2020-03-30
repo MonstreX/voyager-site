@@ -56,6 +56,9 @@ $ php artisan vendor:publish --provider="MonstreX\VoyagerSite\VoyagerSiteService
 ### Site Settings 
 
 Site settings is a flexible and extendable easy to use settings subsystem integrated in the package. 
+
+![Site settings](/docs/images/settings-1.png)
+
 You can use and modify exist settings and group and add you own group and settings.
 To retrieve certain setting you may use helper function:
 ```php
