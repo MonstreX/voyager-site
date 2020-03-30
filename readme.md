@@ -69,7 +69,7 @@ $mail = site_setting('mail.to_address');
 The settings have built-in SMTP mail parameters and the mail sending test function.
 ![Site settings - Mail](/docs/images/settings-mail.png)
 
-You can easily modify settings or add new using JSON-like setting fields configuration by clicking on the Edit action.
+You can easily modify settings or add new ones using JSON-like setting fields configuration by clicking on the Edit action.
 ```json
 {
     "fields": {
@@ -109,7 +109,7 @@ Built-in field types are
 - image (voyager type image) 
 - media (image file, using laravel medialibrary package)
 - route (returns URL using route name)
-  
+- section (don't has value, used just for visual separation of field groups)  
  
 
 ## Security
