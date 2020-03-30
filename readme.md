@@ -12,7 +12,7 @@ Using this package you can rapidly and easily build small and medium-size scale 
 - Basic Page management module, including systems pages.
 - Basic SEO implementation - Seo title, Meta Description and Meta Keywords parameters.
 - Breadcrumbs implementation. 
-- Flexible Block / Widget management module, to build parts of your pages.
+- Flexible Block / Widget management module, to build parts of your site pages.
 - Page layout construction using flexible Blocks/Widgets. 
 - Form management system, including AJAX sending.
 - Localizations from DB table, where you can easily keep and manage your translations.
@@ -42,19 +42,29 @@ $ php artisan vendor:publish --provider="MonstreX\VoyagerSite\VoyagerSiteService
 
 ## Usage
 
-To be published.
+### Config file
 
-## Change log
+- **route_home_page** - Route name for Home Page ('home' by default).
+- **default_model_table** - Default model table name to find records ('pages' by default).
+- **default_slug_field** - Default slug field name ('slug' by default).
+- **use_legacy_error_handler** - If _false_ will be used voyager-site 404 error handler. 
+- **template** - Root folder name where stored view template files ('template' by default).
+- **template_master** - Master template name ('layouts.master' by default).
+- **template_layout** - Main Layout Template name ('layouts.main' by default).
+- **template_page** - Page template name ('pages.page' by default).  
 
-Please see the [changelog](changelog.md) for more information on what has changed recently.
+### Site Settings 
 
-## Testing
+Site settings is a flexible and extendable easy to use settings subsystem integrated in the package. 
+You can use and modify exist settings and group and add you own group and settings.
+To retrieve certain setting you may use helper function:
+```php
+$mail = site_setting('mail.to_address');
+```  
 
-Not implemented yet
 
-## Contributing
 
-Please see [contributing.md](contributing.md) for details and a todolist.
+ 
 
 ## Security
 

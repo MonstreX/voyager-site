@@ -3,7 +3,7 @@
 return [
 
     /*
-     * Route name for Home Page
+     * Route for Home Page
      */
     'route_home_page' => 'home',
 
