@@ -61,6 +61,9 @@ To retrieve certain setting you may use helper function:
 ```php
 $mail = site_setting('mail.to_address');
 ```  
+> Some of the site settings used by internal package functions and override Laravel .env settings.
+
+In the site settings built-in SMTP mail parameters and the mail sending test function.
 
 
 
