@@ -69,7 +69,47 @@ $mail = site_setting('mail.to_address');
 The settings have built-in SMTP mail parameters and the mail sending test function.
 ![Site settings - Mail](/docs/images/settings-mail.png)
 
+You can easily modify settings or add new using JSON-like setting fields configuration by clicking on the Edit action.
+```json
+{
+    "fields": {
+        "to_address": {
+            "label": "Default address for site emails",
+            "type": "text",
+            "value": "destination@example.com",
+            "class": "col-md-12"
+        },
+        "section_smtp": {
+            "type": "section",
+            "icon": "voyager-mail",
+            "label": "E-Mail transport"
+        },
+        "driver": {
+            "label": "Mail driver",
+            "type": "dropdown",
+            "value": "smtp",
+            "options": {
+                "smtp": "SMTP",
+                "mailgun": "MAILGUN"
+            },
+            "class": "col-md-12"
+        }
+    }
+}
+```
+Built-in field types are
 
+- text
+- number
+- textarea
+- rich_text_box (tinyMCE editor)
+- code_editor (ACE Code Editor)
+- checkbox
+- radio
+- image (voyager type image) 
+- media (image file, using laravel medialibrary package)
+- route (returns URL using route name)
+  
  
 
 ## Security
