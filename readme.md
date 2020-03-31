@@ -171,7 +171,17 @@ class PagesController extends Controller
 }
 ```
 
+What the example does:
 
+- Find in default (or given) model the certain record (using 'slug' field by default).
+If you use (int) value then it'll be found by ID field. If a record is not found or the record has empty (null) **status** field then it'll throw an exception 404.
+- Create a VPage instance and initialize the instance with a Page Data: 
+  - Founded model object.
+  - Site settings.
+  - Initialized breadcrumbs.
+  - Initialized SEO parameters (seo title, meta description, meta keywords).
+  - Attach data sources, if **details** field has data sources descriptions.
+- Render page using default (or given) View.      
 
 
  
