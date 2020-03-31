@@ -120,6 +120,60 @@ The package provides DB-like localization storage for all strings you need to lo
 Just add language columns to the storage and it'll be used instead a localization in files.  
 
 ![Localizations](/docs/images/localizations.png) 
+
+
+### Pages
+
+The VPage module allows you manage basic pages on your site. 
+You can easily find and prepare any page and its related attributes - like SEO data, breadcrumbs and data sources and then send this data collection to a view.
+It can be used by two ways: implementing the **PageTrait** class into your controller or using the facade **VPage**.
+Look for the examples:
+
+The threat way:
+```php
+namespace App\Http\Controllers;
+
+use MonstreX\VoyagerSite\Traits\PageTrait;
+
+class PagesController extends Controller
+{
+    use PageTrait;
+
+    public function home()
+    {
+
+        $this->create('home');
+
+        return $this->view();
+
+    }
+}
+```
+
+The facade way:
+```php
+namespace App\Http\Controllers;
+
+use MonstreX\VoyagerSite\Traits\PageTrait;
+
+use VSite, VPage, VData;
+
+class PagesController extends Controller
+{
+    public function home()
+    {
+
+        VPage::create(VData::find('home'), VSite::getSettings());
+
+        return VPage::view();
+
+    }
+}
+```
+
+
+
+
  
 
 ## Security
