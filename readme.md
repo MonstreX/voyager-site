@@ -111,6 +111,14 @@ Built-in field types are
 - route (returns URL using route name)
 - section (don't has value, used just for visual separation of field groups)  
  
+ 
+### Localizations
+
+The package provides DB-like localization storage for all strings you need to localize. 
+Just add language columns to the storage and it'll be used instead a localization in files.  
+
+![Localizations](/docs/images/localizations.png) 
+ 
 
 ## Security
 
