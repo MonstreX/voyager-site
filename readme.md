@@ -11,10 +11,12 @@ Using this package you can rapidly and easily build small and medium-size scale 
 
 - Basic Page management module, including systems pages.
 - Basic SEO implementation - Seo title, Meta Description and Meta Keywords parameters.
-- Breadcrumbs implementation. 
+- Breadcrumbs implementation.
 - Flexible Block / Widget management module, to build parts of your site pages.
-- Page layout construction using flexible Blocks/Widgets. 
 - Form management system, including AJAX sending.
+- [Liquid template](https://packagist.org/packages/liquid/liquid) subsystem for blocks/widgets and forms.
+- Page layout construction using flexible Blocks/Widgets. 
+- [Shortcodes](https://github.com/webwizo/laravel-shortcodes) integrated.
 - Localizations from DB table, where you can easily keep and manage your translations.
 - Advanced site settings module, including mail smtp settings and a mail sending test out of the box.
 
