@@ -180,7 +180,7 @@ If you use (int) value then it'll be found by ID field. If a record is not found
   - Site settings.
   - Initialized breadcrumbs.
   - Initialized SEO parameters (seo title, meta description, meta keywords).
-  - Attach data sources, if **details** field has data sources descriptions.
+  - Attached data sources, if **details** field has data sources descriptions.
 - Render page using default (or given) View.      
 
 
