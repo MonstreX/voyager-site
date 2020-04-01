@@ -213,7 +213,7 @@ class VoyagerPage implements VoyagerPageContract
     /*
      *  Returns rendered VIEW using PAGE Vars
      */
-    public function view($template_layout = null)
+    public function view($template_layout = null, $data = null)
     {
 
         // If layout template not present in params
@@ -232,7 +232,8 @@ class VoyagerPage implements VoyagerPageContract
                 'title' => $this->getSeoTitle(),
                 'description' => $this->getSeoDescription(),
                 'keywords' => $this->getSeoKeywords(),
-            ]
+            ],
+            'data' => $data,
         ])->render();
     }
 

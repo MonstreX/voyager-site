@@ -6,20 +6,28 @@ use VPage, VData, VSite;
 trait PageTrait
 {
 
-    protected $page;
-
     /*
      * Init Page Instance
      */
     public function create($alias, string $modelSlug = null, bool $fail = true)
     {
-        $this->page = VPage::create(VData::find($alias, $modelSlug, $fail), VSite::getSettings());
+        return VPage::create(VData::find($alias, $modelSlug, $fail), VSite::getSettings());
     }
 
-
-    public function view($templateLayout = null)
+    /*
+     * Find a record
+     */
+    public function find($alias, string $modelSlug = null, bool $fail = true)
     {
-        return VPage::view($templateLayout);
+        return VData::find($alias, $modelSlug, $fail);
+    }
+
+    /*
+     * Render the Page
+     */
+    public function view($templateLayout = null, $data = null)
+    {
+        return VPage::view($templateLayout, $data);
     }
 
 }

@@ -173,15 +173,31 @@ class PagesController extends Controller
 
 What the example does:
 
-- Find in default (or given) model the certain record (using 'slug' field by default).
+- Finds in default (or given) model the certain record (using 'slug' field by default).
 If you use (int) value then it'll be found by ID field. If a record is not found or the record has empty (null) **status** field then it'll throw an exception 404.
-- Create a VPage instance and initialize the instance with a Page Data: 
+- Creates a VPage instance and initialize the instance with a Page Data: 
   - Founded model object.
   - Site settings.
   - Initialized breadcrumbs.
   - Initialized SEO parameters (seo title, meta description, meta keywords).
   - Attached data sources, if **details** field has data sources descriptions.
-- Render page using default (or given) View.      
+- Renders page using default (or given) View.      
+
+
+Available variables in the View:
+
+```php
+$template_master     // Master template name (to extend View)
+$template_page       // Internal page template name
+$breadcrumbs         // Breadcrumbs array
+$title               // Page title
+$page                // Page record 
+$page_data_sets      // Data sources attached to the Page
+$seo['title']        // Seo Title
+$seo['description']  // Meta Description
+$seo['keywords']     // Meta Keywords
+$data                // Additional given data
+```
 
 
  
