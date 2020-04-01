@@ -147,6 +147,24 @@ class PagesController extends Controller
         return $this->view();
 
     }
+    
+    public function show($alias)
+    {
+
+        $this->create($alias);
+
+        return $this->view();
+
+    }
+    
+    public function showArticle($alias)
+    {
+
+        $this->create($alias,'articles');
+
+        return $this->view('layout.article', ['vars' => $some_vars]);
+
+    }
 }
 ```
 
@@ -165,7 +183,7 @@ class PagesController extends Controller
 
         VPage::create(VData::find('home'), VSite::getSettings());
 
-        return VPage::view();
+        return VPage::view(); 
 
     }
 }
