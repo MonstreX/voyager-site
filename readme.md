@@ -223,6 +223,8 @@ It is a subsystem to retrieve additional data necessary to use on a certain page
 The data are different record collections from different models.  
 To use it you need having **details** field in your model, the record of that filled up with a certain JSON data structure:
 
+> Note: the attached data defined in JSON structure will load automatically during a call the **create** method. 
+
 ```json
 {
     "data_sources": {
@@ -261,7 +263,7 @@ And in your View template you can easily use it like this:
 > Note: this type of the JSON data structure also uses in Block/Widget subsystems.
 
 
-### Overrides default templates on the page
+### Override default templates on the page
 
 You may want to override default template names on a certain page. 
 To do this define new template names in **details** field:
