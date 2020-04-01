@@ -129,7 +129,7 @@ You can easily find and prepare any page and its related attributes - like SEO d
 It can be used by two ways: implementing the **PageTrait** class into your controller or using the facade **VPage**.
 Look for the examples:
 
-The threat way:
+Example #1:
 ```php
 namespace App\Http\Controllers;
 
@@ -168,7 +168,7 @@ class PagesController extends Controller
 }
 ```
 
-The facade way:
+Example #2:
 ```php
 namespace App\Http\Controllers;
 
@@ -217,8 +217,44 @@ $seo['keywords']     // Meta Keywords
 $data                // Additional given data
 ```
 
+### Page Data Sets
 
- 
+It is a subsystem to retrieve additional data necessary to use on a certain page. 
+The data are different record collections from different models.  
+To use it you need having **details** field in your model, the record of that filled up with a certain JSON data structure:
+
+```json
+{
+    "data_sources": {
+        "articles": {
+            "model": "Article",
+            "where": {
+              "status": 1
+            }
+        },
+        "services": {
+            "model": "Service",
+            "where": {
+                "status": 1,
+                "featured": 0,
+                "type": "main"
+            },
+            "with": [
+              "category",
+              "country"
+            ],
+            "order" : {
+                "field" : "order",
+                "direction" : "asc"
+            }                 
+        }
+    }
+}
+``` 
+
+
+
+
 
 ## Security
 

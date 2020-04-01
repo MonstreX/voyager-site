@@ -87,15 +87,15 @@ class VoyagerData implements VoyagerDataContract
         }
 
         // Only with status = 1
-        $data = $data->where("status",1);
+        //$data = $data->where("status", 1);
 
-        // Find By Field
-        if(isset($data_source->where)) {
-            $data = $data->where($data_source->where->field, $data_source->where->value);
+        // Preload relations
+        if(isset($data_source->with)) {
+            $data = $data->with($data_source->with);
         }
 
         // Multiple Where Array
-        if(isset($data_source->where_array)) {
+        if(isset($data_source->where)) {
             foreach ($data_source->where_array as $key => $value) {
                 $data = $data->where($key, $value);
             }
