@@ -269,7 +269,7 @@ You may want to override default template names on a certain page.
 To do this define new template names in **details** field:
 ```json
 {
-  "template": "template.folder",
+  "template": "my-theme",
   "template_master": "layout.master",
   "template_layout": "layout.main",
   "template_page": "pages.contacts"
