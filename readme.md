@@ -258,7 +258,7 @@ And in your View template you can easily use it like this:
 @endforeach
 ```
 
-
+> Note: this type of the JSON data structure also uses in Block/Widget subsystems.
 
 
 ## Security
