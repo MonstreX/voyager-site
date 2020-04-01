@@ -251,7 +251,12 @@ To use it you need having **details** field in your model, the record of that fi
     }
 }
 ``` 
-
+And in your View template you can easily use it like this:
+```blade
+@foreach($page_data_sets['articles'] as $article)
+    <h2>{{ $article['title'] }}</h2>
+@endforeach
+```
 
 
 
