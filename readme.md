@@ -261,6 +261,25 @@ And in your View template you can easily use it like this:
 > Note: this type of the JSON data structure also uses in Block/Widget subsystems.
 
 
+### Overrides default templates on the page
+
+You may want to override default template names on a certain page. 
+To do this define new template names in **details** field:
+```json
+{
+  "template": "template.folder",
+  "template_master": "layout.master",
+  "template_layout": "layout.main",
+  "template_page": "pages.contacts"
+}
+```
+ 
+
+### SEO on the page
+
+
+
+
 ## Security
 
 If you discover any security related issues, please email author email instead of using the issue tracker.
