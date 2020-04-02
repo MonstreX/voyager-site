@@ -82,6 +82,12 @@ interface VoyagerPage
      */
     public function addBreadcrumbs($label, $url = '#');
 
+
+    /**
+     * @return mixed
+     */
+    public function getBreadcrumbs();
+
     /**
      * @param null $template_layout
      * @return mixed

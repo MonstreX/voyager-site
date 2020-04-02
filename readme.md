@@ -299,7 +299,13 @@ site setting **seo.meta_keywords**.
 
 ### Page Breadcrumbs
 
+When you call the Page **create** method it adds the first element to the **Breadcrumbs** array.
 
+How sets the first breadcrumb element:
+```php
+addBreadcrumbs(__('site.breadcrumb_home'), route(config('voyager-site.route_home_page')));
+``` 
+To add other elements to the **Breadcrumbs** array just use the method **VPage::addBreadcrumbs($title, $path)** 
 
 
 

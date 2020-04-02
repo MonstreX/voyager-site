@@ -213,6 +213,14 @@ class VoyagerPage implements VoyagerPageContract
     }
 
     /*
+     * Returns Breadcrumbs array
+     */
+    public function getBreadcrumbs()
+    {
+        return $this->breadcrumbs;
+    }
+
+    /*
      *  Returns rendered VIEW using PAGE Vars
      */
     public function view($template_layout = null, $data = null)
