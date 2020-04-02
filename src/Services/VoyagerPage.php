@@ -50,12 +50,7 @@ class VoyagerPage implements VoyagerPageContract
      */
     public function getSeoTitle()
     {
-        $title = $this->seoTitle;
-        if ($this->settings['seo_title_template']) {
-            $title = str_replace('%site_title%', $this->settings['site_title'], $this->settings['seo_title_template']);
-            $title = str_replace('%seo_title%', $this->seoTitle, $title);
-        }
-        return $title;
+        return $this->seoTitle;
     }
 
     /*
@@ -174,6 +169,13 @@ class VoyagerPage implements VoyagerPageContract
             $settings['seo_title'],
             $settings['site_title']
         ]);
+
+        // Apply template if present
+        if ($this->settings['seo_title_template']) {
+            $title = str_replace('%site_title%', $this->settings['site_title'], $this->settings['seo_title_template']);
+            $title = str_replace('%seo_title%', $this->seoTitle, $title);
+            $this->seoTitle = $title;
+        }
 
         // DESCRIPTION
         $this->metaDescription = get_first_not_empty([

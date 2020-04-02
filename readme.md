@@ -277,7 +277,17 @@ To do this define new template names in **details** field:
 ```
  
 
-### SEO on the page
+### Page SEO parameters
+
+SEO parameters are generated inside the **create** Page method. By default:
+
+**SEO Title** - from the page seo fields group if an appropriate field is not empty, 
+otherwise checks field **Title**,  if the field is not present then  checks a 
+site setting **seo.seo_title**, if the setting is empty then takes value from 
+site setting **general.site_title**. And at last the given value passed through seo title template -
+**seo.seo_title_template**. You can override the **SEO Title** value with method **VPage::setSeoTitle('new title')**.
+
+
 
 
 
