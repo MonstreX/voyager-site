@@ -284,8 +284,20 @@ SEO parameters are generated inside the **create** Page method. By default:
 **SEO Title** - from the page seo fields group if an appropriate field is not empty, 
 otherwise checks field **Title**,  if the field is not present then  checks a 
 site setting **seo.seo_title**, if the setting is empty then takes value from 
-site setting **general.site_title**. And at last the given value passed through seo title template -
-**seo.seo_title_template**. You can override the **SEO Title** value with method **VPage::setSeoTitle('new title')**.
+site setting **general.site_title**. And at last the given value passed through seo title template site setting -
+**seo.seo_title_template**. 
+> You can override the **SEO Title** value with method **VPage::setSeoTitle('new title')**.
+
+**META Description** - from the page seo fields group if an appropriate field is not empty, otherwise checks a 
+site setting **seo.meta_description**, if the setting is empty then takes value from site setting **general.site_description**.
+> You can override the **META Description** value with method **VPage::setMetaDescription('new description')**.
+
+**META Keywords** - from the page seo fields group if an appropriate field is not empty, otherwise checks a 
+site setting **seo.meta_keywords**.
+> You can override the **META Keywords** value with method **VPage::setMetaKeywords('new keywords')**.
+
+
+### Page Breadcrumbs
 
 
 
