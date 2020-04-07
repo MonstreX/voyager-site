@@ -308,6 +308,17 @@ addBreadcrumbs(__('site.breadcrumb_home'), route(config('voyager-site.route_home
 To add other elements to the **Breadcrumbs** array just use the method **VPage::addBreadcrumbs($title, $path)** 
 
 
+### Blocks / Widgets
+
+Blocks / Widgets is a flexible subsystem provides your a way to implement and organize additional content parts and include them into your page.  
+
+
+### Forms
+
+
+
+### Modules API 
+
 
 
 ## Security

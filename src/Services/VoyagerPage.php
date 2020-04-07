@@ -247,4 +247,5 @@ class VoyagerPage implements VoyagerPageContract
         ])->render();
     }
 
+
 }

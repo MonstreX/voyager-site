@@ -6,6 +6,7 @@ namespace MonstreX\VoyagerSite\Services;
 use MonstreX\VoyagerSite\Contracts\VoyagerData as VoyagerDataContract;
 use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Facades\Voyager;
+use Schema;
 
 class VoyagerData implements VoyagerDataContract
 {
@@ -18,6 +19,7 @@ class VoyagerData implements VoyagerDataContract
         if (is_int($alias)) {
             return $this->where('id', $alias, $modelSlug, $fail);
         }
+
         return $this->where('slug', $alias, $modelSlug, $fail);
     }
 
@@ -35,8 +37,10 @@ class VoyagerData implements VoyagerDataContract
         $dataType = Voyager::model('DataType')->where('slug', '=', $modelSlug)->first();
 
         if ($dataType) {
+
             $model = app($dataType->model_name);
             $data = $model::where($field, $value)->first();
+
         } else {
 
             $model = app(config('voyager.models.namespace').$modelSlug);
@@ -56,6 +60,10 @@ class VoyagerData implements VoyagerDataContract
             }
 
             abort(404);
+        }
+
+        if (Voyager::translatable($data)) {
+            $data->load('translations');
         }
 
         return $data;
@@ -104,6 +112,11 @@ class VoyagerData implements VoyagerDataContract
         // Make Collection
         $data_records = $data->get();
 
+        // Translate if required
+        if (Voyager::translatable($data)) {
+            $data->load('translations');
+        }
+
         // Limitation
         if(isset($data_source->limit)) {
             $data_records = collect($data_records);
@@ -114,4 +127,59 @@ class VoyagerData implements VoyagerDataContract
 
         return $data_records;
     }
+
+
+    /*
+     * Get Tree Menu Items
+     */
+    public function getMenu(string $modelSlug = null, array $parent = null)
+    {
+
+        if (!$modelSlug) {
+            // Default mode is a Page
+            $modelSlug = config('voyager-site.default_model_table');
+        }
+
+        $dataType = Voyager::model('DataType')->where('slug', '=', $modelSlug)->first();
+
+        if ($dataType) {
+            $model = app($dataType->model_name);
+        } else {
+            $model = app(config('voyager.models.namespace').$modelSlug);
+        }
+
+        // Check if it tree model
+        if (!Schema::hasColumn($model->getTable(), 'parent_id')) {
+            return null;
+        }
+
+        $menu_items = flat_to_tree($model::all()->toArray());
+
+        if ($parent) {
+            $menu_items = [$this->getChildren($menu_items, $parent)];
+        }
+
+        return $menu_items;
+    }
+
+    /*
+     * Get Children Tree Menu Items
+     */
+    private function getChildren($items, $parent)
+    {
+        foreach ($items as $key => $item) {
+            if ($item[$parent['field']] === $parent['value']) {
+                return $item;
+            }
+
+            if (isset($item['children'])) {
+                if ($result = $this->getChildren($item['children'], $parent)) {
+                    return $result;
+                }
+            }
+        }
+    }
+
+
+
 }
