@@ -311,6 +311,63 @@ To add other elements to the **Breadcrumbs** array just use the method **VPage::
 ### Blocks / Widgets
 
 Blocks / Widgets is a flexible subsystem provides your a way to implement and organize additional content parts and include them into your page.  
+Each block has the follow structure:
+
+**Status** - If disabled the block will be ignored.
+
+**Title** - Visible only in admin panel.
+
+**Block key** - A key (slug) using to find and render this block.
+
+**Region position** - Used for grouping blocks and then render them as a group in certain order. 
+Available positions can be edited in the **Regions** menu.
+
+**Block content** - Main block content. You can use as pure HTML code or as a [Liquid template](https://packagist.org/packages/liquid/liquid).
+Available variables:
+- **images** - holds images items listed bellow. 
+- **data** - Data sources if defined in **Options** field.
+
+Example #1 (usage of image list):
+```html
+<h3>My images</h3>
+<div class="images-list">
+{% for image in images %}
+  <img src="{{ image.url | crop: 300,200 | url }}" alt=""/>
+{% endfor %}
+</div>
+```
+Where **image.url** represent relative URL of image. **Crop** filter - crop and store (if not stored yet) the image with given sizes.
+-**url** filter - makes full url from the relative one. 
+**image.full_url** - Full url of the image.
+**image.props.*** - Custom image properties.
+
+Example #2 (usage data sources):
+```html
+<h3>Articles Block</h3>
+<ul>
+{% for article in data.articles %}
+  <li>{{ article.title }}</li>
+{% endfor %}
+</ul>
+```
+For this kind of template you need to define **data sources** JSON-like structure in the **options** field:
+```json
+{
+    "data_sources": {
+        "articles": {
+            "model": "Article",
+            "where": {
+                "field": "satus",
+                "value": 1
+            },
+            "order" : {
+                "field" : "order",
+                "direction" : "asc"
+            }                 
+        }
+    }
+}
+```
 
 
 ### Forms
