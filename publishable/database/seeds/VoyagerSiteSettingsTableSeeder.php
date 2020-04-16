@@ -23,13 +23,13 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                 'site_title' => [
                     'label' => __('voyager-site::seeders.settings.general.site_title'),
                     'type' => 'text',
-                    'value' => '',
+                    'value' => __('voyager-site::seeders.settings.general.site_title_value'),
                     'class' => 'col-md-12',
                 ],
                 'site_description' => [
                     'label' => __('voyager-site::seeders.settings.general.site_description'),
                     'type' => 'text',
-                    'value' => '',
+                    'value' => __('voyager-site::seeders.settings.general.site_description_value'),
                     'class' => 'col-md-12',
                 ],
                 //-
@@ -41,19 +41,19 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                 'site_home_page' => [
                     'label' => __('voyager-site::seeders.settings.general.site_home_page'),
                     'type' => 'number',
-                    'value' => '',
+                    'value' => "1",
                     'class' => 'col-md-12',
                 ],
                 'site_403_page' => [
                     'label' => __('voyager-site::seeders.settings.general.site_403_page'),
                     'type' => 'number',
-                    'value' => '',
+                    'value' => "1",
                     'class' => 'col-md-12',
                 ],
                 'site_404_page' => [
                     'label' => __('voyager-site::seeders.settings.general.site_404_page'),
                     'type' => 'number',
-                    'value' => '',
+                    'value' => "2",
                     'class' => 'col-md-12',
                 ],
                 //-
@@ -65,7 +65,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                 'site_app_name' => [
                     'label' => __('voyager-site::seeders.settings.general.site_app_name'),
                     'type' => 'text',
-                    'value' => '',
+                    'value' => __('voyager-site::seeders.settings.general.site_app_name_value'),
                     'class' => 'col-md-12',
                 ],
                 'site_debug_mode' => [
@@ -95,19 +95,19 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                 'to_address' => [
                     'label' => __('voyager-site::seeders.settings.mail.to_address'),
                     'type' => 'text',
-                    'value' => '',
+                    'value' => __('voyager-site::seeders.settings.mail.to_address_value'),
                     'class' => 'col-md-12',
                 ],
                 'from_name' => [
                     'label' => __('voyager-site::seeders.settings.mail.from_name'),
                     'type' => 'text',
-                    'value' => '',
+                    'value' => __('voyager-site::seeders.settings.mail.from_name_value'),
                     'class' => 'col-md-12',
                 ],
                 'from_address' => [
                     'label' => __('voyager-site::seeders.settings.mail.from_address'),
                     'type' => 'text',
-                    'value' => '',
+                    'value' => __('voyager-site::seeders.settings.mail.from_address_value'),
                     'class' => 'col-md-12',
                 ],
                 'section_smtp' => [
@@ -140,13 +140,13 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                 'username' => [
                     'label' => __('voyager-site::seeders.settings.mail.username'),
                     'type' => 'text',
-                    'value' => '',
+                    'value' => 'username',
                     'class' => 'col-md-12',
                 ],
                 'password' => [
                     'label' => __('voyager-site::seeders.settings.mail.password'),
                     'type' => 'text',
-                    'value' => '',
+                    'value' => 'password',
                     'class' => 'col-md-12',
                 ],
                 'encryption' => [

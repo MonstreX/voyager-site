@@ -13,6 +13,11 @@ use Route;
 use MonstreX\VoyagerSite\Facades;
 use MonstreX\VoyagerSite\Models\SiteSetting as Settings;
 use MonstreX\VoyagerSite\Models\Localization;
+use MonstreX\VoyagerSite\Services\VoyagerSite;
+use MonstreX\VoyagerSite\Services\VoyagerBlock;
+use MonstreX\VoyagerSite\Services\VoyagerPage;
+use MonstreX\VoyagerSite\Services\VoyagerData;
+
 use Config;
 use Shortcode;
 use VBlock;
