@@ -2,10 +2,7 @@
 
 namespace MonstreX\VoyagerSite;
 
-use App\Exceptions\Handler;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Route;
@@ -82,7 +79,7 @@ class VoyagerSiteServiceProvider extends ServiceProvider
      */
     private function registerPublishableResources()
     {
-        $this->publishes([dirname(__DIR__).'/publishable/config/voyager-site.php' => config_path('voyager-site.php')]);
+        $this->publishes([dirname(__DIR__).'/publishable/config/voyager-site.php' => config_path('voyager-site.php')],'config');
 
         $publishablePath = dirname(__DIR__).'/publishable';
 
