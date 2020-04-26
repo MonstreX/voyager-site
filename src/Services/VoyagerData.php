@@ -1,12 +1,14 @@
 <?php
 
 
-namespace MonstreX\VoyagerSite;
+namespace MonstreX\VoyagerSite\Services;
 
+use MonstreX\VoyagerSite\Contracts\VoyagerData as VoyagerDataContract;
 use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Facades\Voyager;
+use Schema;
 
-class VoyagerData
+class VoyagerData implements VoyagerDataContract
 {
 
     /*
@@ -17,6 +19,7 @@ class VoyagerData
         if (is_int($alias)) {
             return $this->where('id', $alias, $modelSlug, $fail);
         }
+
         return $this->where('slug', $alias, $modelSlug, $fail);
     }
 
@@ -34,8 +37,10 @@ class VoyagerData
         $dataType = Voyager::model('DataType')->where('slug', '=', $modelSlug)->first();
 
         if ($dataType) {
+
             $model = app($dataType->model_name);
             $data = $model::where($field, $value)->first();
+
         } else {
 
             $model = app(config('voyager.models.namespace').$modelSlug);
@@ -55,6 +60,10 @@ class VoyagerData
             }
 
             abort(404);
+        }
+
+        if (Voyager::translatable($data)) {
+            $data->load('translations');
         }
 
         return $data;
@@ -86,15 +95,15 @@ class VoyagerData
         }
 
         // Only with status = 1
-        $data = $data->where("status",1);
+        //$data = $data->where("status", 1);
 
-        // Find By Field
-        if(isset($data_source->where)) {
-            $data = $data->where($data_source->where->field, $data_source->where->value);
+        // Preload relations
+        if(isset($data_source->with)) {
+            $data = $data->with($data_source->with);
         }
 
         // Multiple Where Array
-        if(isset($data_source->where_array)) {
+        if(isset($data_source->where)) {
             foreach ($data_source->where_array as $key => $value) {
                 $data = $data->where($key, $value);
             }
@@ -102,6 +111,11 @@ class VoyagerData
 
         // Make Collection
         $data_records = $data->get();
+
+        // Translate if required
+        if (Voyager::translatable($data)) {
+            $data->load('translations');
+        }
 
         // Limitation
         if(isset($data_source->limit)) {
@@ -113,4 +127,59 @@ class VoyagerData
 
         return $data_records;
     }
+
+
+    /*
+     * Get Tree Menu Items
+     */
+    public function getMenu(string $modelSlug = null, array $parent = null)
+    {
+
+        if (!$modelSlug) {
+            // Default mode is a Page
+            $modelSlug = config('voyager-site.default_model_table');
+        }
+
+        $dataType = Voyager::model('DataType')->where('slug', '=', $modelSlug)->first();
+
+        if ($dataType) {
+            $model = app($dataType->model_name);
+        } else {
+            $model = app(config('voyager.models.namespace').$modelSlug);
+        }
+
+        // Check if it tree model
+        if (!Schema::hasColumn($model->getTable(), 'parent_id')) {
+            return null;
+        }
+
+        $menu_items = flat_to_tree($model::all()->toArray());
+
+        if ($parent) {
+            $menu_items = [$this->getChildren($menu_items, $parent)];
+        }
+
+        return $menu_items;
+    }
+
+    /*
+     * Get Children Tree Menu Items
+     */
+    private function getChildren($items, $parent)
+    {
+        foreach ($items as $key => $item) {
+            if ($item[$parent['field']] === $parent['value']) {
+                return $item;
+            }
+
+            if (isset($item['children'])) {
+                if ($result = $this->getChildren($item['children'], $parent)) {
+                    return $result;
+                }
+            }
+        }
+    }
+
+
+
 }

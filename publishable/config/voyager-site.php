@@ -3,12 +3,12 @@
 return [
 
     /*
-     * Route name for Home Page
+     * Route for Home Page
      */
     'route_home_page' => 'home',
 
     /*
-     * Default model table name
+     * Default model table name to find records
      */
     'default_model_table' => 'pages',
 
@@ -17,12 +17,10 @@ return [
      */
     'default_slug_field' => 'slug',
 
-
     /*
-     * Error Handling
+     * If false will use voyager-site 404 error handler
      */
     'use_legacy_error_handler' => false,
-
 
     /*
      *  Name of the Template

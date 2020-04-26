@@ -294,7 +294,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'delete'       => 1,
                 'order'        => 10,
                 'details'      => [
-                    'input_accept' => 'image\*,.pdf,.zip,.js,.html,.doc,.xsxl',
+                    'input_accept' => 'image/*,.pdf,.zip,.js,.html,.doc,.xsxl',
                     'extra_fields' => [
                         'subtitle' => [
                             'type' => 'text',
@@ -573,7 +573,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'required'     => 0,
                 'browse'       => 1,
                 'read'         => 1,
-                'edit'         => 0,
+                'edit'         => 1,
                 'add'          => 0,
                 'delete'       => 0,
                 'order'        => 8,
@@ -840,9 +840,6 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
 
 
-
-
-
         /*
          *  PAGES
          */
@@ -911,7 +908,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'type'         => 'checkbox',
                 'display_name' => __('voyager-site::seeders.data_rows.show_in_menu'),
                 'required'     => 0,
-                'browse'       => 1,
+                'browse'       => 0,
                 'read'         => 1,
                 'edit'         => 1,
                 'add'          => 1,
@@ -1015,6 +1012,9 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'add'          => 1,
                 'delete'       => 1,
                 'order'        => 8,
+                'details'      => [
+                    'tab_title' => __('voyager-site::seeders.data_rows.tab_images'),
+                ]
             ])->save();
         }
 
@@ -1033,6 +1033,30 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
             ])->save();
         }
 
+
+        $dataRow = $this->dataRow($pageDataType, 'layout');
+        if (!$dataRow->exists) {
+            $dataRow->fill([
+                'type'         => 'adv_page_layout',
+                'display_name' => __('voyager-site::seeders.data_rows.layout'),
+                'required'     => 0,
+                'browse'       => 0,
+                'read'         => 1,
+                'edit'         => 1,
+                'add'          => 1,
+                'delete'       => 1,
+                'order'        => 10,
+                'details'      => [
+                    'tab_title' => __('voyager-site::seeders.data_rows.tab_layout'),
+                    'layout_fields' => [
+                        'content' => __('voyager-site::seeders.data_rows.content'),
+                    ],
+                    'block_model' => 'MonstreX\\VoyagerSite\\Models\\Block',
+                    'form_model' => 'MonstreX\\VoyagerSite\\Models\\Form',
+                ],
+            ])->save();
+        }
+
         $dataRow = $this->dataRow($pageDataType, 'seo');
         if (!$dataRow->exists) {
             $dataRow->fill([
@@ -1044,8 +1068,9 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'edit'         => 1,
                 'add'          => 1,
                 'delete'       => 1,
-                'order'        => 10,
+                'order'        => 11,
                 'details'      => [
+                    'tab_title' => __('voyager-site::seeders.data_rows.tab_seo'),
                     'fields'   => [
                         'seo_title' => [
                             'label' => __('voyager-site::seeders.data_rows.seo_title'),
@@ -1075,8 +1100,9 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'edit'         => 1,
                 'add'          => 1,
                 'delete'       => 1,
-                'order'        => 10,
+                'order'        => 12,
                 'details'      => [
+                    'tab_title' => __('voyager-site::seeders.data_rows.tab_options'),
                     'language' => 'json',
                     'theme'    => 'github',
                 ],
@@ -1094,7 +1120,10 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'edit'         => 1,
                 'add'          => 1,
                 'delete'       => 1,
-                'order'        => 11,
+                'order'        => 13,
+                'details'      => [
+                    'tab_title' => __('voyager-site::seeders.data_rows.tab_attributes'),
+                ],
             ])->save();
         }
 
@@ -1106,10 +1135,10 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'required'     => 0,
                 'browse'       => 1,
                 'read'         => 1,
-                'edit'         => 0,
+                'edit'         => 1,
                 'add'          => 0,
                 'delete'       => 0,
-                'order'        => 12,
+                'order'        => 14,
                 'details'      => [
                     'browse_align' => 'right',
                     'browse_width' => '110px',
@@ -1130,9 +1159,10 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'edit'         => 0,
                 'add'          => 0,
                 'delete'       => 0,
-                'order'        => 13,
+                'order'        => 15,
             ])->save();
         }
+
 
 
 

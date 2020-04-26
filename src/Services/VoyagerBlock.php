@@ -1,11 +1,12 @@
 <?php
 
 
-namespace MonstreX\VoyagerSite;
+namespace MonstreX\VoyagerSite\Services;
 
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\MessageBag;
 
+use MonstreX\VoyagerSite\Contracts\VoyagerBlock as VoyagerBlockContract;
 use MonstreX\VoyagerSite\Models\Block;
 use MonstreX\VoyagerSite\Models\Form;
 use MonstreX\VoyagerSite\Models\BlockRegion;
@@ -14,7 +15,7 @@ use VSite;
 use VData;
 use Shortcode;
 
-class VoyagerBlock
+class VoyagerBlock implements VoyagerBlockContract
 {
 
     protected CONST EXCEPT = 0;

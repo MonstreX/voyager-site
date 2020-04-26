@@ -24,6 +24,7 @@ class CreateSitePagesTable extends Migration
             $table->text('content')->nullable();
             $table->string('image')->nullable();
             $table->string('images')->nullable();
+            $table->text('layout')->nullable();
             $table->integer('order')->unsigned()->nullable();
             $table->text('seo')->nullable();
             $table->text('details')->nullable();

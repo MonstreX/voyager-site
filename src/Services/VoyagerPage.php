@@ -1,12 +1,13 @@
 <?php
 
 
-namespace MonstreX\VoyagerSite;
+namespace MonstreX\VoyagerSite\Services;
 
+use MonstreX\VoyagerSite\Contracts\VoyagerPage as VoyagerPageContract;
 use Illuminate\Database\Eloquent\Model;
 use VSite, VData;
 
-class VoyagerPage
+class VoyagerPage implements VoyagerPageContract
 {
 
     // Settings
@@ -49,12 +50,7 @@ class VoyagerPage
      */
     public function getSeoTitle()
     {
-        $title = $this->seoTitle;
-        if ($this->settings['seo_title_template']) {
-            $title = str_replace('%site_title%', $this->settings['site_title'], $this->settings['seo_title_template']);
-            $title = str_replace('%seo_title%', $this->seoTitle, $title);
-        }
-        return $title;
+        return $this->seoTitle;
     }
 
     /*
@@ -174,6 +170,13 @@ class VoyagerPage
             $settings['site_title']
         ]);
 
+        // Apply template if present
+        if ($this->settings['seo_title_template']) {
+            $title = str_replace('%site_title%', $this->settings['site_title'], $this->settings['seo_title_template']);
+            $title = str_replace('%seo_title%', $this->seoTitle, $title);
+            $this->seoTitle = $title;
+        }
+
         // DESCRIPTION
         $this->metaDescription = get_first_not_empty([
             isset($page_seo->fields->meta_description->value)? $page_seo->fields->meta_description->value : null,
@@ -210,9 +213,17 @@ class VoyagerPage
     }
 
     /*
+     * Returns Breadcrumbs array
+     */
+    public function getBreadcrumbs()
+    {
+        return $this->breadcrumbs;
+    }
+
+    /*
      *  Returns rendered VIEW using PAGE Vars
      */
-    public function view($template_layout = null)
+    public function view($template_layout = null, $data = null)
     {
 
         // If layout template not present in params
@@ -231,8 +242,10 @@ class VoyagerPage
                 'title' => $this->getSeoTitle(),
                 'description' => $this->getSeoDescription(),
                 'keywords' => $this->getSeoKeywords(),
-            ]
+            ],
+            'data' => $data,
         ])->render();
     }
+
 
 }
