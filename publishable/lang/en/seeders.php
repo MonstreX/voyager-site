@@ -151,4 +151,11 @@ return [
         '403_title' => 'Error 403',
         '404_title' => 'Error 404',
     ],
+    'regions'   => [
+        'content_before' => 'A region before of main content',
+        'content' => 'A region of main content',
+        'content_after' => 'A region after of main content',
+        'no_position' => 'A region without position on the page',
+        'sidebar' => 'A sidebar region',
+    ],
 ];
