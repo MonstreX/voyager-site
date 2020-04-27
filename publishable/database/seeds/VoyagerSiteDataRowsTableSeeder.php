@@ -247,6 +247,8 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'delete'       => 1,
                 'order'        => 8,
                 'details'      => [
+                    'view_browse' => true,
+                    'view'  => 'voyager-extension::bread.fields.block-region',
                     'model' => '\\MonstreX\\VoyagerSite\\Models\\BlockRegion',
                     'table' => 'block_regions',
                     'type' => 'belongsTo',
@@ -260,7 +262,6 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
             ])->save();
         }
-
 
         $dataRow = $this->dataRow($blockDataType, 'content');
         if (!$dataRow->exists) {
@@ -369,6 +370,10 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'add'          => 1,
                 'delete'       => 1,
                 'order'        => 13,
+                'details'      => [
+                    'view_browse' => true,
+                    'view'  => 'voyager-extension::bread.fields.block-region',
+                ],
             ])->save();
         }
 
