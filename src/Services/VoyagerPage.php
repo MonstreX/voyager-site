@@ -232,6 +232,7 @@ class VoyagerPage implements VoyagerPageContract
         }
 
         return view($template_layout)->with([
+            'template' => $this->settings['template'],
             'template_master' => $this->settings['template'] . '.' . $this->settings['template_master'],
             'template_page' => $this->settings['template'] . '.' . $this->templatePage,
             'breadcrumbs' => $this->breadcrumbs,

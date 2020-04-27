@@ -9,9 +9,9 @@ interface VoyagerBlock
 {
     public function renderRegion($region_name, $path = null);
 
-    public function render($key, $id = null);
+    public function render($key);
 
-    public function renderBlock($block, $id = null);
+    public function renderBlock($block);
 
     public function getByKey($key);
 

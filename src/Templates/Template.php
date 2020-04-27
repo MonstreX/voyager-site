@@ -13,6 +13,16 @@ class Template
     {
         $this->template = new liquidTemplate();
 
+        // BLOCK
+        $this->template->registerFilter('block', function ($arg) {
+            return render_block($arg);
+        });
+
+        // FORM
+        $this->template->registerFilter('form', function ($name, $subject = null, $suffix = null) {
+            return render_form($name, $subject, $suffix);
+        });
+
         // URL
         $this->template->registerFilter('url', function ($arg) {
             return url($arg);

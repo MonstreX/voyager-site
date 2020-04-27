@@ -17,10 +17,10 @@ return [
         'show_on_all'      => 'Показывать блок на ВСЕХ страницах, кроме указанных',
         'show_only'        => 'Показывать блок только на указанных страницах',
         'page_urls'        => 'Ссылки страниц',
-        'region_key'       => 'Ключ региона',
+        'region_key'       => 'Ключ группы блоков',
         'block_key'        => 'Ключ блока',
         'form_key'         => 'Ключ формы',
-        'region_position'  => 'Позиция региона',
+        'region_position'  => 'Группа блоков',
         'block_content'    => 'Содержимое блока',
         'form_content'     => 'Содержимое формы',
         'image'            => 'Изображение',
@@ -56,8 +56,8 @@ return [
             'plural'   => 'Блоки',
         ],
         'block_regions'     => [
-            'singular' => 'Регион',
-            'plural'   => 'Регионы',
+            'singular' => 'Группа',
+            'plural'   => 'Группы',
         ],
         'forms'     => [
             'singular' => 'Форма',
@@ -83,7 +83,7 @@ return [
     'menu_items' => [
         'content' => 'Контент',
         'block_and_widgets' => 'Блоки и Виджеты',
-        'regions' => 'Регионы',
+        'regions' => 'Группы блоков',
         'forms' => 'Формы',
         'localizations' => 'Локализации',
         'site_settings' => 'Настройки сайта',

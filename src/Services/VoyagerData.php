@@ -70,12 +70,12 @@ class VoyagerData implements VoyagerDataContract
     }
 
 
-    public function getDataSources(object $data_sources, int $owner_id = null):array
+    public function getDataSources(object $data_sources):array
     {
         if (isset($data_sources)) {
             $data = [];
             foreach ($data_sources as $key => $data_source) {
-                $data[$key] = $this->getDataSource($data_source, $owner_id);
+                $data[$key] = $this->getDataSource($data_source);
             }
             return $data;
         } else {
@@ -84,7 +84,7 @@ class VoyagerData implements VoyagerDataContract
     }
 
 
-    public function getDataSource(object $data_source, int $owner_id = null):array
+    public function getDataSource(object $data_source):array
     {
         // Source
         $data = app(config('voyager.models.namespace').$data_source->model);

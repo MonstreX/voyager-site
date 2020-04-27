@@ -176,16 +176,16 @@ if (!function_exists('get_first_not_empty')) {
  * Blade templates helpers
  */
 if (!function_exists('render_block')) {
-    function render_block($key, $parent_id = null)
+    function render_block($key)
     {
-        return VBlock::render($key, $parent_id);
+        return VBlock::render($key);
     }
 }
 
 if (!function_exists('render_region')) {
-    function render_region($key, $parent_id = null)
+    function render_region($key, $path = null)
     {
-        return VBlock::renderRegion($key, $parent_id);
+        return VBlock::renderRegion($key, $path);
     }
 }
 

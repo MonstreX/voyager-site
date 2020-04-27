@@ -17,10 +17,10 @@ return [
         'show_on_all'      => 'Show on ALL pages, except listed',
         'show_only'        => 'Show only on listed pages',
         'page_urls'        => 'Page URLs',
-        'region_key'       => 'Region key',
+        'region_key'       => 'Group key',
         'block_key'        => 'Block key',
         'form_key'         => 'Form key',
-        'region_position'  => 'Region position',
+        'region_position'  => 'Group',
         'block_content'    => 'Block content',
         'form_content'     => 'Form content',
         'image'            => 'Image',
@@ -56,8 +56,8 @@ return [
             'plural'   => 'Blocks',
         ],
         'block_regions'     => [
-            'singular' => 'Region',
-            'plural'   => 'Regions',
+            'singular' => 'Group',
+            'plural'   => 'Groups',
         ],
         'forms'     => [
             'singular' => 'Form',
@@ -83,7 +83,7 @@ return [
     'menu_items' => [
         'content' => 'Content',
         'block_and_widgets' => 'Blocks and Widgets',
-        'regions' => 'Regions',
+        'regions' => 'Block groups',
         'forms' => 'Forms',
         'localizations' => 'Localizations',
         'site_settings' => 'Site settings',
@@ -152,10 +152,10 @@ return [
         '404_title' => 'Error 404',
     ],
     'regions'   => [
-        'content_before' => 'A region before of main content',
-        'content' => 'A region of main content',
-        'content_after' => 'A region after of main content',
-        'no_position' => 'A region without position on the page',
-        'sidebar' => 'A sidebar region',
+        'content_before' => 'A group before of main content',
+        'content' => 'A group of main content',
+        'content_after' => 'A group after of main content',
+        'no_position' => 'A group without position on the page',
+        'sidebar' => 'A sidebar group',
     ],
 ];

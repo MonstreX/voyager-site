@@ -369,6 +369,10 @@ For this kind of template you need to define **data sources** JSON-like structur
 }
 ```
 
+> Block render
+
+
+
 
 ### Forms
 

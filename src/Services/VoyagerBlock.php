@@ -64,16 +64,16 @@ class VoyagerBlock implements VoyagerBlockContract
         }
     }
 
-    public function render($key, $id = null)
+    public function render($key)
     {
         $block = $this->getByKey($key);
         if (!$block) {
             $block = $this->getByTitle($key);
         }
-        return $this->renderBlock($block, $id);
+        return $this->renderBlock($block);
     }
 
-    public function renderBlock($block, $id = null)
+    public function renderBlock($block)
     {
         if ($block) {
             // Prepare Images Vars
@@ -89,7 +89,7 @@ class VoyagerBlock implements VoyagerBlockContract
             $data = [];
             $details = json_decode($block->details);
             if ($details && isset($details->data_sources)) {
-                $data = VData::getDataSources($details->data_sources, $id);
+                $data = VData::getDataSources($details->data_sources);
             }
 
             $template = new Template(Shortcode::compile($block->content));
