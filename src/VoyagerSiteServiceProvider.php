@@ -65,7 +65,7 @@ class VoyagerSiteServiceProvider extends ServiceProvider
             $localization->loadLocalizations();
         }
 
-        $this->loadRoutesFrom(__DIR__.'./Routes/routes.php');
+        $this->loadRoutesFrom(__DIR__.'/Routes/routes.php');
 
         $this->registerShortcodes();
 

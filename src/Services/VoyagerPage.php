@@ -228,7 +228,9 @@ class VoyagerPage implements VoyagerPageContract
 
         // If layout template not present in params
         if (!$template_layout) {
-            $template_layout = $this->settings['template'] . '.' . $this->settings['template_layout'];
+            $template_layout = empty($this->templateLayout)?
+                $this->settings['template'] . '.' . $this->settings['template_layout'] :
+                $this->settings['template'] . '.' . $this->templateLayout;
         }
 
         return view($template_layout)->with([
