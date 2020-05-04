@@ -13,6 +13,23 @@ class Template
     {
         $this->template = new liquidTemplate();
 
+        // FUNCTION
+        $this->template->registerFilter('func', function ($func_name, $param1 = null, $param2 = null, $param3 = null, $param4 = null, $param5 = null) {
+            $res = '';
+            if ($param5 !== null) {
+                $res = $func_name($param1, $param2, $param3, $param4, $param5);
+            } elseif ($param4 !== null) {
+                $res = $func_name($param1, $param2, $param3, $param4);
+            } elseif ($param3 !== null) {
+                $res = $func_name($param1, $param2, $param3);
+            } elseif ($param2 !== null) {
+                $res = $func_name($param1, $param2);
+            } elseif ($param1 !== null) {
+                $res = $func_name($param1);
+            }
+            return $res;
+        });
+
         // BLOCK
         $this->template->registerFilter('block', function ($arg) {
             return render_block($arg);
@@ -28,7 +45,7 @@ class Template
             return url($arg);
         });
 
-        // CROP IMAGE
+        // ROUTE
         $this->template->registerFilter('route', function ($route, $param = null) {
             if($param) {
                 return route($route, $param);
