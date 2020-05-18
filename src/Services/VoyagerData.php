@@ -86,24 +86,28 @@ class VoyagerData implements VoyagerDataContract
 
     public function getDataSource(object $data_source):array
     {
+
         // Source
-        $data = app(config('voyager.models.namespace').$data_source->model);
+        $model_class = config('voyager.models.namespace').$data_source->model;
+        $data = app($model_class);
 
         // Sorting
         if(isset($data_source->order)) {
             $data = $data->orderBy($data_source->order->field, $data_source->order->direction);
         }
 
-        // Only with status = 1
-        //$data = $data->where("status", 1);
-
         // Preload relations
         if(isset($data_source->with)) {
             $data = $data->with($data_source->with);
         }
 
-        // Multiple Where Array
+        // Where
         if(isset($data_source->where)) {
+            $data = $data->where($data_source->where->field, $data_source->where->value);
+        }
+
+        // Multiple Where Array
+        if(isset($data_source->where_array)) {
             foreach ($data_source->where_array as $key => $value) {
                 $data = $data->where($key, $value);
             }
@@ -111,6 +115,30 @@ class VoyagerData implements VoyagerDataContract
 
         // Make Collection
         $data_records = $data->get();
+
+        // Load related Media Data if needed and convert it to an array
+        // It is necessary Only for accessing in Liquid templates
+        $dataType = Voyager::model('DataType')->where('model_name', '=', $model_class)->first();
+        $rows = $dataType->rows()->get();
+
+        foreach ($data_records as $record) {
+            if ($rows) {
+                foreach ($rows as $row) {
+                    // Check for only Medialibrary types
+                    if ($row->type === 'adv_image' || $row->type === 'adv_media_files') {
+
+                        $images = $record->getMedia($row->field);
+
+                        foreach ($images as $key => $image) {
+                            $images[$key]->url = $image->getUrl();
+                            $images[$key]->full_url = $image->getFullUrl();
+                            $images[$key]->path = $image->getPath();
+                        }
+                        $record->{$row->field} = $images->toArray();
+                    }
+                }
+            }
+        }
 
         // Translate if required
         if (Voyager::translatable($data)) {
