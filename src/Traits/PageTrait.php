@@ -30,5 +30,29 @@ trait PageTrait
         return VPage::view($templateLayout, $data);
     }
 
+    /*
+     * Set Master Template
+     */
+    public function setMasterTemplate($template)
+    {
+        return VPage::setMasterTemplate($template);
+    }
+
+    /*
+     * Set Layout Template
+     */
+    public function setLayoutTemplate($template)
+    {
+        return VPage::setLayoutTemplate($template);
+    }
+
+    /*
+     * Set Page Template
+     */
+    public function setPageTemplate($template)
+    {
+        return VPage::setPageTemplate($template);
+    }
+
 }
 

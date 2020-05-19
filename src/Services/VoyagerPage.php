@@ -155,6 +155,31 @@ class VoyagerPage implements VoyagerPageContract
     }
 
     /*
+     * Set Master Template
+     */
+    public function setMasterTemplate(string $template)
+    {
+        $this->templateMaster = $template;
+    }
+
+    /*
+     * Set Layout Template
+     */
+    public function setLayoutTemplate(string $template)
+    {
+        $this->templateLayout = $template;
+    }
+
+    /*
+     * Set Page Template
+     */
+    public function setPageTemplate(string $template)
+    {
+        $this->templatePage = $template;
+    }
+
+
+    /*
      * Init SEO Data
      */
     public function setSeo(Model $contentData, array $settings)
@@ -228,9 +253,7 @@ class VoyagerPage implements VoyagerPageContract
 
         // If layout template not present in params
         if (!$template_layout) {
-            $template_layout = empty($this->templateLayout)?
-                $this->settings['template'] . '.' . $this->settings['template_layout'] :
-                $this->settings['template'] . '.' . $this->templateLayout;
+            $template_layout = $this->settings['template'] . '.' . $this->settings['template_layout'];
         }
 
         return view($template_layout)->with([

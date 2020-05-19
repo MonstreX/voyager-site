@@ -64,6 +64,21 @@ interface VoyagerPage
     public function setTemplates(Model $contentData, array $settings);
 
     /**
+     * @param string $template
+     */
+    public function setMasterTemplate(string $template);
+
+    /**
+     * @param string $template
+     */
+    public function setLayoutTemplate(string $template);
+
+    /**
+     * @param string $template
+     */
+    public function setPageTemplate(string $template);
+
+    /**
      * @param Model $contentData
      * @param array $settings
      * @return mixed
