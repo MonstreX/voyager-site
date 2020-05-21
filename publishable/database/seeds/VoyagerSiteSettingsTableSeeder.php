@@ -122,6 +122,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                     'options' => [
                         'smtp' => 'SMTP',
                         'mailgun' => 'MAILGUN',
+                        'log'   => 'LOG'
                     ],
                     'class' => 'col-md-12',
                 ],
