@@ -203,4 +203,10 @@ if (!function_exists('render_layout')) {
     }
 }
 
+if (!function_exists('get_block_field')) {
+    function get_block_field($block, $field)
+    {
+        return VBlock::getBlockField($block, $field);
+    }
+}
 

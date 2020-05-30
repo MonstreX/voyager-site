@@ -127,21 +127,6 @@ class VoyagerBlock implements VoyagerBlockContract
         }
     }
 
-    public function getByKey($key)
-    {
-        $block = Block::where(['key' => $key, 'status' => 1])->first();
-        return $block;
-    }
-
-    public function getByTitle($title)
-    {
-        $block = Block::where(['title' => trim($title), 'status' => 1])->first();
-        return $block;
-    }
-
-
-
-
     public function renderForm($key, $subject = null, $suffix = null)
     {
         $form = $this->getFormByKey($key);
@@ -164,12 +149,6 @@ class VoyagerBlock implements VoyagerBlockContract
         }
     }
 
-    public function getFormByKey($key)
-    {
-        return Form::where(['key' => $key, 'status' => 1])->first();
-    }
-
-
     public function renderLayout($layout, $page)
     {
         $layoutFields = json_decode($layout);
@@ -188,6 +167,33 @@ class VoyagerBlock implements VoyagerBlockContract
         } else {
             return "";
         }
+    }
+
+    public function getByKey($key)
+    {
+        $block = Block::where(['key' => $key, 'status' => 1])->first();
+        return $block;
+    }
+
+    public function getByTitle($title)
+    {
+        $block = Block::where(['title' => trim($title), 'status' => 1])->first();
+        return $block;
+    }
+
+    public function getFormByKey($key)
+    {
+        return Form::where(['key' => $key, 'status' => 1])->first();
+    }
+
+    public function getBlockField($block, $field)
+    {
+        $block = $this->getByKey($block);
+        if (!$block) {
+            $block = $this->getByTitle($block);
+        }
+
+        return $block->{$field};
     }
 
 }
