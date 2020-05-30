@@ -6,6 +6,7 @@ namespace MonstreX\VoyagerSite\Services;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\MessageBag;
 
+use TCG\Voyager\Facades\Voyager;
 use MonstreX\VoyagerSite\Contracts\VoyagerBlock as VoyagerBlockContract;
 use MonstreX\VoyagerSite\Models\Block;
 use MonstreX\VoyagerSite\Models\Form;
@@ -92,8 +93,35 @@ class VoyagerBlock implements VoyagerBlockContract
                 $data = VData::getDataSources($details->data_sources);
             }
 
+            // Load related Media Data if needed and convert it to an array
+            // It is necessary Only for accessing in Liquid templates
+            $dataType = Voyager::model('DataType')->where('slug', '=', 'blocks')->first();
+            $rows = $dataType->rows()->get();
+
+            $fields_data = [];
+            if ($rows) {
+                foreach ($rows as $row) {
+                    // Check for only Media library types
+                    if ($row->type === 'adv_image' || $row->type === 'adv_media_files') {
+
+                        $images = $block->getMedia($row->field);
+
+                        foreach ($images as $key => $image) {
+                            $fields_data[$row->field][$key]['url'] = $image->getUrl();
+                            $fields_data[$row->field][$key]['full_url'] = $image->getFullUrl();
+                            $fields_data[$row->field][$key]['path'] = $image->getPath();
+                            $fields_data[$row->field][$key]['props'] = $image->toArray()['custom_properties'];
+                        }
+
+                    } else {
+                        $fields_data[$row->field] = $block->{$row->field};
+                    }
+                }
+            }
+
             $template = new Template(Shortcode::compile($block->content));
-            return $template->render(['images' => $images, 'data' => $data]);
+
+            return $template->render(['images' => $images, 'data' => $data, 'this' => $fields_data, 'options' => $details]);
         } else {
             return '';
         }

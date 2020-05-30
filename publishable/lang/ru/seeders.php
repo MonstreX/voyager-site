@@ -40,7 +40,7 @@ return [
         'disabled'         => 'Отключено',
         'show_in_menu'     => 'Показывать в меню',
         'seo_group'        => 'Группа полей СЕО',
-        'seo_title'        => 'SEO Заголоков',
+        'seo_title'        => 'SEO Заголовок',
         'meta_description' => 'META Описание',
         'meta_keywords'    => 'META Ключевые слова',
         'tab_images'       => 'Медиа',

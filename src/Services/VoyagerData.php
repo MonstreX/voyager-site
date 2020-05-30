@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Facades\Voyager;
 use Schema;
 
+
 class VoyagerData implements VoyagerDataContract
 {
 
