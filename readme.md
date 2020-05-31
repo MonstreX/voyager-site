@@ -425,12 +425,12 @@ Template part:
 
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="_form_alias" value="{{ form_alias }}">
-    <input type="hidden" name="subject" value="Форма обратной связи">
+    <input type="hidden" name="subject" value="Send us a message!">
     
     <input class="form-control" type="text" name="name" value="" required>
     <input class="form-control" type="email" name="email" value="" required>
     <input class="form-control phone" type="text" name="phone" value="" required>
-    <textarea class="form-control"  placeholder="Ваше сообщение" name="message" required=""></textarea>
+    <textarea class="form-control" name="message" required=""></textarea>
 
     <button type="submit" class="btn-send-form ">Send</button>
     
