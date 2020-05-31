@@ -330,6 +330,7 @@ Available variables:
 
 Example #1 (usage of image list):
 ```html
+<!-- Block liquid template -->
 <h3>My images</h3>
 <div class="images-list">
 {% for image in images %}
@@ -344,6 +345,7 @@ Where **image.url** represent relative URL of image. **Crop** filter - crop and 
 
 Example #2 (usage data sources):
 ```html
+<!-- Block liquid template -->
 <h3>Articles Block</h3>
 <ul>
 {% for article in data.articles %}
@@ -370,9 +372,48 @@ For this kind of template you need to define **data sources** JSON-like structur
 }
 ```
 
+Example #3 (usage internal block's fields):
+```html
+<!-- Block liquid template -->
+{{ this.title }} <!-- Get TITLE block field -->
+{{ this.images[0].url }} <!-- Get Image URL with index 0 -->
+{{ this.images[0].props.title }} <!-- Get Image custom property -->
+{{ this.additional_field }} <!-- Get any additional block field value -->
+{{ options.data_section }} <!-- Get JSON parameter stored in the parameters field -->
+
+```
+
+Also you can get any field of the certain block using helper:
+```blade
+<h1>{{ get_block_field('top-line', 'title') }}</h1>
+``` 
+
+
+
 > Block render
 
+Just use helper render_block('key'). Instead of key you can use block Title or ID (numeric).
 
+```blade
+{!! render_block('top-line') !!}
+{!! render_block('Our services') !!}
+{!! render_block(3) !!}
+```
+
+> Region (group) render and URL path rules.
+
+It can be used to organize and render a group of blocks whit the same region (group) name whenever you need it in your template.
+For instance:
+```blade
+{!! render_region('content-before') !!}
+```
+
+Will render all blocks where this 'content-before' has been set.
+And the package will check all blocks if they can be rendered - what depends on the setting "URL paths Rules":
+
+![URL path rules](/docs/images/regions-path-rules.png) 
+
+It's a drupal-like block system rendering. That can depend on the current URL or not.
 
 
 ### Forms

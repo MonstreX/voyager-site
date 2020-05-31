@@ -67,10 +67,18 @@ class VoyagerBlock implements VoyagerBlockContract
 
     public function render($key)
     {
-        $block = $this->getByKey($key);
-        if (!$block) {
-            $block = $this->getByTitle($key);
+        if (is_numeric($key)) {
+
+            $block = $this->getByID($key);
+
+        } else {
+            $block = $this->getByKey($key);
+
+            if (!$block) {
+                $block = $this->getByTitle($key);
+            }
         }
+
         return $this->renderBlock($block);
     }
 
@@ -167,6 +175,12 @@ class VoyagerBlock implements VoyagerBlockContract
         } else {
             return "";
         }
+    }
+
+    public function getByID($id)
+    {
+        $block = Block::where(['id' => $id, 'status' => 1])->first();
+        return $block;
     }
 
     public function getByKey($key)

@@ -18,6 +18,8 @@ interface VoyagerBlock
 
     public function renderLayout($layout, $page);
 
+    public function getByID($id);
+
     public function getByKey($key);
 
     public function getByTitle($title);
