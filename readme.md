@@ -421,7 +421,7 @@ Similar to block. But you can use only limited sets of internal variables.
 
 Template part:
 ```html
-<form data-holder-id="{{ form_alias }}-{{ form_suffix }}" class="contactform {{ form_alias }}" action="{{ 'send.form' | route }}" method="post" enctype="multipart/form-data">    
+<form class="form{{ form_alias }}" action="{{ 'send.form' | route }}" method="post" enctype="multipart/form-data">    
 
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="_form_alias" value="{{ form_alias }}">
