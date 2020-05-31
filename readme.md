@@ -389,7 +389,6 @@ Also you can get any field of the certain block using helper:
 ``` 
 
 
-
 > Block render
 
 Just use helper render_block('key'). Instead of key you can use block Title or ID (numeric).
@@ -408,7 +407,7 @@ For instance:
 {!! render_region('content-before') !!}
 ```
 
-Will render all blocks where this 'content-before' has been set.
+Will render all blocks where this region (group) 'content-before' has been set.
 And the package will check all blocks if they can be rendered - what depends on the setting "URL paths Rules":
 
 ![URL path rules](/docs/images/regions-path-rules.png) 
@@ -416,12 +415,79 @@ And the package will check all blocks if they can be rendered - what depends on 
 It's a drupal-like block system rendering. That can depend on the current URL or not.
 
 
-### Forms
+### Forms 
+
+Similar to block. But you can use only limited sets of internal variables.
+
+Template part:
+```html
+<form data-holder-id="{{ form_alias }}-{{ form_suffix }}" class="contactform {{ form_alias }}" action="{{ 'send.form' | route }}" method="post" enctype="multipart/form-data">    
+
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <input type="hidden" name="_form_alias" value="{{ form_alias }}">
+    <input type="hidden" name="subject" value="Форма обратной связи">
+    
+    <input class="form-control" type="text" name="name" value="" required>
+    <input class="form-control" type="email" name="email" value="" required>
+    <input class="form-control phone" type="text" name="phone" value="" required>
+    <textarea class="form-control"  placeholder="Ваше сообщение" name="message" required=""></textarea>
+
+    <button type="submit" class="btn-send-form ">Send</button>
+    
+</form>
+```
+
+Parameters part:
+```json
+{
+    "to_address": "info@site.com,support@site.com",    
+    "validator": {
+        "name":"required",
+        "email":"required",
+        "phone":"required"
+    },
+    "messages": {
+        "name.required": "The field NAME shouldn't be empty.",
+        "email.required": "The field EMAIL shouldn't be empty.",
+        "phone.required": "The field PHONE shouldn't be empty."
+    }
+}
+```
+
+If parameter 'to_address' is not present will be used config setting: mail.to_address.
 
 
+Inside form template you can use internal vars:
+```html
+{{ old }} <!-- Previous values saved in session = session()->getOldInput() -->
+{{ errors_messages}} <!-- = $errors->all() -->
+{{ errors }} <!-- = $errors->toArray() -->
+{{ form_alias }} <!-- Form Key -->
+{{ form_suffix }} <!-- Additional form suffix if you need -->
+{{ form_subject }}} <!-- Form Subject -->
+{{ csrf_token }} <!-- = csrf_token() -->
 
-### Modules API 
+```
 
+To render form from a view use helper renderForm($key, $subject = null, $suffix = null):
+```blade
+{!! renderForm('callback-form', 'Send us a message!', '-second-form') !!}
+```
+
+To render inside a block:
+```html
+{{ 'callback-form' | form: 'Send us a message!','-second-form' }}
+```
+
+
+### Page layout render 
+
+The special system allows you to manage group of the blocks or forms and fields on a certain page.
+You can easily add/remove blocks, forms and fields (and sort them) in the edit page mode and then render using helper:
+```blade
+{{ render_layout($page->layout, $page) }}
+``` 
+Where $page is a page instance.
 
 
 ## Security
