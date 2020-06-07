@@ -139,12 +139,13 @@ class VoyagerBlock implements VoyagerBlockContract
     {
         $form = $this->getFormByKey($key);
         if ($form) {
-            $errors = Session::get('errors', new MessageBag);
-
             $vars = [];
             $vars['old'] = session()->getOldInput();
+
+            $errors = Session::get('errors', new MessageBag);
             $vars['errors_messages'] = $errors->all();
             $vars['errors'] = $errors->toArray();
+
             $vars['form_alias'] = $key;
             $vars['form_suffix'] = $suffix;
             $vars['form_subject'] = $subject;

@@ -76,6 +76,24 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                     'value' => "1",
                     'class' => 'col-md-12',
                 ],
+                //-
+                'section_captcha' => [
+                    'type' => 'section',
+                    'icon' => 'voyager-puzzle',
+                    'label' => __('voyager-site::seeders.settings.general.section_captcha'),
+                ],
+                'site_captcha_site_key' => [
+                    'label' => __('voyager-site::seeders.settings.general.site_captcha_site_key'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
+                'site_captcha_secret_key' => [
+                    'label' => __('voyager-site::seeders.settings.general.site_captcha_secret_key'),
+                    'type' => 'text',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
             ],
         ];
 

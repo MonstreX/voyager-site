@@ -5,6 +5,8 @@ namespace MonstreX\VoyagerSite;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Validator;
+use GuzzleHttp\Client;
 use Route;
 
 use MonstreX\VoyagerSite\Facades;
@@ -14,6 +16,7 @@ use MonstreX\VoyagerSite\Services\VoyagerSite;
 use MonstreX\VoyagerSite\Services\VoyagerBlock;
 use MonstreX\VoyagerSite\Services\VoyagerPage;
 use MonstreX\VoyagerSite\Services\VoyagerData;
+
 
 use Config;
 use Shortcode;
@@ -70,6 +73,8 @@ class VoyagerSiteServiceProvider extends ServiceProvider
         $this->registerShortcodes();
 
         $this->registerBlades();
+
+        Validator::extend('recaptcha','\MonstreX\VoyagerSite\Validators\ReCaptcha@validate');
 
     }
 

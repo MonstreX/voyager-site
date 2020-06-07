@@ -3,6 +3,7 @@
 namespace MonstreX\VoyagerSite\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Notification;
 use Validator;
 use Arr;
@@ -105,14 +106,14 @@ class VoyagerSiteController extends VoyagerBaseController
             $message_type = 'unknown';
             $messages = [];
 
-            $formFields = $request->except(['_token', '_form_alias']);
+            $formFields = $request->except(['_token', '_form_alias', '_mail_to', 'g-recaptcha-response']);
 
             if ($form = VBlock::getFormByKey($request->_form_alias)) {
                 $options = json_decode($form->details);
             }
 
+            // Validation
             if (isset($options->validator)) {
-
                 $validator_messages = isset($options->messages)? (array) $options->messages : null;
                 $validator = Validator::make($request->all(), (array) $options->validator, $validator_messages);
                 if(!$validator->passes()) {
@@ -124,12 +125,36 @@ class VoyagerSiteController extends VoyagerBaseController
                 }
             }
 
+//            // Check Captcha if present
+//            if($request->has('g-recaptcha-response')) {
+//                $secret = site_setting('general.site_captcha_secret_key');
+//                $response = $request->input('g-recaptcha-response');
+//                $ip = $_SERVER['REMOTE_ADDR'];
+//                $res = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".$secret."&response=".$response."&remoteip=".$ip);
+//
+//                $captcha = json_decode($res);
+//
+//                if (!$captcha->success) {
+//                    $errors = true;
+//                    $message_type = 'error';
+//                    $messages[] = __('site.form_send_captcha_error');
+//                }
+//
+//            }
+
+            // Try to send if no errors
             if(!isset($errors)) {
                 try {
-                    // Sending Email
+                    // Use email_to address from global site settings or from the local form options
                     $to_address = str_replace(' ','', isset($options->to_address)?
                         $options->to_address :
                         site_setting('mail.to_address'));
+
+                    // If we have override email to address - we use this one
+                    if($request->has('_mail_to')) {
+                        $to_address = site_setting($request->input('_mail_to'));
+                    }
+
                     $emails = explode(',', $to_address);
 
                     Notification::route('mail', $emails)->notify(new SendForm($formFields, $request));
@@ -154,7 +179,11 @@ class VoyagerSiteController extends VoyagerBaseController
             $messages_html .= '</ul>';
             return response()->json(['type' => $message_type, 'messages' => $messages_html]);
         } else {
+
+
+
             return redirect()->back()->withInput()->withErrors($validator);
+            //->with(['form_status' => $message_type, 'form_messages' => $messages]);
         }
     }
 

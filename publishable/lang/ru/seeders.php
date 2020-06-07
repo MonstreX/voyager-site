@@ -112,6 +112,10 @@ return [
             'site_title_value' => 'Мой сайт',
             'site_description_value' => 'Описание сайта по умолчанию',
             'site_app_name_value' => 'Имя моего сайта',
+
+            'section_captcha' => 'Google Recaptcha2',
+            'site_captcha_site_key' => 'Публичный ключ reCaptcha2',
+            'site_captcha_secret_key' => 'Приватный ключ reCaptcha2',
         ],
         'mail' => [
             'title' => 'Почта',

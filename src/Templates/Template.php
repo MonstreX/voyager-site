@@ -3,6 +3,8 @@
 
 namespace MonstreX\VoyagerSite\Templates;
 
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\MessageBag;
 use Liquid\Template as liquidTemplate;
 
 class Template
@@ -28,6 +30,12 @@ class Template
                 $res = $func_name($param1);
             }
             return $res;
+        });
+
+
+        // SETTINGS
+        $this->template->registerFilter('site_setting', function ($arg, $arg2 = null) {
+            return site_setting($arg, $arg2);
         });
 
         // BLOCK

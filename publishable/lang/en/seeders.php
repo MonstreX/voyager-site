@@ -112,6 +112,11 @@ return [
             'site_title_value' => 'The Voyager Site',
             'site_description_value' => 'Voyager site description',
             'site_app_name_value' => 'Voyager-Site',
+
+            'section_captcha' => 'Google Recaptcha2',
+            'site_captcha_site_key' => 'Captcha Public Key',
+            'site_captcha_secret_key' => 'Captcha Secret Key',
+
         ],
         'mail' => [
             'title' => 'Mail',
