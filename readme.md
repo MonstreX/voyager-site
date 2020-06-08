@@ -417,7 +417,21 @@ It's a drupal-like block system rendering. That can depend on the current URL or
 
 ### Forms 
 
-Similar to block. But you can use only limited sets of internal variables.
+Similar to block. But you can use only limited sets of internal variables. 
+The 'send.form' is implemented inside the form subsystem with the sendForm($request) method.
+It sends any form data including attached files. Also you can use Google ReCaptcha 2 form protection.
+Just add the line where you need inside your form:
+```blade
+<div class="g-recaptcha" data-sitekey="{{ 'site_setting' | func: 'general.site_captcha_site_key'   }}"></div>
+```
+And add recaptcha validation rules to the options:
+```json
+{
+    "validator": {
+        "g-recaptcha-response": "required|recaptcha"
+    }
+}
+```
 
 Template part:
 ```html
@@ -431,6 +445,8 @@ Template part:
     <input class="form-control" type="email" name="email" value="" required>
     <input class="form-control phone" type="text" name="phone" value="" required>
     <textarea class="form-control" name="message" required=""></textarea>
+    
+    <div class="g-recaptcha" data-sitekey="{{ 'site_setting' | func: 'general.site_captcha_site_key'   }}"></div>
 
     <button type="submit" class="btn-send-form ">Send</button>
     
@@ -444,7 +460,8 @@ Parameters part:
     "validator": {
         "name":"required",
         "email":"required",
-        "phone":"required"
+        "phone":"required",
+        "g-recaptcha-response": "required|recaptcha"
     },
     "messages": {
         "name.required": "The field NAME shouldn't be empty.",
@@ -478,6 +495,119 @@ To render inside a block:
 ```html
 {{ 'callback-form' | form: 'Send us a message!','-second-form' }}
 ```
+
+More examples:
+```blade
+<div id="{{ form_alias }}-{{ form_suffix }}" class="default-form contact-form">
+    <form data-holder-id="{{ form_alias }}-{{ form_suffix }}" class="{{ form_alias }}" action="{{ "send.form" | route }}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_token" value="{{ csrf_token }}">
+        <input type="hidden" name="_form_alias" value="{{ form_alias }}">
+        <input type="hidden" name="subject" value="Callback form">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Your name" value="{{ old.name }}">
+            {% if errors.name %}
+              <span class="help-block">
+                {% for error in errors.name %}
+                  <div>{{ error }}</div>
+                {% endfor %}
+              </span>
+            {% endif %}            
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="text" class="form-control" id="phone" name="phone" placeholder="Your phone number" value="{{ old.phone }}">
+            {% if errors.phone %}
+              <span class="help-block">
+                {% for error in errors.phone %}
+                  <div>{{ error }}</div>
+                {% endfor %}
+              </span>
+            {% endif %}                        
+        </div>
+        <div class="form-group">
+            <label for="email">E-Mail address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Your E-Mail address" value="{{ old.email }}">
+            {% if errors.email %}
+              <span class="help-block">
+                {% for error in errors.email %}
+                  <div>{{ error }}</div>
+                {% endfor %}
+              </span>
+            {% endif %}                        
+        </div>
+        <div class="form-group">
+            <label for="message">Message</label>
+            <textarea class="form-control" id="message" name="message" placeholder="Your message">{{ old.message }}</textarea>
+            {% if errors.message %}
+              <span class="help-block">
+                {% for error in errors.message %}
+                  <div>{{ error }}</div>
+                {% endfor %}
+              </span>
+            {% endif %}                        
+        </div>
+        <div class="form-group form-group-default">
+            <label>Attachment #1</label>
+            <input type="file" name="images[]" accept="file_extension|image/*|media_type" multiple>
+        </div>
+        <div class="g-recaptcha" data-sitekey="{{ 'site_setting' | func: 'general.site_captcha_site_key'   }}"></div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+
+<h2>Form Messages</h2>
+{% for message in errors_messages %}
+  <div>{{ message }}</div>
+{% endfor %}
+```
+
+Also you can use AJAX form sending. The package implements JS part for AJAX sending, just include jQuery library and this line in your view (or you can use your own JS function):
+
+```blade
+@include('voyager-site::mail.send_form_ajax_js')
+```
+
+AJAX Example:
+```blade
+<div id="{{ form_alias }}-{{ form_suffix }}" class="default-form contact-form">
+    <form data-holder-id="{{ form_alias }}-{{ form_suffix }}" class="{{ form_alias }}" action="{{ "send.form" | route }}" method="post" enctype="multipart/form-data" onsubmit="formSendAJAX(event, this)">
+        <input type="hidden" name="_token" value="{{ csrf_token }}">
+        <input type="hidden" name="_form_alias" value="{{ form_alias }}">
+        <input type="hidden" name="subject" value="Callback form AJAX">
+        <div class="row clearfix">
+            <div class="form-group">
+                <input type="text" name="name" placeholder="Ваше имя" value="">
+            </div>
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Ваш Email адрес"  value="">
+            </div>
+            <div class="form-group">
+                <input class="phone" type="text" name="phone" placeholder="Ваш телефон"  value="">
+            </div>
+            <div class="form-group">
+                <textarea rows="7" name="message" placeholder="Ваше сообщение"></textarea>
+            </div>
+            <div class="form-group form-group-default">
+                <label>Attachment</label>
+                <input type="file" name="images[]" accept="file_extension|image/*|media_type" multiple>
+            </div>
+            <div class="col-sm-12">
+                <div class="g-recaptcha" data-sitekey="{{ 'general.site_captcha_site_key' | site_setting }}"></div>
+            </div>                          
+            <div class="form-button">
+                <button type="submit" class="btn btn-primary btn-send-form">
+                    <span class="btn-loader hidden">...loading icon...</span>
+                    <span class="btn-title-normal">Send Form</span>
+                    <span class="btn-title-sending hidden">Sending...</span>
+                </button>
+            </div>
+        </div>
+    </form>
+    <div class="form-message"></div>
+</div>
+```
+
 
 
 ### Page layout render 

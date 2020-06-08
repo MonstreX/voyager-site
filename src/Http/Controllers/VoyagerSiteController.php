@@ -125,23 +125,6 @@ class VoyagerSiteController extends VoyagerBaseController
                 }
             }
 
-//            // Check Captcha if present
-//            if($request->has('g-recaptcha-response')) {
-//                $secret = site_setting('general.site_captcha_secret_key');
-//                $response = $request->input('g-recaptcha-response');
-//                $ip = $_SERVER['REMOTE_ADDR'];
-//                $res = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".$secret."&response=".$response."&remoteip=".$ip);
-//
-//                $captcha = json_decode($res);
-//
-//                if (!$captcha->success) {
-//                    $errors = true;
-//                    $message_type = 'error';
-//                    $messages[] = __('site.form_send_captcha_error');
-//                }
-//
-//            }
-
             // Try to send if no errors
             if(!isset($errors)) {
                 try {
