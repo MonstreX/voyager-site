@@ -31,7 +31,7 @@ class VoyagerPage implements VoyagerPageContract
     // Breadcrumbs
     protected $breadcrumbs = [];
 
-    // SEO Data
+    // SEO Data 1
     protected $seoTitleTemplate;
     protected $seoTitle;
     protected $metaDescription;
@@ -255,6 +255,9 @@ class VoyagerPage implements VoyagerPageContract
         if (!$template_layout) {
             $template_layout = $this->settings['template'] . '.' . $this->settings['template_layout'];
         }
+
+        
+        $this->addBreadcrumbs($this->title);
 
         return view($template_layout)->with([
             'template' => $this->settings['template'],

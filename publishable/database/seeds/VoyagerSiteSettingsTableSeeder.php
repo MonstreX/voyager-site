@@ -243,7 +243,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
          */
         $details =  [
             'fields' => [
-                'meta_keywords' => [
+                'theme_logo' => [
                     'label' => __('voyager-site::seeders.settings.theme.logo'),
                     'type' => 'media',
                     'value' => '',
