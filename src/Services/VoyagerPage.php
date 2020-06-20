@@ -256,7 +256,6 @@ class VoyagerPage implements VoyagerPageContract
             $template_layout = $this->settings['template'] . '.' . $this->settings['template_layout'];
         }
 
-        
         $this->addBreadcrumbs($this->title);
 
         return view($template_layout)->with([

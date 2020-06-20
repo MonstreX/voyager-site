@@ -26,7 +26,16 @@ class VoyagerSite implements VoyagerSiteContract
                 $data = json_decode($group->details);
                 foreach ($data->fields as $field_name => $field) {
                     if($field->type != 'section' && $field->type != 'route') {
-                        $this->setting_cache[$group->key][$field_name] = $field->value;
+                        if($field->type === 'media') {
+                            $media = $group->getMedia($field_name);
+                            if (count($media) > 0) {
+                                $this->setting_cache[$group->key][$field_name] = $group->getMedia($field_name)[0]->getFullUrl();
+                            } else {
+                                $this->setting_cache[$group->key][$field_name] = '';
+                            }
+                        } else {
+                            $this->setting_cache[$group->key][$field_name] = $field->value;
+                        }
                     }
                 }
             }
