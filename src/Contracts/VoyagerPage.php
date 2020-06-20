@@ -56,6 +56,16 @@ interface VoyagerPage
      */
     public function create($contentData, array $settings);
 
+    /*
+     * Set Current Page
+     */
+    public function setPage($page);
+
+    /*
+     * Get Current Page
+     */
+    public function getPage();
+
     /**
      * @param Model $contentData
      * @param array $settings

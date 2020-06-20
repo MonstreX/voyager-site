@@ -143,6 +143,23 @@ class VoyagerPage implements VoyagerPageContract
     }
 
     /*
+     * Set Current Page
+     */
+    public function setPage($page)
+    {
+        $this->contentData = $page;
+    }
+
+    /*
+     * Get Current Page
+     */
+    public function getPage()
+    {
+        return $this->contentData;
+    }
+
+
+    /*
      * Init Templates names
      */
     public function setTemplates(Model $contentData, array $settings)
