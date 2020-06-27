@@ -8,7 +8,9 @@ namespace MonstreX\VoyagerSite\Contracts;
 interface VoyagerData
 {
 
-    public function find($alias, string $modelSlug = null, bool $fail = true);
+    public function findFirst($alias, string $modelSlug = null, bool $fail = true);
+
+    public function findByField(string $modelSlug, string $field, $value, string $order = 'order', string $direction = 'ASC');
 
     public function where(string $field, string $value, string $modelSlug = null, bool $fail = true);
 

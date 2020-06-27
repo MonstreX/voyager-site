@@ -13,6 +13,26 @@ interface VoyagerPage
     /**
      * @return mixed
      */
+    public function getTitle();
+
+    /**
+     * @return mixed
+     */
+    public function getPage();
+
+    /**
+     * @return mixed
+     */
+    public function getContent();
+
+    /**
+     * @return mixed
+     */
+    public function getDataSources();
+
+    /**
+     * @return mixed
+     */
     public function getSeoTitle();
 
     /**
@@ -30,6 +50,24 @@ interface VoyagerPage
      * @return mixed
      */
     public function setTitle(string $title);
+
+    /**
+     * @param Model $content
+     * @return mixed
+     */
+    public function setPage(Model $content);
+
+    /**
+     * @param Model $content
+     * @return mixed
+     */
+    public function setContent(Model $content);
+
+    /**
+     * @param $dataSources
+     * @return mixed
+     */
+    public function setDataSources($dataSources);
 
     /**
      * @param string $title
@@ -50,50 +88,36 @@ interface VoyagerPage
     public function setSeoKeywords(string $keywords);
 
     /**
-     * @param $contentData
+     * @param Model $content
      * @param array $settings
      * @return mixed
      */
-    public function create($contentData, array $settings);
-
-    /*
-     * Set Current Page
-     */
-    public function setPage($page);
-
-    /*
-     * Get Current Page
-     */
-    public function getPage();
-
-    /**
-     * @param Model $contentData
-     * @param array $settings
-     * @return mixed
-     */
-    public function setTemplates(Model $contentData, array $settings);
+    public function setTemplates(Model $content, array $settings);
 
     /**
      * @param string $template
+     * @return mixed
      */
     public function setMasterTemplate(string $template);
 
     /**
      * @param string $template
+     * @return mixed
      */
     public function setLayoutTemplate(string $template);
 
     /**
      * @param string $template
+     * @return mixed
      */
     public function setPageTemplate(string $template);
 
     /**
-     * @param Model $contentData
+     * @param Model $content
      * @param array $settings
      * @return mixed
      */
-    public function setSeo(Model $contentData, array $settings);
+    public function setSeo(Model $content, array $settings);
 
     /**
      * @return mixed
@@ -101,12 +125,11 @@ interface VoyagerPage
     public function startBreadcrumbs();
 
     /**
-     * @param $label
+     * @param string $label
      * @param string $url
      * @return mixed
      */
-    public function addBreadcrumbs($label, $url = '#');
-
+    public function addBreadcrumbs(string $label, $url = '#');
 
     /**
      * @return mixed
@@ -114,9 +137,52 @@ interface VoyagerPage
     public function getBreadcrumbs();
 
     /**
-     * @param null $template_layout
      * @return mixed
      */
-    public function view($template_layout = null);
+    public function buildBreadcrumbs();
+
+    /**
+     * @param Model|null $page
+     * @return mixed
+     */
+    public function setParents(Model $page = null);
+
+    /**
+     * @return mixed
+     */
+    public function getParents();
+
+    /**
+     * @param Model $content
+     * @param array $settings
+     * @return mixed
+     */
+    public function create(Model $content, array $settings);
+
+    /**
+     * @param string|null $template_layout
+     * @param array|null $data
+     * @return mixed
+     */
+    public function view(string $template_layout = null, array $data = null);
+
+    /**
+     * @param Model $page
+     * @param array $parents
+     * @param string $default_banner
+     * @return mixed
+     */
+    public function setBanner(Model $page, array $parents, string $default_banner);
+
+    /**
+     * @param string $parent_field
+     * @return mixed
+     */
+    public function setChildren(string $parent_field);
+
+    /**
+     * @return mixed
+     */
+    public function getChildren();
 
 }

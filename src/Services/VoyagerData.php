@@ -7,7 +7,7 @@ use MonstreX\VoyagerSite\Contracts\VoyagerData as VoyagerDataContract;
 use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Facades\Voyager;
 use Schema;
-
+use Str;
 
 class VoyagerData implements VoyagerDataContract
 {
@@ -15,7 +15,7 @@ class VoyagerData implements VoyagerDataContract
     /*
      * Find model record by SLUG
      */
-    public function find($alias, string $modelSlug = null, bool $fail = true)
+    public function findFirst($alias, string $modelSlug = null, bool $fail = true)
     {
         if (is_int($alias)) {
             return $this->where('id', $alias, $modelSlug, $fail);
@@ -24,33 +24,17 @@ class VoyagerData implements VoyagerDataContract
         return $this->where('slug', $alias, $modelSlug, $fail);
     }
 
-
     /*
-     * Find model record by Field
+     * Find (first) model record by Field and Value
      */
     public function where(string $field, string $value, string $modelSlug = null, bool $fail = true)
     {
-        if (!$modelSlug) {
-            // Default mode is a Page
-            $modelSlug = config('voyager-site.default_model_table');
-        }
 
-        $dataType = Voyager::model('DataType')->where('slug', '=', $modelSlug)->first();
+        $model = $this->getModel($modelSlug);
+        $data = $model::where($field, $value)->first();
 
-        if ($dataType) {
-
-            $model = app($dataType->model_name);
-            $data = $model::where($field, $value)->first();
-
-        } else {
-
-            $model = app(config('voyager.models.namespace').$modelSlug);
-            $data = $model::where($field, $value)->first();
-
-            if (!$data) {
-                $data = DB::table($modelSlug)->where($field, $value)->first();
-            }
-
+        if (!$model) {
+            $data = DB::table($modelSlug)->where($field, $value)->first();
         }
 
         // Drop 404 Error if not found or published (status = 0)
@@ -70,7 +54,42 @@ class VoyagerData implements VoyagerDataContract
         return $data;
     }
 
+    /*
+     * Find records using given field and value (only with status = 1)
+     */
+    public function findByField(string $modelSlug, string $field, $value, string $order = 'order', string $direction = 'ASC')
+    {
+        $model = $this->getModel($modelSlug);
 
+        $data = $model::where([$field => $value, 'status' => 1])->orderBy($order, $direction)->get();
+
+        return $data;
+    }
+
+    /*
+     *  Get Model using given model name (like 'Page')
+     */
+    private function getModel($modelSlug):object
+    {
+        if (!$modelSlug) {
+            // Default mode is a Page
+            $modelSlug = config('voyager-site.default_model_table');
+        }
+
+        $dataType = Voyager::model('DataType')->where('slug', '=', $modelSlug)->first();
+
+        if ($dataType) {
+            $model = app($dataType->model_name);
+        } else {
+            $model = app(config('voyager.models.namespace').$modelSlug);
+        }
+
+        return $model;
+    }
+
+    /*
+     *  Get models records using JSON model scheme
+     */
     public function getDataSources(object $data_sources):array
     {
         if (isset($data_sources)) {
@@ -84,13 +103,15 @@ class VoyagerData implements VoyagerDataContract
         }
     }
 
-
+    /*
+     *  Get one model using JSON
+     */
     public function getDataSource(object $data_source):array
     {
 
-        // Source
-        $model_class = config('voyager.models.namespace').$data_source->model;
-        $data = app($model_class);
+        $model_slug = Str::plural(mb_strtolower($data_source->model));
+
+        $data = $this->getModel($model_slug);
 
         // Sorting
         if(isset($data_source->order)) {
@@ -119,7 +140,7 @@ class VoyagerData implements VoyagerDataContract
 
         // Load related Media Data if needed and convert it to an array
         // It is necessary Only for accessing in Liquid templates
-        $dataType = Voyager::model('DataType')->where('model_name', '=', $model_class)->first();
+        $dataType = Voyager::model('DataType')->where('slug', '=', $model_slug)->first();
         $rows = $dataType->rows()->get();
 
         foreach ($data_records as $record) {
@@ -185,7 +206,7 @@ class VoyagerData implements VoyagerDataContract
         $menu_items = flat_to_tree($model::all()->toArray());
 
         if ($parent) {
-            $menu_items = [$this->getChildren($menu_items, $parent)];
+            $menu_items = [$this->getMenuChildren($menu_items, $parent)];
         }
 
         return $menu_items;
@@ -194,7 +215,7 @@ class VoyagerData implements VoyagerDataContract
     /*
      * Get Children Tree Menu Items
      */
-    private function getChildren($items, $parent)
+    private function getMenuChildren($items, $parent)
     {
         foreach ($items as $key => $item) {
             if ($item[$parent['field']] === $parent['value']) {
@@ -202,13 +223,11 @@ class VoyagerData implements VoyagerDataContract
             }
 
             if (isset($item['children'])) {
-                if ($result = $this->getChildren($item['children'], $parent)) {
+                if ($result = $this->getMenuChildren($item['children'], $parent)) {
                     return $result;
                 }
             }
         }
     }
-
-
 
 }

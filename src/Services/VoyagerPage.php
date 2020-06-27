@@ -1,14 +1,27 @@
 <?php
 
-
 namespace MonstreX\VoyagerSite\Services;
 
 use MonstreX\VoyagerSite\Contracts\VoyagerPage as VoyagerPageContract;
 use Illuminate\Database\Eloquent\Model;
+use Schema;
 use VSite, VData;
 
 class VoyagerPage implements VoyagerPageContract
 {
+    /* Conventions of using custom model properties and settings
+     *
+     * Settings:
+     * site_setting('theme.theme_banner_image') - Page header image
+     *
+     * Model custom properties:
+     * public $masterPageRouteName = 'page'; - Route name for master page (uses in breadcrumbs)
+     * public $masterPageSlug = 'pages'; - table name for master page
+     * public $masterPageId = 2; - Record ID of master page
+     * public $PageRouteName = 'service';  - Route name for current page (uses in breadcrumbs)
+     * public $bannerField = 'banner_image'; - Banner image Field name
+     *
+     */
 
     // Settings
     protected $settings;
@@ -17,10 +30,19 @@ class VoyagerPage implements VoyagerPageContract
     protected $title;
 
     // Loaded MODEL Record
-    protected $contentData;
+    protected $content;
+
+    // Parents chain
+    protected $parents;
+
+    // Header page image
+    protected $banner;
 
     // Attached Models Records
-    protected $dataSets;
+    protected $dataSources;
+
+    // Children of current page
+    protected $children;
 
     // Templates
     protected $template;
@@ -43,6 +65,30 @@ class VoyagerPage implements VoyagerPageContract
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /*
+     * Get Current Page
+     */
+    public function getPage()
+    {
+        return $this;
+    }
+
+    /*
+     * Get Current Content
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /*
+     * Get Data Sources
+     */
+    public function getDataSources()
+    {
+        return $this->dataSources;
     }
 
     /*
@@ -69,12 +115,37 @@ class VoyagerPage implements VoyagerPageContract
         return $this->metaKeywords;
     }
 
+
     /*
      * Set Title
      */
     public function setTitle(string $title)
     {
         $this->title = $title;
+    }
+
+    /*
+     * Set Current Page
+     */
+    public function setPage(Model $content)
+    {
+        return $this->create($content, VSite::getSettings());
+    }
+
+    /*
+     * Set Current Content
+     */
+    public function setContent(Model $content)
+    {
+        $this->content = $page;
+    }
+
+    /*
+     * Set Data Sources
+     */
+    public function setDataSources($dataSources)
+    {
+        $this->dataSources = $dataSources;
     }
 
     /*
@@ -101,70 +172,12 @@ class VoyagerPage implements VoyagerPageContract
         $this->metaKeywords = $keywords;
     }
 
-
-    /*
-     * Create Page
-     */
-    public function create($contentData, array $settings)
-    {
-        // If we don't have related Data
-        if(!$contentData) {
-            if(!config('voyager-site.use_legacy_error_handler')) {
-                throw new \MonstreX\VoyagerSite\Exceptions\VoyagerSiteException(__('voyager-site.errors.error_404_message'), 404);
-            }
-            abort(404);
-        }
-
-        // General settings
-        $this->settings = $settings;
-
-        // Model Content
-        $this->contentData = $contentData;
-
-        // Title
-        $this->title = isset($contentData->title)? $contentData->title : '';
-
-        // Templates
-        $this->setTemplates($contentData, $settings);
-
-        // SEO
-        $this->setSeo($contentData, $settings);
-
-        // Breadcrumbs
-        $this->startBreadcrumbs();
-
-        // Attach Data Sets if present
-        $details = json_decode($this->contentData->details);
-        if ($details && isset($details->data_sources)) {
-            $this->dataSets = VData::getDataSources($details->data_sources);
-        }
-
-        return $this;
-    }
-
-    /*
-     * Set Current Page
-     */
-    public function setPage($page)
-    {
-        $this->contentData = $page;
-    }
-
-    /*
-     * Get Current Page
-     */
-    public function getPage()
-    {
-        return $this->contentData;
-    }
-
-
     /*
      * Init Templates names
      */
-    public function setTemplates(Model $contentData, array $settings)
+    public function setTemplates(Model $content, array $settings)
     {
-        $page_templates = json_decode($contentData->details);
+        $page_templates = json_decode($content->details);
         $this->template = isset($page_templates->template)? $page_templates->template : $settings['template'];
         $this->templateMaster = isset($page_templates->template_master)? $page_templates->template_master : $settings['template_master'];
         $this->templateLayout = isset($page_templates->template_layout)? $page_templates->template_layout : $settings['template_layout'];
@@ -195,19 +208,18 @@ class VoyagerPage implements VoyagerPageContract
         $this->templatePage = $template;
     }
 
-
     /*
      * Init SEO Data
      */
-    public function setSeo(Model $contentData, array $settings)
+    public function setSeo(Model $content, array $settings)
     {
 
-        $page_seo = json_decode($contentData->seo);
+        $page_seo = json_decode($content->seo);
 
         // TITLE
         $this->seoTitle = get_first_not_empty([
             isset($page_seo->fields->seo_title->value)? $page_seo->fields->seo_title->value : null,
-            isset($contentData->title)? $contentData->title : null,
+            isset($content->title)? $content->title : null,
             $settings['seo_title'],
             $settings['site_title']
         ]);
@@ -262,27 +274,135 @@ class VoyagerPage implements VoyagerPageContract
         return $this->breadcrumbs;
     }
 
+    public function buildBreadcrumbs()
+    {
+        foreach ($this->parents as $key => $parent) {
+            $route_name = isset($parent->PageRouteName)? $parent->PageRouteName : $this->content->masterPageRouteName;
+            $this->addBreadcrumbs($parent->title, route($route_name, $parent->slug));
+        }
+    }
+
+    /*
+     * Get parents chain (except current page)
+     */
+    public function setParents(Model $page = null)
+    {
+        if (!$page) {
+            $page = $this->content;
+        }
+
+        $parents = [];
+        $current = $page;
+
+        //Collect all parents in current model
+        while (!empty($current->parent_id)) {
+            $current = VData::findFirst((int)$current->parent_id, $page->getTable());
+            $parents[] = $current;
+        }
+        // Get Master Page
+        if (isset($page->masterPageId)) {
+            $parents[] = VData::findFirst((int)$page->masterPageId, $page->masterPageSlug);
+        }
+
+        $this->parents = array_reverse($parents);
+
+        return $this->parents;
+    }
+
+    /*
+     * Get Parents Chain
+     */
+    public function getParents()
+    {
+        return $this->parents;
+    }
+
+    /*
+     * Set Children for the given content. Parent field should consists parent ID
+     */
+    public function setChildren(string $parent_field)
+    {
+
+        if (Schema::hasColumn($this->content->getTable(), $parent_field)) {
+            $this->children = VData::findByField($this->content->getTable(), $parent_field, (int)$this->content->id);
+        }
+
+        return $this->children;
+    }
+
+    /*
+     * Get Children
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /*
+     * Create Page
+     */
+    public function create(Model $content, array $settings)
+    {
+        // If we don't have related Data
+        if(!$content) {
+            if(!config('voyager-site.use_legacy_error_handler')) {
+                throw new \MonstreX\VoyagerSite\Exceptions\VoyagerSiteException(__('voyager-site.errors.error_404_message'), 404);
+            }
+            abort(404);
+        }
+
+        // General settings
+        $this->settings = $settings;
+
+        // Model Content
+        $this->content = $content;
+
+        // Title
+        $this->title = isset($content->title)? $content->title : '';
+
+        // Templates
+        $this->setTemplates($content, $settings);
+
+        // SEO
+        $this->setSeo($content, $settings);
+
+        // Breadcrumbs
+        $this->startBreadcrumbs();
+
+        // Set parents chain
+        $this->setParents();
+
+        // Set page header banner
+        $this->setBanner($content, $this->parents, site_setting('theme.theme_banner_image'));
+
+        // Attach Data Sets if present
+        $details = json_decode($this->content->details);
+        if ($details && isset($details->data_sources)) {
+            $this->dataSources = VData::getDataSources($details->data_sources);
+        }
+
+        return $this;
+    }
+
+
     /*
      *  Returns rendered VIEW using PAGE Vars
      */
-    public function view($template_layout = null, $data = null)
+    public function view(string $template_layout = null, array $data = null)
     {
-
-        // If layout template not present in params
-        if (!$template_layout) {
-            $template_layout = $this->settings['template'] . '.' . $this->settings['template_layout'];
-        }
 
         $this->addBreadcrumbs($this->title);
 
-        return view($template_layout)->with([
+        return view($template_layout?? $this->settings['template'] . '.' . $this->templateLayout)->with([
             'template' => $this->settings['template'],
             'template_master' => $this->settings['template'] . '.' . $this->settings['template_master'],
             'template_page' => $this->settings['template'] . '.' . $this->templatePage,
             'breadcrumbs' => $this->breadcrumbs,
+            'banner' => $this->banner,
             'title' => $this->title,
-            'page' => $this->contentData,
-            'page_data_sets' => $this->dataSets,
+            'page' => $this->content,
+            'children' => $this->children,
+            'data_sources' => $this->dataSources,
             'seo' => [
                 'title' => $this->getSeoTitle(),
                 'description' => $this->getSeoDescription(),
@@ -292,5 +412,32 @@ class VoyagerPage implements VoyagerPageContract
         ])->render();
     }
 
+    /*
+     * Set Banner Image (header page image)
+     */
+    public function setBanner(Model $page, array $parents, string $default_banner)
+    {
+        $banner_field = isset($page->bannerField)? $page->bannerField : 'banner_image';
+
+        $banner = $page->getFirstMediaUrl($banner_field);
+
+        if (empty($banner)) {
+            foreach (array_reverse($parents) as $parent) {
+                $banner = $parent->getFirstMediaUrl($banner_field);
+                if (!empty($banner)) {
+                    break;
+                }
+            }
+
+            // If we don't have any attached banner in our models we use global settings banner
+            if (empty($banner)) {
+                $banner = $default_banner;
+            }
+        }
+
+        $this->banner = $banner;
+
+        return $banner;
+    }
 
 }
