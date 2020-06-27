@@ -206,12 +206,16 @@ If you use (int) value then it'll be found by ID field. If a record is not found
 Available variables in the View:
 
 ```php
+$template            // Root template folder 
 $template_master     // Master template name (to extend View)
 $template_page       // Internal page template name
 $breadcrumbs         // Breadcrumbs array
 $title               // Page title
-$page                // Page record 
-$page_data_sets      // Data sources attached to the Page
+$banner              // Page banner image (if present)
+$page                // Page instance
+$parents             // Chain of parents of current page  
+$children            // Children pages if present for current page
+$data_sources        // Extra Data sources attached to the Page
 $seo['title']        // Seo Title
 $seo['description']  // Meta Description
 $seo['keywords']     // Meta Keywords
@@ -276,7 +280,18 @@ To do this define new template names in **details** field:
   "template_page": "pages.contacts"
 }
 ```
- 
+
+Overriding in controllers (using page trait):
+```php
+public function service($alias)
+{
+    $this->create($alias,'services')->getContent();
+    $this->setPageTemplate('pages.service');
+    $this->buildBreadcrumbs();
+    $this->setChildren('parent_id');
+    return $this->view();
+}
+``` 
 
 ### Page SEO parameters
 
@@ -308,6 +323,19 @@ addBreadcrumbs(__('site.breadcrumb_home'), route(config('voyager-site.route_home
 ``` 
 To add other elements to the **Breadcrumbs** array just use the method **VPage::addBreadcrumbs($title, $path)** 
 
+Also you can use the method **buildBreadcrumbs()** to build a chain of nested pages which hold in the Parents property.
+This property sets automatically when you load and create page instance using the method **setParents($page, $parent_field_name)**
+Where $page is a current page instance and $parent_field_name is a field name where holds ID with a parent of the current page. 
+
+> Note: additional necessary setup for models - to build **parents chain**, **breadcrumbs** and get **banner**
+```php
+// Example (Additional Model properties)
+public $masterPageRouteName = 'page';
+public $masterPageSlug = 'pages';
+public $masterPageId = 2;
+public $PageRouteName = 'service';
+public $bannerField = 'banner_image';
+```
 
 ### Blocks / Widgets
 
@@ -324,16 +352,18 @@ Each block has the follow structure:
 Available positions can be edited in the **Regions** menu.
 
 **Block content** - Main block content. You can use as pure HTML code or as a [Liquid template](https://packagist.org/packages/liquid/liquid).
+
 Available variables:
-- **images** - holds images items listed bellow. 
-- **data** - Data sources if defined in **Options** field.
+- **this.images** - holds images items listed bellow. 
+- **this.field_name** - holds additional fields values, where field_name is additional field name in the block table.
+- **data** - Data sources if defined in the **Options** field.
 
 Example #1 (usage of image list):
 ```html
 <!-- Block liquid template -->
 <h3>My images</h3>
 <div class="images-list">
-{% for image in images %}
+{% for image in this.images %}
   <img src="{{ image.url | crop: 300,200 | url }}" alt=""/>
 {% endfor %}
 </div>
@@ -371,6 +401,7 @@ For this kind of template you need to define **data sources** JSON-like structur
     }
 }
 ```
+Where "model" is a model name equal to registered model name in the Voyager Bread system. 
 
 Example #3 (usage internal block's fields):
 ```html
@@ -608,8 +639,6 @@ AJAX Example:
 </div>
 ```
 
-
-
 ### Page layout render 
 
 The special system allows you to manage group of the blocks or forms and fields on a certain page.
@@ -618,6 +647,26 @@ You can easily add/remove blocks, forms and fields (and sort them) in the edit p
 {{ render_layout($page->layout, $page) }}
 ``` 
 Where $page is a page instance.
+
+Or manually:
+```blade
+@if ($layoutFields = json_decode($page->layout))
+    @if ($layoutFields)
+        @foreach($layoutFields as $field)
+            @if($field->type === 'Block')
+                {!! render_block($field->key) !!}
+            @elseif ($field->type === 'Form')
+                {!! render_form($field->key) !!}
+            @elseif ($field->type === 'Field')
+                <div class="page-content">
+                    {!! $page->{$field->key} !!}
+                </div>
+            @endif
+        @endforeach
+    @endif
+@endif
+```
+
 
 
 ## Security

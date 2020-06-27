@@ -143,9 +143,10 @@ interface VoyagerPage
 
     /**
      * @param Model|null $page
+     * @param string $parent_field
      * @return mixed
      */
-    public function setParents(Model $page = null);
+    public function setParents(Model $page = null, $parent_field = 'parent_id');
 
     /**
      * @return mixed

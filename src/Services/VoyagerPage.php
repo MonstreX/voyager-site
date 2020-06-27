@@ -285,7 +285,7 @@ class VoyagerPage implements VoyagerPageContract
     /*
      * Get parents chain (except current page)
      */
-    public function setParents(Model $page = null)
+    public function setParents(Model $page = null, $parent_field = 'parent_id')
     {
         if (!$page) {
             $page = $this->content;
@@ -295,8 +295,8 @@ class VoyagerPage implements VoyagerPageContract
         $current = $page;
 
         //Collect all parents in current model
-        while (!empty($current->parent_id)) {
-            $current = VData::findFirst((int)$current->parent_id, $page->getTable());
+        while (!empty($current->{$parent_field})) {
+            $current = VData::findFirst((int)$current->{$parent_field}, $page->getTable());
             $parents[] = $current;
         }
         // Get Master Page
@@ -401,6 +401,7 @@ class VoyagerPage implements VoyagerPageContract
             'banner' => $this->banner,
             'title' => $this->title,
             'page' => $this->content,
+            'parents' => $this->parents,
             'children' => $this->children,
             'data_sources' => $this->dataSources,
             'seo' => [
