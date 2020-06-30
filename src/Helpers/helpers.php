@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
 
-if (!function_exists('translit_ru')) {
-    function translit_ru($string) {
+if (!function_exists('translit_cyrillic')) {
+    function translit_cyrillic($string) {
         $charlist = array(
             "А"=>"A","Б"=>"B","В"=>"V","Г"=>"G",
             "Д"=>"D","Е"=>"E","Ж"=>"J","З"=>"Z","И"=>"I",
@@ -42,7 +42,7 @@ if (!function_exists('get_file'))
 
 
 if (!function_exists('store_post_files')) {
-    function store_post_files(Request $request, $slug, $field, $public = true)
+    function store_post_files(Request $request, $slug, $field, $public = 'public')
     {
 
         if (!$request->has($field)) {
@@ -60,7 +60,7 @@ if (!function_exists('store_post_files')) {
             $file->storeAs(
                 $path,
                 $filename . '.' . $file->getClientOriginalExtension(),
-                config('voyager.storage.disk', 'public')
+                config('voyager.storage.disk', $public)
             );
 
             array_push($filesPath, [
@@ -76,11 +76,11 @@ if (!function_exists('store_post_files')) {
 if (!function_exists('generate_filename')) {
     function generate_filename($file, $path)
     {
-        $filename = basename(translit_ru($file->getClientOriginalName()), '.' . $file->getClientOriginalExtension());
+        $filename = basename(translit_cyrillic($file->getClientOriginalName()), '.' . $file->getClientOriginalExtension());
         $filename_counter = 1;
         // Make sure the filename does not exist, if it does make sure to add a number to the end 1, 2, 3, etc...
         while (Storage::disk(config('voyager.storage.disk'))->exists($path . $filename . '.' . $file->getClientOriginalExtension())) {
-            $filename = basename(translit_ru($file->getClientOriginalName()), '.' . $file->getClientOriginalExtension()) . (string)($filename_counter++);
+            $filename = basename(translit_cyrillic($file->getClientOriginalName()), '.' . $file->getClientOriginalExtension()) . (string)($filename_counter++);
         }
         return $filename;
     }
@@ -95,7 +95,7 @@ if (!function_exists('site_setting')) {
 
 
 if (!function_exists('site_setting_group')) {
-    function site_settings_group($key, $default = null)
+    function site_settings_group($key)
     {
         if (\Schema::hasTable('site_settings')) {
             $settings = DB::table('site_settings')->where('key', $key)->first();
@@ -112,6 +112,40 @@ if (!function_exists('site_setting_group')) {
 }
 
 
+// <img src="{{ get_image_webp(get_image_or_create($image_url, 400, 500)) }}" alt="">
+if (!function_exists('get_image_webp'))
+{
+    function get_image_webp($image_path_full)
+    {
+
+        $image_path_full = str_replace('/storage/','', $image_path_full);
+
+        $path = pathinfo($image_path_full);
+        $target_path_full = $path['dirname'] . DIRECTORY_SEPARATOR . $path['filename'] . '.webp';
+
+        if ($path['extension'] === 'webp' || Storage::disk(config('voyager.storage.disk'))->exists($target_path_full)) {
+            return '/storage/' . $target_path_full;
+        }
+
+        $image = Image::make(Voyager::image($image_path_full));
+        $image->encode('webp', 80);
+
+        Storage::disk(config('voyager.storage.disk'))->put($target_path_full, (string) $image, 'public');
+
+        return Storage::url(str_replace('\\', '/', $target_path_full));
+    }
+}
+
+// <img src="{{ get_image_or_create_webp($image_url, 400, 500) }}" alt="">
+if (!function_exists('get_image_or_create_webp'))
+{
+    function get_image_or_create_webp($image_path_full, $width, $height)
+    {
+        return get_image_webp(get_image_or_create($image_path_full, $width, $height));
+    }
+}
+
+// <img src="{{ get_image_or_create($image_url, 400, 500) }}" alt="">
 if (!function_exists('get_image_or_create'))
 {
     function get_image_or_create($image_path_full, $width, $height)

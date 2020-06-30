@@ -667,6 +667,42 @@ Or manually:
 @endif
 ```
 
+## Helpers
+
+**translit_cyrillic($string)** - Transliteration given cyrillic string into latin symbols string.
+
+**get_file($file_path)** - Return URL of the given file_path, can unpack JSON voyager file coded format.
+
+**store_post_files(Request $request, $slug, $field, $public = 'public')** - Store files given in $request $field and return JSON Voyager array of files links and their original names.
+
+**generate_filename($file, $path)** - Return new file name if $file exists on given $path.
+
+**site_setting($key, $default = null)** - Return a site setting (or default value).
+
+**site_settings_group($group_key)** - Return a group of site settings.
+
+**get_image_webp($image_path_full)** - Return link to a webp image of the given image. Converts image to webp if it is non in a webp format.
+
+**get_image_or_create($image_path_full, $width, $height)** - Return link to the requested image with a given width and height. If it not exists it'll be created. 
+
+**get_image_or_create_webp($image_path_full, $width, $height)** - The same as get_image_or_create but for webp format.
+
+**get_first_not_empty(array $values)** - Returns the first not empty element in a given array. 
+
+**render_block($key)** - Render block.
+
+**render_region($key, $path = null)** - Render region (group of blocks with the same region/group key).
+
+**render_form($key, $subject = null, $suffix = null)** - Render form with a given key. Accept also Subject field and Suffix for using in a form.
+
+**render_layout($layout, $page)** - Render Page Layout (page group of blocks, forms and page fields).
+
+**get_block_field($block_key, $field_name)** - Return field value of a given block key.
+
+
+
+
+    
 
 
 ## Security
