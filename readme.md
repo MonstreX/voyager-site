@@ -333,7 +333,7 @@ Where $page is a current page instance and $parent_field_name is a field name wh
 public $masterPageRouteName = 'page';
 public $masterPageSlug = 'pages';
 public $masterPageId = 2;
-public $PageRouteName = 'service';
+public $pageRouteName = 'service';
 public $bannerField = 'banner_image';
 ```
 
