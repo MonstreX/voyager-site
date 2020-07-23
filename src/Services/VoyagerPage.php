@@ -418,6 +418,7 @@ class VoyagerPage implements VoyagerPageContract
      */
     public function setBanner(Model $page, array $parents, string $default_banner)
     {
+
         $banner_field = $page->bannerField?? 'banner_image';
 
         $banner = $page->getFirstMediaUrl($banner_field);
