@@ -147,6 +147,7 @@ return [
         'theme' => [
             'title' => 'Theme',
             'logo' => 'Site logo',
+            'banner' => 'Page header image',
         ],
     ],
     'pages'   => [

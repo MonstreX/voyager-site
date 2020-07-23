@@ -373,7 +373,7 @@ class VoyagerPage implements VoyagerPageContract
         $this->setParents();
 
         // Set page header banner
-        $this->setBanner($content, $this->parents, site_setting('theme.theme_banner_image'));
+        $this->setBanner($content, $this->parents, site_setting('theme.theme_banner_image')?? '');
 
         // Attach Data Sets if present
         $details = json_decode($this->content->details);
@@ -418,7 +418,7 @@ class VoyagerPage implements VoyagerPageContract
      */
     public function setBanner(Model $page, array $parents, string $default_banner)
     {
-        $banner_field = isset($page->bannerField)? $page->bannerField : 'banner_image';
+        $banner_field = $page->bannerField?? 'banner_image';
 
         $banner = $page->getFirstMediaUrl($banner_field);
 

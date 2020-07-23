@@ -249,6 +249,12 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                     'value' => '',
                     'class' => 'col-md-12',
                 ],
+                'theme_banner_image' => [
+                    'label' => __('voyager-site::seeders.settings.theme.banner'),
+                    'type' => 'media',
+                    'value' => '',
+                    'class' => 'col-md-12',
+                ],
             ],
         ];
 
