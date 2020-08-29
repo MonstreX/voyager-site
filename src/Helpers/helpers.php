@@ -111,8 +111,6 @@ if (!function_exists('site_setting_group')) {
     }
 }
 
-
-// <img src="{{ get_image_webp(get_image_or_create($image_url, 400, 500)) }}" alt="">
 if (!function_exists('get_image_webp'))
 {
     function get_image_webp($image_path_full)

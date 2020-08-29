@@ -67,6 +67,11 @@ class Template
             return get_image_or_create($image, $xsize, $ysize);
         });
 
+        // CROP IMAGE & SAVE AS WEBP
+        $this->template->registerFilter('crop_to_webp', function ($image, $xsize = '', $ysize = '') {
+            return get_image_or_create_webp($image, $xsize, $ysize);
+        });
+
         $this->template->parse($content);
     }
 
