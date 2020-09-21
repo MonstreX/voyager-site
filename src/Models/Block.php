@@ -3,8 +3,8 @@
 namespace MonstreX\VoyagerSite\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * Class Block.
@@ -13,7 +13,7 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
  */
 class Block extends Model implements HasMedia
 {
-    use HasMediaTrait;
+    use InteractsWithMedia;
 
     protected $perPage = 50;
 
