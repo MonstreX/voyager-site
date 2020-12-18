@@ -104,11 +104,15 @@
                                             <div data-field-name="{{$key_field}}">
                                                 <a href="#" class="voyager-x remove-single-media" style="position:absolute;"></a>
                                                 @php $media = $settings->getMedia($key_field)[0] @endphp
-                                                <img src="{{ $media->getFullUrl() }}"
-                                                     style="max-width:200px; height:auto; clear:both; display:block; padding:2px; border:1px solid #ddd; margin-bottom:10px;">
+                                                @if(explode('/', $media->mime_type)[0] === 'image')
+                                                    <img class="image-type" src="{{ $media->getFullUrl() }}">
+                                                @else
+                                                    <img class="file-type" src="{{ voyager_extension_asset('icons/files/'.explode('/', $media->mime_type)[1].'.svg') }}">
+                                                @endif
                                             </div>
+                                            <span class="adv-media-files-filename">{{ Str::limit($media->file_name, 100, ' (...)') }} <i class="@if($media->size > 100000) large @endif">{{ $media->human_readable_size }}</i></span>
                                         @endif
-                                        <input id="{{$key_field}}" type="file" name="{{$key_field}}" accept="image/*">
+                                        <input id="{{$key_field}}" type="file" name="{{$key_field}}">
                                     </div>
                                 @elseif($field->type === 'rich_text_box')
                                     <div class="form-group {{ $class }}">

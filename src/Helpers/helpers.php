@@ -119,16 +119,24 @@ if (!function_exists('get_image_webp'))
         $image_path_full = str_replace('/storage/','', $image_path_full);
 
         $path = pathinfo($image_path_full);
+
+        if (!isset($path['dirname'])) {
+            return '';
+        }
+
         $target_path_full = $path['dirname'] . DIRECTORY_SEPARATOR . $path['filename'] . '.webp';
 
         if ($path['extension'] === 'webp' || Storage::disk(config('voyager.storage.disk'))->exists($target_path_full)) {
             return '/storage/' . $target_path_full;
         }
 
-        $image = Image::make(Voyager::image($image_path_full));
-        $image->encode('webp', 80);
-
-        Storage::disk(config('voyager.storage.disk'))->put($target_path_full, (string) $image, 'public');
+        try {
+            $image = Image::make(Voyager::image($image_path_full));
+            $image->encode('webp', 80);
+            Storage::disk(config('voyager.storage.disk'))->put($target_path_full, (string) $image, 'public');
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
 
         return Storage::url(str_replace('\\', '/', $target_path_full));
     }
@@ -163,6 +171,10 @@ if (!function_exists('get_image_or_create'))
 
         $path = pathinfo($image_path_full);
 
+        if (!isset($path['dirname'])) {
+            return '';
+        }
+
         $target_path_full = $path['dirname'] . DIRECTORY_SEPARATOR. 'thumbnails' . DIRECTORY_SEPARATOR
             . $path['filename']
             . '-' . $width . 'x'
@@ -180,10 +192,10 @@ if (!function_exists('get_image_or_create'))
                 $image->encode($path['extension'], 75);
                 Storage::disk(config('voyager.storage.disk'))->put($target_path_full, (string) $image, 'public');
             } catch (\Exception $e) {
-                debug($e);
-                return '';
+                return $e->getMessage();
             }
         }
+
         return Storage::url(str_replace('\\', '/', $target_path_full));
     }
 }
