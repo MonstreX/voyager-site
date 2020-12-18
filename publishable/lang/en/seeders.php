@@ -19,6 +19,8 @@ return [
         'page_urls'        => 'Page URLs',
         'region_key'       => 'Group key',
         'block_key'        => 'Block key',
+        'block_title_validate' => 'The field Title is required.',
+        'block_slug_validate' => 'The field Block Key should be UNIQUE.',
         'form_key'         => 'Form key',
         'region_position'  => 'Group',
         'block_content'    => 'Block content',

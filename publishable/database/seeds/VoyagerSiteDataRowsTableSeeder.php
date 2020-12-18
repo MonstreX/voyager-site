@@ -190,12 +190,19 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'order'        => 3,
                 'details'               => [
                     'url' => 'edit',
+                    'validation' => [
+                        'rule' => 'required',
+                        'messages' => [
+                            'required' => __('voyager-site::seeders.data_rows.block_title_validate'),
+                        ],
+                    ],
                     'display' => [
                         'width' => '6'
                     ]
                 ],
             ])->save();
         }
+
 
         $dataRow = $this->dataRow($blockDataType, 'key');
         if (!$dataRow->exists) {
@@ -210,7 +217,15 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'delete'       => 1,
                 'order'        => 4,
                 'details'               => [
-                    'url' => 'edit',
+                    'validation' => [
+                        'rule' => 'unique:blocks',
+                        'messages' => [
+                            'unique' => __('voyager-site::seeders.data_rows.block_slug_validate'),
+                        ]
+                    ],
+                    'slugify' => [
+                        'origin' => 'title'
+                    ],
                     'display' => [
                         'width' => '6'
                     ]

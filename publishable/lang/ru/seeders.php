@@ -20,6 +20,8 @@ return [
         'region_key'       => 'Ключ группы блоков',
         'block_key'        => 'Ключ блока',
         'form_key'         => 'Ключ формы',
+        'block_title_validate' => 'Поле "Заголовок" обязательно.',
+        'block_slug_validate' => 'Поле "Ключ блока" должно быть уникально.',
         'region_position'  => 'Группа блоков',
         'block_content'    => 'Содержимое блока',
         'form_content'     => 'Содержимое формы',
