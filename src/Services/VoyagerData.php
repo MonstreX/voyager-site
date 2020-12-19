@@ -272,8 +272,10 @@ class VoyagerData implements VoyagerDataContract
         $quality = $quality?? 80;
 
         $sizes = $width || $height? '-' . $width . 'x' . $height : '';
+        $thumb = $width || $height? 'thumbnails/' : '';
 
-        $target_path_full = $path_info['dirname'] . '/thumbnails/'
+        $target_path_full = $path_info['dirname'] . '/'
+            . $thumb
             . $path_info['filename']
             . $sizes
             . '.' . $format;

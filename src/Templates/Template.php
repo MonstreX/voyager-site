@@ -15,24 +15,6 @@ class Template
     {
         $this->template = new liquidTemplate();
 
-        // FUNCTION
-        $this->template->registerFilter('func', function ($func_name, $param1 = null, $param2 = null, $param3 = null, $param4 = null, $param5 = null) {
-            $res = '';
-            if ($param5 !== null) {
-                $res = $func_name($param1, $param2, $param3, $param4, $param5);
-            } elseif ($param4 !== null) {
-                $res = $func_name($param1, $param2, $param3, $param4);
-            } elseif ($param3 !== null) {
-                $res = $func_name($param1, $param2, $param3);
-            } elseif ($param2 !== null) {
-                $res = $func_name($param1, $param2);
-            } elseif ($param1 !== null) {
-                $res = $func_name($param1);
-            }
-            return $res;
-        });
-
-
         // SETTINGS
         $this->template->registerFilter('site_setting', function ($arg, $arg2 = null) {
             return site_setting($arg, $arg2);
@@ -70,11 +52,6 @@ class Template
         // CROP IMAGE
         $this->template->registerFilter('crop', function ($image, $xsize = '', $ysize = '', $format = null, $quality = null) {
             return get_image_or_create($image, $xsize, $ysize, $format, $quality);
-        });
-
-        // CROP IMAGE & SAVE AS WEBP
-        $this->template->registerFilter('crop_to_webp', function ($image, $xsize = '', $ysize = '', $quality = null) {
-            return get_image_or_create_webp($image, $xsize, $ysize, $quality);
         });
 
         $this->template->parse($content);
