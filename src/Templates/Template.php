@@ -62,14 +62,19 @@ class Template
             }
         });
 
+        // CONVERT TO WEBP IMAGE
+        $this->template->registerFilter('webp', function ($image, $format = null, $quality = null) {
+            return get_image_or_create($image, null, null, $format, $quality);
+        });
+
         // CROP IMAGE
-        $this->template->registerFilter('crop', function ($image, $xsize = '', $ysize = '') {
-            return get_image_or_create($image, $xsize, $ysize);
+        $this->template->registerFilter('crop', function ($image, $xsize = '', $ysize = '', $format = null, $quality = null) {
+            return get_image_or_create($image, $xsize, $ysize, $format, $quality);
         });
 
         // CROP IMAGE & SAVE AS WEBP
-        $this->template->registerFilter('crop_to_webp', function ($image, $xsize = '', $ysize = '') {
-            return get_image_or_create_webp($image, $xsize, $ysize);
+        $this->template->registerFilter('crop_to_webp', function ($image, $xsize = '', $ysize = '', $quality = null) {
+            return get_image_or_create_webp($image, $xsize, $ysize, $quality);
         });
 
         $this->template->parse($content);

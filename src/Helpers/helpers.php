@@ -111,93 +111,32 @@ if (!function_exists('site_setting_group')) {
     }
 }
 
-if (!function_exists('get_image_webp'))
-{
-    function get_image_webp($image_path_full)
-    {
-
-        $image_path_full = str_replace('/storage/','', $image_path_full);
-
-        $path = pathinfo($image_path_full);
-
-        if (!isset($path['dirname'])) {
-            return '';
-        }
-
-        $target_path_full = $path['dirname'] . DIRECTORY_SEPARATOR . $path['filename'] . '.webp';
-
-        if ($path['extension'] === 'webp' || Storage::disk(config('voyager.storage.disk'))->exists($target_path_full)) {
-            return '/storage/' . $target_path_full;
-        }
-
-        try {
-            $image = Image::make(Voyager::image($image_path_full));
-            $image->encode('webp', 80);
-            Storage::disk(config('voyager.storage.disk'))->put($target_path_full, (string) $image, 'public');
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-
-        return Storage::url(str_replace('\\', '/', $target_path_full));
-    }
-}
 
 // <img src="{{ get_image_or_create_webp($image_url, 400, 500) }}" alt="">
 if (!function_exists('get_image_or_create_webp'))
 {
-    function get_image_or_create_webp($image_path_full, $width, $height)
+    function get_image_or_create_webp($image_path, $width = null, $height = null, $quality = null)
     {
-        return get_image_webp(get_image_or_create($image_path_full, $width, $height));
+        return VData::getImageOrCreate($image_path, $width, $height, 'webp', $quality);
+    }
+}
+
+if (!function_exists('get_image_webp'))
+{
+    function get_image_webp($image_path)
+    {
+        return VData::getImageOrCreate($image_path, null, null, 'webp');
     }
 }
 
 // <img src="{{ get_image_or_create($image_url, 400, 500) }}" alt="">
 if (!function_exists('get_image_or_create'))
 {
-    function get_image_or_create($image_path_full, $width, $height)
+    function get_image_or_create($image_path, $width = null, $height  = null, $format  = null, $quality  = null)
     {
-
-        if(!isset($image_path_full)) {
-            return '';
-        }
-
-        $image_path_full = str_replace('/storage/','', $image_path_full);
-
-        // If JSON Coded
-        $img = json_decode($image_path_full);
-        if($img) {
-            $image_path_full = $img[0];
-        }
-
-        $path = pathinfo($image_path_full);
-
-        if (!isset($path['dirname'])) {
-            return '';
-        }
-
-        $target_path_full = $path['dirname'] . DIRECTORY_SEPARATOR. 'thumbnails' . DIRECTORY_SEPARATOR
-            . $path['filename']
-            . '-' . $width . 'x'
-            . $height
-            . '.' . $path['extension'];
-
-        if(!Storage::disk(config('voyager.storage.disk'))->exists($image_path_full)) {
-            return str_replace('\\', '/', $image_path_full);
-        }
-
-        if(!Storage::disk(config('voyager.storage.disk'))->exists($target_path_full)) {
-            try {
-                $image = Image::make(Voyager::image($image_path_full));
-                $image->fit($width, $height);
-                $image->encode($path['extension'], 75);
-                Storage::disk(config('voyager.storage.disk'))->put($target_path_full, (string) $image, 'public');
-            } catch (\Exception $e) {
-                return $e->getMessage();
-            }
-        }
-
-        return Storage::url(str_replace('\\', '/', $target_path_full));
+        return VData::getImageOrCreate($image_path, $width, $height, $format, $quality);
     }
+
 }
 
 /*

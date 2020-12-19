@@ -3,6 +3,8 @@
 
 namespace MonstreX\VoyagerSite\Services;
 
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use MonstreX\VoyagerSite\Contracts\VoyagerData as VoyagerDataContract;
 use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Facades\Voyager;
@@ -228,6 +230,79 @@ class VoyagerData implements VoyagerDataContract
                 }
             }
         }
+    }
+
+
+    /*
+     *  If a requested Image doesn't exists - it will be created
+     *  Returns relative image URL to a new (or old) image
+     *  $image_url - full (with HOST) or relative URL
+     *  $width - New width of image
+     *  $height - New height of image
+     *  $format - New image format ('webp','png')
+     *  $quality - Image quality
+     */
+    public function getImageOrCreate(string $image_url, int $width = null, int $height = null, string $format = null, int $quality =  null): string
+    {
+
+        // Windows path fix
+        $image_url = Str::replaceFirst('\\', '/', $image_url);
+
+        $origin_url = $image_url;
+
+        // Add HOST if nor present (need for relative URLs)
+        if (!isset(parse_url($image_url)['host'])) {
+            $image_url = request()->getSchemeAndHttpHost() . $image_url;
+        }
+
+        // Remove HOST and Disk Part of URL if present, like: "https://host.com/storage"
+        $image_url = Str::replaceFirst(Storage::disk(config('voyager.storage.disk'))->getConfig()->get('url'), '', $image_url);
+
+        $path_info = pathinfo($image_url);
+
+        if(!isset($path_info['dirname'])
+            || !isset($path_info['basename'])
+            || !isset($path_info['extension'])
+            || !isset($path_info['filename'])
+            ) {
+            return $image_url;
+        }
+
+        $format = $format?? $path_info['extension'];
+        $quality = $quality?? 80;
+
+        $sizes = $width || $height? '-' . $width . 'x' . $height : '';
+
+        $target_path_full = $path_info['dirname'] . '/thumbnails/'
+            . $path_info['filename']
+            . $sizes
+            . '.' . $format;
+
+        if(!Storage::disk(config('voyager.storage.disk'))->exists($image_url)) {
+            return $origin_url;
+        }
+
+        if(!Storage::disk(config('voyager.storage.disk'))->exists($target_path_full)) {
+            try {
+                $image = Image::make(Voyager::image($image_url));
+
+                if ($width && $height) {
+                    $image->fit($width, $height);
+                } elseif($width || $height) {
+                    $image->resize($width, $height, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                }
+
+                $image->encode($format, $quality);
+
+                Storage::disk(config('voyager.storage.disk'))->put($target_path_full, (string) $image, 'public');
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
+        }
+
+        return Str::replaceFirst('//','/',Storage::url($target_path_full));
     }
 
 }
