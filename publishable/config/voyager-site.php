@@ -41,4 +41,10 @@ return [
      *  Page Template
      */
     'template_page'   => 'pages.page',
+
+    /*
+     *  Template custom filters class
+     */
+    'template_filters' => null,
+
 ];

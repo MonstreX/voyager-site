@@ -15,6 +15,11 @@ class Template
     {
         $this->template = new liquidTemplate();
 
+        $custom_filters = config('voyager-site.template_filters');
+        if ($custom_filters) {
+            app($custom_filters)->handle($this->template, $content);
+        }
+
         // SETTINGS
         $this->template->registerFilter('site_setting', function ($arg, $arg2 = null) {
             return site_setting($arg, $arg2);
