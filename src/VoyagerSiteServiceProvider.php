@@ -216,6 +216,8 @@ class VoyagerSiteServiceProvider extends ServiceProvider
     {
         Shortcode::register('block', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@block');
         Shortcode::register('form', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@form');
+        Shortcode::register('div', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@div');
+        Shortcode::register('image', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@image');
     }
 
     protected function registerBlades()
