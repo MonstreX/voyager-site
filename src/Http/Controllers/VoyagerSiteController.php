@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Session;
 use Notification;
 use Validator;
 use Arr;
+use Str;
 
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\VoyagerBaseController;
@@ -81,7 +82,10 @@ class VoyagerSiteController extends VoyagerBaseController
                 } elseif ($field->type === 'media') {
                     if($request->hasFile($key_field)) {
                         $settings->clearMediaCollection($key_field);
-                        $media = $settings->addMediaFromRequest($key_field)->toMediaCollection($key_field);
+                        $media = $settings->addMediaFromRequest($key_field)
+                            ->setFileName($this->getFileName($request->file($key_field)))
+                            ->toMediaCollection($key_field);
+
                         $config->fields->{$key_field}->value = $media->id;
                     }
                 }
@@ -196,6 +200,15 @@ class VoyagerSiteController extends VoyagerBaseController
             'content' => __('voyager-site::mail.send_test_mail_success_message'),
             'error' => $error
         ]);
+    }
+
+    private function getFileName($file)
+    {
+        $fullName = $file->getClientOriginalName();
+        $filename = pathinfo($fullName, PATHINFO_FILENAME);
+        $extension = pathinfo($fullName, PATHINFO_EXTENSION);
+
+        return config('voyager-extension.slug_filenames')? Str::slug($filename) . '.' . $extension : $fullName;
     }
 
 }
