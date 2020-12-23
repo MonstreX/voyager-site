@@ -39,8 +39,8 @@ class CustomShortcodes
 
             $class = $shortcode->class;
             $lightbox_class = $shortcode->lightbox_class;
-            $width = $shortcode->width?? '100%';
-            $height = $shortcode->height?? 'auto';
+            $width = $shortcode->width? 'width="' . $shortcode->width .'"' : '';
+            $height = $shortcode->height? 'height="' . $shortcode->height .'"' : '';
             $style = $shortcode->width || $shortcode->height? 'style="width: ' . $width . '; height: ' . $height . ';"' : '';
             $format  =  $shortcode->format?? null;
             $lazy  =  $shortcode->lazy?? null;
@@ -65,7 +65,8 @@ class CustomShortcodes
                 'image_alt' => $images[$index]->getCustomProperty('alt'),
                 'format' => $format,
                 'picture' => $picture,
-                'style' => $style,
+                'width' => $width,
+                'height' => $height,
                 'lazy' => $lazy,
                 'class' => $class,
                 'lightbox_class' => $lightbox_class,

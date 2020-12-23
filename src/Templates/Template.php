@@ -50,8 +50,8 @@ class Template
         });
 
         // CONVERT TO WEBP IMAGE
-        $this->template->registerFilter('webp', function ($image, $format = null, $quality = null) {
-            return get_image_or_create($image, null, null, $format, $quality);
+        $this->template->registerFilter('webp', function ($image, $quality = null) {
+            return get_image_or_create($image, null, null, 'webp', $quality);
         });
 
         // CROP IMAGE

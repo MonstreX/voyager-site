@@ -53,7 +53,8 @@ $ php artisan vendor:publish --provider="MonstreX\VoyagerSite\VoyagerSiteService
 - **template** - Root folder name where stored view template files ('template' by default).
 - **template_master** - Master template name ('layouts.master' by default).
 - **template_layout** - Main Layout Template name ('layouts.main' by default).
-- **template_page** - Page template name ('pages.page' by default).  
+- **template_page** - Page template name ('pages.page' by default).
+- **template_filters** - Class to add custom Liquid filters or Null. 
 
 ### Site Settings 
 
@@ -285,7 +286,7 @@ Overriding in controllers (using page trait):
 ```php
 public function service($alias)
 {
-    $this->create($alias,'services')->getContent();
+    $pageContent = $this->create($alias,'services')->getContent();
     $this->setPageTemplate('pages.service');
     $this->buildBreadcrumbs();
     $this->setChildren('parent_id');
@@ -519,7 +520,7 @@ Inside form template you can use internal vars:
 
 To render form from a view use helper renderForm($key, $subject = null, $suffix = null):
 ```blade
-{!! renderForm('callback-form', 'Send us a message!', '-second-form') !!}
+{!! render_form('callback-form', 'Send us a message!', '-second-form') !!}
 ```
 
 To render inside a block:
@@ -667,41 +668,92 @@ Or manually:
 @endif
 ```
 
+## Built-in Shortcodes
+
+**block** - Render a block. Ex: [block name="top-line"]  
+
+**form** - Render a form. Ex: [form name="top-line" subject="Form subject" suffix="-callback-form"]  
+
+**div** - Render div wrapper. Nested elements not allowed. Ex: [div class="wrapper"] CONTENT [/div]   
+
+**image** - Render html code an image (and crop, convert an image) using media files attached to the current content instance.
+
+Available options:  
+**field** - Media file field related with attached media files   
+**index** - Index of the file in the collection, begins with 1.  
+**url** - Path to the image (if not used field and index)  
+**class** - Classes for the image tag. Ex: class="lazy responsive"    
+**lightbox** - Make a lightbox wrapper. Ex: lightbox="true"    
+**lightbox_class** - Classes for the lightbox wrapper  
+**width** - Width attribute fot the image tag.  
+**height** - Height attribute fot the image tag.  
+**picture** - Add picture wrapper.    
+**crop** - Crop the image.  
+**format** - Convert the image to webp, jpg, png. 
+
+Examples:  
+[image field="image" index="1"]  
+[image url="/images/banners/banner-1.jpg"]  
+[image field="images" index="3" picture="true" format="webp" width="100" height="200" crop="400,400" class="lazy-class" lazy="true" lightbox_class="image-gallery"]  
+
+
+## Built-in Liquid filters
+
+**url** - Return full url for a given path. Ex: {{ '/images/file.jpg' | url }}      
+**route** - Return laravel route path. Ex: {{ 'page' | route: 'slug' }}  
+**crop** - Crop (and/or convert) image. Ex: {{ this.images[0].url | crop: 300,300,'webp',75 }}  
+**webp** - Convert an image into webp format. Ex: {{ this.images[0].url | webp }}  
+**site_setting** - Get site settings parameters. Ex: {{ 'mail' | site_setting: 'to_address' }}   
+**block** - Render a block. Ex: {{ 'top-line' | block }}  
+**form** - Render a form. Ex: {{ 'callback-form' | form: 'Form subject','-callback' }}   
+
+
+## Custom Liquid filters
+
+You can add your own liquid filters using a custom class. You should add this class to the configuration:  
+**'template_filters' => 'App\\Template\\TemplateFilters'**
+
+```php
+<?php
+
+namespace App\Template;
+
+class TemplateFilters
+{
+    public function handle($instance, $content)
+    {
+        $instance->registerFilter('div', function ($arg) {
+            return '<div>' . $arg . '</div';
+        });
+    }
+}
+```
+
+
+
 ## Helpers
 
-**translit_cyrillic($string)** - Transliteration given cyrillic string into latin symbols string.
+**translit_cyrillic($string)** - Transliteration given cyrillic string into latin symbols string.  
+**get_file($file_path)** - Return URL of the given file_path, can unpack JSON voyager file coded format.  
+**store_post_files(Request $request, $slug, $field, $public = 'public')** - Store files given in $request $field and return JSON Voyager array of files links and their original names.  
+**generate_filename($file, $path)** - Return new file name if $file exists on given $path.  
+**site_setting($key, $default = null)** - Return a site setting (or default value).  
+**site_settings_group($group_key)** - Return a group of site settings.  
+**get_image_or_create($image_path, $width, $height, $format, $quality)** - Return link to the requested image with a given width and/or height, format and quality. If it not exists it'll be created.  
 
-**get_file($file_path)** - Return URL of the given file_path, can unpack JSON voyager file coded format.
+Where:   
+**$image_path** - Full URL with domain or relative (to domain).  
+**$width** - new image width or Null,   
+**$height** - new image height or Null (if used both - width and height - the image will be cropped),   
+**$format** - 'webp', 'png', 'jpg': the image will be converted to webp, png, jpg,   
+**$quality** - quality level of the new image.   
 
-**store_post_files(Request $request, $slug, $field, $public = 'public')** - Store files given in $request $field and return JSON Voyager array of files links and their original names.
-
-**generate_filename($file, $path)** - Return new file name if $file exists on given $path.
-
-**site_setting($key, $default = null)** - Return a site setting (or default value).
-
-**site_settings_group($group_key)** - Return a group of site settings.
-
-**get_image_webp($image_path_full)** - Return link to a webp image of the given image. Converts image to webp if it is non in a webp format.
-
-**get_image_or_create($image_path_full, $width, $height)** - Return link to the requested image with a given width and height. If it not exists it'll be created. 
-
-**get_image_or_create_webp($image_path_full, $width, $height)** - The same as get_image_or_create but for webp format.
-
-**get_first_not_empty(array $values)** - Returns the first not empty element in a given array. 
-
-**render_block($key)** - Render block.
-
-**render_region($key, $path = null)** - Render region (group of blocks with the same region/group key).
-
-**render_form($key, $subject = null, $suffix = null)** - Render form with a given key. Accept also Subject field and Suffix for using in a form.
-
-**render_layout($layout, $page)** - Render Page Layout (page group of blocks, forms and page fields).
-
-**get_block_field($block_key, $field_name)** - Return field value of a given block key.
-
-
-
-
+**get_first_not_empty(array $values)** - Returns the first not empty element in a given array.   
+**render_block($key)** - Render block.  
+**render_region($key, $path = null)** - Render region (group of blocks with the same region/group key).  
+**render_form($key, $subject = null, $suffix = null)** - Render form with a given key. Accept also Subject field and Suffix for using in a form.  
+**render_layout($layout, $page)** - Render Page Layout (page group of blocks, forms and page fields).    
+**get_block_field($block_key, $field_name)** - Return field value of a given block key.  
     
 
 
