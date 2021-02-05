@@ -457,7 +457,6 @@ Just add the line where you need inside your form:
 ```blade
 <div class="g-recaptcha" data-sitekey="{{ 'general.site_captcha_site_key' | site_setting }}"></div>
 ```
-
 And add recaptcha validation rules to the form options:
 ```json
 {
