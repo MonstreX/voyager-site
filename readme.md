@@ -453,10 +453,12 @@ Similar to block. But you can use only limited sets of internal variables.
 The 'send.form' is implemented inside the form subsystem with the sendForm($request) method.
 It sends any form data including attached files. Also you can use Google ReCaptcha 2 form protection.
 Just add the line where you need inside your form:
+
 ```blade
-<div class="g-recaptcha" data-sitekey="{{ 'site_setting' | func: 'general.site_captcha_site_key'   }}"></div>
+<div class="g-recaptcha" data-sitekey="{{ 'general.site_captcha_site_key' | site_setting }}"></div>
 ```
-And add recaptcha validation rules to the options:
+
+And add recaptcha validation rules to the form options:
 ```json
 {
     "validator": {
