@@ -137,6 +137,11 @@ class VoyagerData implements VoyagerDataContract
             }
         }
 
+        // Random
+        if(isset($data_source->random)) {
+            $data = $data->inRandomOrder();
+        }
+
         // Make Collection
         $data_records = $data->get();
 
