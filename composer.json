@@ -15,7 +15,7 @@
     "require": {
         "monstrex/voyager-extension": "^0.92",
         "liquid/liquid": "^1.4",
-        "webwizo/laravel-shortcodes": "1.0.*",
+        "webwizo/laravel-shortcodes": "^1.0.20",
         "ext-json": "*"
     },
     "require-dev": {
