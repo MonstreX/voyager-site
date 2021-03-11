@@ -26,7 +26,7 @@ class VoyagerBlock implements VoyagerBlockContract
     {
         $region = BlockRegion::where('key', $region_name)->first();
         if ($region) {
-            $blocks = Block::where(['region_id' => $region->id, 'status' => 1])->get();
+            $blocks = Block::where(['region_id' => $region->id, 'status' => 1])->orderBy('order','asc')->get();
 
             $current_path = $path ? $path : VSite::currentPath();
 
