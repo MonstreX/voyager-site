@@ -47,7 +47,7 @@ class VoyagerBlock implements VoyagerBlockContract
                     $blockShow = true;
                     // Set visibility ON EVERY PAGE EXCEPT SELECTED
                 } elseif ($block->rules == self::EXCEPT) {
-                    $blockShow = in_array($current_path, $urls);
+                    $blockShow = !in_array($current_path, $urls);
                     // Set visibility ONLY ON SPECIFIC PAGES
                 } elseif ($block->rules == self::ONLY && !empty($urls)) {
                     $blockShow = in_array($current_path, $urls);
