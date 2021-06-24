@@ -6,6 +6,7 @@ namespace MonstreX\VoyagerSite\Services;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\MessageBag;
 
+use Illuminate\Support\Str;
 use TCG\Voyager\Facades\Voyager;
 use MonstreX\VoyagerSite\Contracts\VoyagerBlock as VoyagerBlockContract;
 use MonstreX\VoyagerSite\Models\Block;
@@ -45,12 +46,24 @@ class VoyagerBlock implements VoyagerBlockContract
                 // Set visibility ON EVERY PAGE
                 if ($block->rules === self::EXCEPT && empty($urls)) {
                     $blockShow = true;
-                    // Set visibility ON EVERY PAGE EXCEPT SELECTED
                 } elseif ($block->rules == self::EXCEPT) {
-                    $blockShow = !in_array($current_path, $urls);
-                    // Set visibility ONLY ON SPECIFIC PAGES
+                    // Set visibility ON EVERY PAGE EXCEPT SELECTED
+                    $blockShow = true;
+                    foreach ($urls as $url) {
+                        if (Str::is($url, $current_path)) {
+                            $blockShow = false;
+                            break;
+                        }
+                    }
                 } elseif ($block->rules == self::ONLY && !empty($urls)) {
-                    $blockShow = in_array($current_path, $urls);
+                    // Set visibility ONLY ON SPECIFIC PAGES
+                    $blockShow = false;
+                    foreach ($urls as $url) {
+                        if (Str::is($url, $current_path)) {
+                            $blockShow = true;
+                            break;
+                        }
+                    }
                 }
 
                 if ($blockShow) {
