@@ -291,7 +291,8 @@ class VoyagerData implements VoyagerDataContract
 
         if(!Storage::disk(config('voyager.storage.disk'))->exists($target_path_full)) {
             try {
-                $image = Image::make(Voyager::image($image_url));
+
+                $image = Image::make(\Storage::disk('public')->get($image_url));
 
                 if ($width && $height) {
                     $image->fit($width, $height);

@@ -49,6 +49,9 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'add'          => 1,
                 'delete'       => 1,
                 'order'        => 2,
+                'details'      => [
+                    'url' => 'edit'
+                ],                
             ])->save();
         }
 
