@@ -13,7 +13,7 @@
     "homepage": "https://github.com/monstrex/voyager-site",
     "keywords": ["Laravel", "Voyager"],
     "require": {
-        "monstrex/voyager-extension": "@dev",
+        "monstrex/voyager-extension": "*",
         "liquid/liquid": "^1.4",
         "webwizo/laravel-shortcodes": "^1.0.20",
         "ext-json": "*"
