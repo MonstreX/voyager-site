@@ -127,12 +127,7 @@ class VoyagerData implements VoyagerDataContract
 
         // Where
         if(isset($data_source->where)) {
-            $data = $data->where($data_source->where->field, $data_source->where->value);
-        }
-
-        // Multiple Where Array
-        if(isset($data_source->where_array)) {
-            foreach ($data_source->where_array as $key => $value) {
+            foreach ($data_source->where as $key => $value) {
                 $data = $data->where($key, $value);
             }
         }

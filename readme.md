@@ -261,7 +261,7 @@ To use it you need having **details** field in your model, the record of that fi
 ``` 
 And in your View template you can easily use it like this:
 ```blade
-@foreach($page_data_sets['articles'] as $article)
+@foreach($data_sources['articles'] as $article)
     <h2>{{ $article['title'] }}</h2>
 @endforeach
 ```
@@ -391,8 +391,7 @@ For this kind of template you need to define **data sources** JSON-like structur
         "articles": {
             "model": "Article",
             "where": {
-                "field": "satus",
-                "value": 1
+                "status": 1
             },
             "order" : {
                 "field" : "order",

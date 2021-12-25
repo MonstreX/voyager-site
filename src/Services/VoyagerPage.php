@@ -216,6 +216,8 @@ class VoyagerPage implements VoyagerPageContract
 
         $page_seo = json_decode($content->seo);
 
+        // TODO: if SEO field is not present - try to use fields: seo_title, meta_description, meta_keywords
+
         // TITLE
         $this->seoTitle = get_first_not_empty([
             isset($page_seo->fields->seo_title->value)? $page_seo->fields->seo_title->value : null,
