@@ -51,7 +51,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'order'        => 2,
                 'details'      => [
                     'url' => 'edit'
-                ],                
+                ],
             ])->save();
         }
 
@@ -997,8 +997,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                         ]
                     ],
                     'slugify' => [
-                        'origin' => 'title',
-                        'forceUpdate' => true,
+                        'origin' => 'title'
                     ],
                     'display' => [
                         'width' => '6'

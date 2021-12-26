@@ -14,6 +14,3 @@ let mix = require('laravel-mix');
 mix.js('resources/assets/js/app.js', 'publishable/assets/js');
 mix.less('resources/assets/less/app.less', 'publishable/assets/css/app.css').options({ processCssUrls: false });
 
-if (mix.inProduction()) {
-    mix.version();
-}
