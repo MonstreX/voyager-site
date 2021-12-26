@@ -33,7 +33,9 @@ class VoyagerData implements VoyagerDataContract
     {
 
         $model = $this->getModel($modelSlug);
-        $data = $model::where($field, $value)->first();
+
+        // Title
+        $data = $model::with('translations')->where($field, $value)->first();
 
         if (!$model) {
             $data = DB::table($modelSlug)->where($field, $value)->first();
@@ -47,10 +49,6 @@ class VoyagerData implements VoyagerDataContract
             }
 
             abort(404);
-        }
-
-        if (Voyager::translatable($data)) {
-            $data->load('translations');
         }
 
         return $data;
@@ -162,11 +160,6 @@ class VoyagerData implements VoyagerDataContract
                     }
                 }
             }
-        }
-
-        // Translate if required
-        if (Voyager::translatable($data)) {
-            $data->load('translations');
         }
 
         // Limitation

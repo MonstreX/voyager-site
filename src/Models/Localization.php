@@ -26,7 +26,6 @@ class Localization extends Model
         $locale = trans()->locale();
         $locLines = [];
         if ($locStrings = $this->all()) {
-            //dd($locStrings);
             foreach ($locStrings as $locString) {
                 $locLines[$locString->key] = $locString->{$locale};
             }

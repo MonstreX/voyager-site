@@ -5,6 +5,7 @@ namespace MonstreX\VoyagerSite\Services;
 use MonstreX\VoyagerSite\Contracts\VoyagerPage as VoyagerPageContract;
 use Illuminate\Database\Eloquent\Model;
 use Schema;
+use TCG\Voyager\Facades\Voyager;
 use VSite, VData;
 
 class VoyagerPage implements VoyagerPageContract
@@ -137,7 +138,7 @@ class VoyagerPage implements VoyagerPageContract
      */
     public function setContent(Model $content)
     {
-        $this->content = $page;
+        $this->content = $content;
     }
 
     /*
@@ -214,39 +215,46 @@ class VoyagerPage implements VoyagerPageContract
     public function setSeo(Model $content, array $settings)
     {
 
-        $page_seo = json_decode($content->seo);
+        if (Voyager::translatable($content)) {
+            $content = $content->translate();
+        }
 
-        // TODO: if SEO field is not present - try to use fields: seo_title, meta_description, meta_keywords
+        $seo = $this->getPageSeo($content);
 
         // TITLE
+        $page_title = $content->title;
         $this->seoTitle = get_first_not_empty([
-            isset($page_seo->fields->seo_title->value)? $page_seo->fields->seo_title->value : null,
-            isset($content->title)? $content->title : null,
+            $seo['seo_title'],
+            !empty($page_title)? $page_title : '',
             $settings['seo_title'],
             $settings['site_title']
         ]);
 
         // Apply template if present
-        if ($this->settings['seo_title_template']) {
-            $title = str_replace('%site_title%', $this->settings['site_title'], $this->settings['seo_title_template']);
+        if ($settings) {
+            $title = str_replace('%site_title%', $settings['site_title'], $settings['seo_title_template']);
             $title = str_replace('%seo_title%', $this->seoTitle, $title);
             $this->seoTitle = $title;
         }
 
         // DESCRIPTION
         $this->metaDescription = get_first_not_empty([
-            isset($page_seo->fields->meta_description->value)? $page_seo->fields->meta_description->value : null,
+            $seo['meta_description'],
             $settings['meta_description'],
             $settings['site_description']
         ]);
 
         // KEYWORDS
         $this->metaKeywords = get_first_not_empty([
-            isset($page_seo->fields->meta_keywords->value)? $page_seo->fields->meta_keywords->value : null,
+            $seo['meta_keywords'],
             $settings['meta_keywords'],
         ]);
 
+        $this->seoTitle = $this->seoTitle?? '';
+        $this->metaDescription = $this->metaDescription?? '';
+        $this->metaKeywords = $this->metaKeywords?? '';
     }
+
 
     /*
      * Clear and Add the First breadcrumb with Home Page Route
@@ -345,6 +353,7 @@ class VoyagerPage implements VoyagerPageContract
      */
     public function create(Model $content, array $settings)
     {
+
         // If we don't have related Data
         if(!$content) {
             if(!config('voyager-site.use_legacy_error_handler')) {
@@ -358,9 +367,11 @@ class VoyagerPage implements VoyagerPageContract
 
         // Model Content
         $this->content = $content;
+        if (Voyager::translatable($content)) {
+            $this->content = $content->load('translations')->translate();
+        }
 
-        // Title
-        $this->title = isset($content->title)? $content->title : '';
+        $this->title = isset($this->content)? $this->content->title : '';
 
         // Templates
         $this->setTemplates($content, $settings);
@@ -444,4 +455,24 @@ class VoyagerPage implements VoyagerPageContract
         return $banner;
     }
 
+    private function getPageSeo($page)
+    {
+        $seo = [];
+        // Try to use Separated fields
+        if ($page_seo = json_decode($page->seo)) {
+            $seo['seo_title'] = str_trans($page_seo->fields->seo_title->value);
+            $seo['meta_description'] = str_trans($page_seo->fields->meta_description->value);
+            $seo['meta_keywords'] = str_trans($page_seo->fields->meta_keywords->value);
+        } else {
+            $seo['seo_title'] = $page->seo_title;
+            $seo['meta_description'] = $page->meta_description;
+            $seo['meta_keywords'] = $page->meta_keywords;
+        }
+
+        $seo['seo_title'] = $seo['seo_title']?? '';
+        $seo['meta_description'] = $seo['meta_description']?? '';
+        $seo['meta_keywords'] = $seo['meta_keywords']?? '';
+
+        return $seo;
+    }
 }

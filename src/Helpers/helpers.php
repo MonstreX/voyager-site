@@ -37,9 +37,7 @@ if (!function_exists('get_file'))
             return  Storage::url(str_replace('\\', '/', $file_path));
         }
     }
-
 }
-
 
 if (!function_exists('store_post_files')) {
     function store_post_files(Request $request, $slug, $field, $public = 'public')
@@ -93,7 +91,6 @@ if (!function_exists('site_setting')) {
     }
 }
 
-
 if (!function_exists('site_setting_group')) {
     function site_settings_group($key)
     {
@@ -110,7 +107,6 @@ if (!function_exists('site_setting_group')) {
         return null;
     }
 }
-
 
 // <img src="{{ get_image_or_create_webp($image_url, 400, 500) }}" alt="">
 if (!function_exists('get_image_or_create_webp'))
@@ -153,7 +149,6 @@ if (!function_exists('get_first_not_empty')) {
         return null;
     }
 }
-
 
 /*
  * Blade templates helpers

@@ -391,7 +391,8 @@ For this kind of template you need to define **data sources** JSON-like structur
         "articles": {
             "model": "Article",
             "where": {
-                "status": 1
+                "status": 1,
+                "news": 1
             },
             "order" : {
                 "field" : "order",
@@ -703,10 +704,12 @@ Examples:
 **route** - Return laravel route path. Ex: {{ 'page' | route: 'slug' }}  
 **crop** - Crop (and/or convert) image. Ex: {{ this.images[0].url | crop: 300,300,'webp',75 }}  
 **webp** - Convert an image into webp format. Ex: {{ this.images[0].url | webp }}  
-**site_setting** - Get site settings parameters. Ex: {{ 'mail' | site_setting: 'to_address' }}   
+**site_setting** - Get site settings parameters. Ex: {{ 'mail' | site_setting: 'to_address' }}
+**menu** - Render a menu. Ex: {{ 'main-menu' | menu: 'template.menus.main' }}  
 **block** - Render a block. Ex: {{ 'top-line' | block }}  
-**form** - Render a form. Ex: {{ 'callback-form' | form: 'Form subject','-callback' }}   
-
+**form** - Render a form. Ex: {{ 'callback-form' | form: 'Form subject','-callback' }}    
+**trans** - Translate string using current locale. Ex: {{ '[[en]]English string[[ru]]Русская строка' | trans }}   
+**lang** -- Translate string using language files.  Ex: {{ 'auth.password' | lang }}
 
 ## Custom Liquid filters
 

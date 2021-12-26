@@ -58,12 +58,12 @@ class VoyagerSite implements VoyagerSiteContract
             'template_master' => config('voyager-site.template_master'),
             'template_layout' => config('voyager-site.template_layout'),
             'template_page'   => config('voyager-site.template_page'),
-            'site_title' => $this->setting('general.site_title'),
-            'site_description' => $this->setting('general.site_description'),
+            'site_title' => str_trans($this->setting('general.site_title')),
+            'site_description' => str_trans($this->setting('general.site_description')),
             'seo_title_template' => $this->setting('seo.seo_title_template'),
-            'seo_title' => $this->setting('seo.seo_title'),
-            'meta_description' => $this->setting('seo.meta_description'),
-            'meta_keywords' => $this->setting('seo.meta_keywords'),
+            'seo_title' => str_trans($this->setting('seo.seo_title')),
+            'meta_description' => str_trans($this->setting('seo.meta_description')),
+            'meta_keywords' => str_trans($this->setting('seo.meta_keywords')),
         ];
     }
 

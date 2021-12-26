@@ -25,6 +25,11 @@ class Template
             return site_setting($arg, $arg2);
         });
 
+        // MENU
+        $this->template->registerFilter('menu', function ($name, $template = null) {
+            return menu($name, $template);
+        });
+
         // BLOCK
         $this->template->registerFilter('block', function ($arg) {
             return render_block($arg);
@@ -57,6 +62,16 @@ class Template
         // CROP IMAGE
         $this->template->registerFilter('crop', function ($image, $xsize = '', $ysize = '', $format = null, $quality = null) {
             return get_image_or_create($image, $xsize, $ysize, $format, $quality);
+        });
+
+        // TRANSLATE using tags
+        $this->template->registerFilter('trans', function ($arg) {
+            return str_trans($arg);
+        });
+
+        // TRANSLATE using lang files
+        $this->template->registerFilter('lang', function ($arg) {
+            return __($arg);
         });
 
         $this->template->parse($content);
