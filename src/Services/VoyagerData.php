@@ -34,8 +34,11 @@ class VoyagerData implements VoyagerDataContract
 
         $model = $this->getModel($modelSlug);
 
-        // Title
-        $data = $model::with('translations')->where($field, $value)->first();
+        if (Voyager::translatable($model)) {
+            $data = $model::with('translations')->where($field, $value)->first();
+        } else {
+            $data = $model::where($field, $value)->first();
+        }
 
         if (!$model) {
             $data = DB::table($modelSlug)->where($field, $value)->first();
