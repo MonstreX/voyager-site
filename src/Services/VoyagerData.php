@@ -252,7 +252,7 @@ class VoyagerData implements VoyagerDataContract
         }
 
         // Remove HOST and Disk Part of URL if present, like: "https://host.com/storage"
-        $image_url = Str::replaceFirst(Storage::disk(config('voyager.storage.disk'))->getConfig()->get('url'), '', $image_url);
+        $image_url = Str::replaceFirst(Storage::disk(config('voyager.storage.disk'))->getConfig()['url'], '', $image_url);
 
         $path_info = pathinfo($image_url);
 

@@ -36,7 +36,7 @@ class VoyagerBlock implements VoyagerBlockContract
 
                 $blockShow = false;
 
-                $urls = explode(PHP_EOL, str_replace('<front>', '/', $block->urls));
+                $urls = preg_split("/\r\n|\n|\r/", str_replace('<front>', '/', $block->urls));
                 foreach ($urls as $key => $url) {
                     if (empty($url)) {
                         unset($urls[$key]);
