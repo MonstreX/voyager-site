@@ -68,14 +68,6 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                     'value' => __('voyager-site::seeders.settings.general.site_app_name_value'),
                     'class' => 'col-md-12',
                 ],
-                'site_debug_mode' => [
-                    'label' => __('voyager-site::seeders.settings.general.site_debug_mode'),
-                    'type' => 'checkbox',
-                    'on'   => __('voyager-site::seeders.settings.general.site_debug_mode_on'),
-                    'off'   => __('voyager-site::seeders.settings.general.site_debug_mode_off'),
-                    'value' => "1",
-                    'class' => 'col-md-12',
-                ],
                 //-
                 'section_captcha' => [
                     'type' => 'section',
@@ -175,7 +167,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
                     'options' => [
                         'NONE' => 'NONE',
                         'SSL' => 'SSL',
-                        'TSL' => 'TSL',
+                        'TLS' => 'TLS',
                     ],
                     'class' => 'col-md-12',
                 ],

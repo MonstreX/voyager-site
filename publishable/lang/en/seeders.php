@@ -107,9 +107,6 @@ return [
             'section_system' => 'System settings',
             'site_app_name' => 'Site APP Name',
             'site_root_url' => 'Site URL',
-            'site_debug_mode' => 'Debug mode',
-            'site_debug_mode_on' => 'Enabled',
-            'site_debug_mode_off' => 'Disabled',
 
             'site_title_value' => 'The Voyager Site',
             'site_description_value' => 'Voyager site description',

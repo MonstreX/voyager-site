@@ -74,6 +74,23 @@ class Template
             return __($arg);
         });
 
+        // Render blade VIEW using passed Data
+        $this->template->registerFilter('view', function ($data, $template) {
+            return view($template, ['data' => $data]);
+        });
+
+        // Call the service method using the given class and method
+        $this->template->registerFilter('service', function ($method, $class) {
+
+            $service = app($class);
+
+            if (method_exists($service, $method)) {
+                return $service->$method();
+            }
+
+            return null;
+        });
+
         $this->template->parse($content);
     }
 

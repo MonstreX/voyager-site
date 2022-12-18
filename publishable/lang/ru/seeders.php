@@ -107,9 +107,6 @@ return [
             'section_system' => 'Системные настройки',
             'site_app_name' => 'Имя приложения (APP Name)',
             'site_root_url' => 'Базовый адрес сайта URL',
-            'site_debug_mode' => 'Режим отладки (Debug mode)',
-            'site_debug_mode_on' => 'Включен',
-            'site_debug_mode_off' => 'Отключен',
 
             'site_title_value' => 'Мой сайт',
             'site_description_value' => 'Описание сайта по умолчанию',

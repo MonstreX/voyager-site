@@ -78,13 +78,12 @@ class VoyagerSiteServiceProvider extends ServiceProvider
 
     }
 
-
     /**
      * Register the publishable files.
      */
     private function registerPublishableResources()
     {
-        $this->publishes([dirname(__DIR__).'/publishable/config/voyager-site.php' => config_path('voyager-site.php')],'config');
+        $this->publishes([dirname(__DIR__).'/publishable/config/voyager-site.php' => config_path('voyager-site.php')], 'config');
 
         $publishablePath = dirname(__DIR__).'/publishable';
 
@@ -98,7 +97,6 @@ class VoyagerSiteServiceProvider extends ServiceProvider
             $this->publishes($paths, $group);
         }
     }
-
 
     /**
      * Register the commands accessible from the Console.
@@ -120,7 +118,6 @@ class VoyagerSiteServiceProvider extends ServiceProvider
         $router->get('/site-settings/send-test-mail', $site_controller . '@sendTestMail')->name('send.test-mail');
 
     }
-
 
     /**
      * Load helpers.
@@ -175,7 +172,6 @@ class VoyagerSiteServiceProvider extends ServiceProvider
 
     }
 
-
     public function registerConfigs()
     {
         $this->mergeConfigFrom(
@@ -199,7 +195,7 @@ class VoyagerSiteServiceProvider extends ServiceProvider
                 'address' => $mail['from_address']? :'hello@example.com',
                 'name' => $mail['from_name']? :'Example',
             ],
-            'encryption' => $mail['encryption']? ($mail['encryption'] === 'NONE'? null : strtolower($mail['encryption']) ) :'tsl',
+            'encryption' => $mail['encryption']? ($mail['encryption'] === 'NONE'? null : strtolower($mail['encryption']) ) :'tls',
             'username'   => $mail['username']? :config('mail.username'),
             'password'   => $mail['password']? :config('mail.password'),
             ]);
@@ -207,8 +203,6 @@ class VoyagerSiteServiceProvider extends ServiceProvider
         $general = $settings->getSettingsGroup('general');
 
         config()->set('app.name', $general['site_app_name']?? config('app.name'));
-
-        config()->set('app.debug', (int) $general['site_debug_mode'] === 1? true : false);
 
     }
 
@@ -240,5 +234,4 @@ class VoyagerSiteServiceProvider extends ServiceProvider
             return VBlock::renderRegion($expression);
         });
     }
-
 }
