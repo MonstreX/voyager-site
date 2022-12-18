@@ -710,6 +710,8 @@ Examples:
 **form** - Render a form. Ex: {{ 'callback-form' | form: 'Form subject','-callback' }}    
 **trans** - Translate string using current locale. Ex: {{ '[[en]]English string[[ru]]Русская строка' | trans }}   
 **lang** -- Translate string using language files.  Ex: {{ 'auth.password' | lang }}
+**view** -- Render blade view using Data vars. Ex: {{ data | view: 'template.partials.portfolio-list'  }}   
+**service** -- Get data using service method (and pass it to the View). Ex: {{ 'getPortfolio' | service: '\App\Services\DataService'  | view: 'template.partials.portfolio-list' }}   
 
 ## Custom Liquid filters
 
