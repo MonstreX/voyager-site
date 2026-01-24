@@ -238,8 +238,11 @@ class VoyagerData implements VoyagerDataContract
      *  $format - New image format ('webp','png')
      *  $quality - Image quality
      */
-    public function getImageOrCreate(string $image_url, int $width = null, int $height = null, string $format = null, int $quality =  null): string
+    public function getImageOrCreate(?string $image_url, int $width = null, int $height = null, string $format = null, int $quality =  null): string
     {
+        if (!$image_url) {
+            return '';
+        }
 
         // Windows path fix
         $image_url = Str::replaceFirst('\\', '/', $image_url);
