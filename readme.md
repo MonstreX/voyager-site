@@ -7,7 +7,7 @@
 [![Build Status][ico-travis]][link-travis]
 
 The package is an implementation of a simple but useful subsystem of a basic content organization for the [Voyager Admin Panel](https://github.com/the-control-group/voyager) package.
-Using this package you can rapidly and easily build small and medium-size scale web-sites.   
+Using this package you can rapidly and easily build small and medium-size scale websites.   
 
 ## Features
 
@@ -42,6 +42,25 @@ Publish config if you need:
 $ php artisan vendor:publish --provider="MonstreX\VoyagerSite\VoyagerSiteServiceProvider" --tag="config"
 ```
 
+Publish assets if you build them locally:
+```
+$ php artisan vendor:publish --provider="MonstreX\VoyagerSite\VoyagerSiteServiceProvider" --tag="assets" --force
+```
+
+To uninstall:
+```
+$ php artisan voyager-site:uninstall
+```
+
+### Asset build (Vite)
+
+```
+$ npm install
+$ npm run build
+```
+
+Built assets are located in `publishable/assets` and are published to `public/vendor/voyager-site`.
+
 
 ## Usage
 
@@ -50,7 +69,7 @@ $ php artisan vendor:publish --provider="MonstreX\VoyagerSite\VoyagerSiteService
 - **route_home_page** - Route name for Home Page ('home' by default).
 - **default_model_table** - Default model table name to find records ('pages' by default).
 - **default_slug_field** - Default slug field name ('slug' by default).
-- **use_legacy_error_handler** - If _false_ will be used voyager-site 404 error handler. 
+- **use_legacy_error_handler** - If _false_ the voyager-site 404 error handler is used. 
 - **template** - Root folder name where stored view template files ('template' by default).
 - **template_master** - Master template name ('layouts.master' by default).
 - **template_layout** - Main Layout Template name ('layouts.main' by default).
@@ -112,7 +131,7 @@ Built-in field types are
 - checkbox
 - radio
 - image (voyager type image) 
-- media (image file, using laravel medialibrary package)
+- media (image file, using Voyager media storage)
 - route (returns URL using route name)
 - section (don't has value, used just for visual separation of field groups)  
  
@@ -611,16 +630,16 @@ AJAX Example:
         <input type="hidden" name="subject" value="Callback form AJAX">
         <div class="row clearfix">
             <div class="form-group">
-                <input type="text" name="name" placeholder="Ваше имя" value="">
+                <input type="text" name="name" placeholder="Your name" value="">
             </div>
             <div class="form-group">
-                <input type="email" name="email" placeholder="Ваш Email адрес"  value="">
+                <input type="email" name="email" placeholder="Your email address"  value="">
             </div>
             <div class="form-group">
-                <input class="phone" type="text" name="phone" placeholder="Ваш телефон"  value="">
+                <input class="phone" type="text" name="phone" placeholder="Your phone"  value="">
             </div>
             <div class="form-group">
-                <textarea rows="7" name="message" placeholder="Ваше сообщение"></textarea>
+                <textarea rows="7" name="message" placeholder="Your message"></textarea>
             </div>
             <div class="form-group form-group-default">
                 <label>Attachment</label>
@@ -681,7 +700,7 @@ Examples:
 **menu** - Render a menu. Ex: {{ 'main-menu' | menu: 'template.menus.main' }}  
 **block** - Render a block. Ex: {{ 'top-line' | block }}  
 **form** - Render a form. Ex: {{ 'callback-form' | form: 'Form subject','-callback' }}    
-**trans** - Translate string using current locale. Ex: {{ '[[en]]English string[[ru]]Русская строка' | trans }}   
+**trans** - Translate string using current locale. Ex: {{ '[[en]]English string[[ru]]Russian string' | trans }}   
 **lang** -- Translate string using language files.  Ex: {{ 'auth.password' | lang }}  
 **view** -- Render blade view using Data vars. Ex: {{ data | view: 'template.partials.portfolio-list'  }}     
 **service** -- Get data using service method (and pass it to the View). Ex: {{ 'getPortfolio' | service: '\App\Services\DataService'  | view: 'template.partials.portfolio-list' }}     
@@ -747,14 +766,14 @@ If you discover any security related issues, please email author email instead o
 
 license. Please see the [license file](license.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/monstrex/testpackage.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/monstrex/testpackage.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/monstrex/testpackage/master.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/monstrex/voyager-site.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/monstrex/voyager-site.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/monstrex/voyager-site/master.svg?style=flat-square
 [ico-styleci]: https://styleci.io/repos/12345678/shield
 
-[link-packagist]: https://packagist.org/packages/monstrex/testpackage
-[link-downloads]: https://packagist.org/packages/monstrex/testpackage
-[link-travis]: https://travis-ci.org/monstrex/testpackage
+[link-packagist]: https://packagist.org/packages/monstrex/voyager-site
+[link-downloads]: https://packagist.org/packages/monstrex/voyager-site
+[link-travis]: https://travis-ci.org/monstrex/voyager-site
 [link-styleci]: https://styleci.io/repos/12345678
 [link-author]: https://github.com/monstrex
 [link-contributors]: ../../contributors
