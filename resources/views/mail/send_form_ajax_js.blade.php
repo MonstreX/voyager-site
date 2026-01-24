@@ -1,54 +1,96 @@
 <script>
-    var formSendAJAX = function (event, el) {
+    const formSendAJAX = async (event, el) => {
         event.preventDefault();
 
-        var form_submit = $(el);
+        if (!el) {
+            return;
+        }
 
-        var form_holder_id = '#' + form_submit.data('holder-id');
-        var form = $(form_holder_id +' form')[0];
+        const holderId = el.dataset.holderId;
+        const holder = holderId ? document.getElementById(holderId) : null;
+        if (!holder || !holderId) {
+            return;
+        }
 
-        var el_loader = $(form_holder_id + ' .btn-loader');
-        var el_title_normal = $(form_holder_id + ' .btn-title-normal');
-        var el_title_sending = $(form_holder_id + ' .btn-title-sending');
-        var el_message = $(form_holder_id + ' .form-message');
-        var el_button = $(form_holder_id + ' .btn-send-form');
+        const form = holder.querySelector('form');
+        if (!form) {
+            return;
+        }
 
-        if (el_loader.hasClass('hidden')) {
+        const el_loader = holder.querySelector('.btn-loader');
+        const el_title_normal = holder.querySelector('.btn-title-normal');
+        const el_title_sending = holder.querySelector('.btn-title-sending');
+        const el_message = holder.querySelector('.form-message');
+        const el_button = holder.querySelector('.btn-send-form');
 
-            el_loader.removeClass('hidden');
-            el_title_normal.addClass('hidden');
-            el_title_sending.removeClass('hidden');
-            el_button.attr("disabled", true);
+        if (!el_loader || !el_loader.classList.contains('hidden')) {
+            return;
+        }
 
-            $.ajax( {
-                url: $(form_holder_id + ' form').attr("action"),
-                type: 'POST',
-                data: new FormData(form),
-                processData: false,
-                contentType: false,
-                cache: false,
-                timeout: 600000,
-                success: function (data) {
-                    el_loader.addClass('hidden');
-                    el_title_normal.removeClass('hidden');
-                    el_title_sending.addClass('hidden');
+        el_loader.classList.remove('hidden');
+        if (el_title_normal) {
+            el_title_normal.classList.add('hidden');
+        }
+        if (el_title_sending) {
+            el_title_sending.classList.remove('hidden');
+        }
+        if (el_button) {
+            el_button.disabled = true;
+        }
 
-                    if (data.type !== 'success') {
-                        el_button.attr("disabled", false);
-                    }
-
-                    el_message.addClass(data.type).fadeIn().html(data.messages);
-                },
-                error: function (e) {
-                    el_loader.addClass('hidden');
-                    el_title_normal.removeClass('hidden');
-                    el_title_sending.addClass('hidden');
-                    el_button.attr("disabled", false);
-
-                    el_message.fadeIn().addClass('error').html(e.responseText);
-                    setTimeout(function(){ el_message.fadeOut(); }, 3000);
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             });
+            const text = await response.text();
+            let data = null;
+            try {
+                data = JSON.parse(text);
+            } catch (err) {
+                data = { type: response.ok ? 'success' : 'error', messages: text };
+            }
+
+            el_loader.classList.add('hidden');
+            el_title_normal?.classList.remove('hidden');
+            el_title_sending?.classList.add('hidden');
+
+            if (data.type !== 'success' && el_button) {
+                el_button.disabled = false;
+            }
+
+            if (el_message) {
+                el_message.classList.remove('success', 'error');
+                el_message.classList.add(data.type || 'error');
+                el_message.style.display = 'block';
+                el_message.innerHTML = data.messages || '';
+            }
+
+            if (!response.ok && el_message) {
+                setTimeout(() => {
+                    el_message.style.display = 'none';
+                }, 3000);
+            }
+        } catch (error) {
+            el_loader.classList.add('hidden');
+            el_title_normal?.classList.remove('hidden');
+            el_title_sending?.classList.add('hidden');
+            if (el_button) {
+                el_button.disabled = false;
+            }
+
+            if (el_message) {
+                el_message.classList.remove('success');
+                el_message.classList.add('error');
+                el_message.style.display = 'block';
+                el_message.innerHTML = error && error.message ? error.message : 'Request failed';
+                setTimeout(() => {
+                    el_message.style.display = 'none';
+                }, 3000);
+            }
         }
     }
 </script>

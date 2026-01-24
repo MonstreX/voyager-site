@@ -182,59 +182,32 @@
 
 @section('javascript')
 <script>
-var ace_editor_element = document.getElementsByClassName("ace_editor");
-
-// For each ace editor element on the page
-for(var i = 0; i < ace_editor_element.length; i++)
-{
-    // Create an ace editor instance
-    var ace_editor = ace.edit(ace_editor_element[i].id);
-    // Set auto height of window
-    ace_editor.setOptions({
-        maxLines: Infinity
-    });
-}
-
-window.ace.require = window.ace.acequire;
-
-function tinymce_setup_callback(editor)
-{
-    console.log('setup tinyMCE...');
-
-    editor.settings.external_plugins = {
-        'ace': '{{ voyager_asset('js/ace/plugin.js') }}'
-    }
-
-    editor.settings.plugins = 'link, image, -ace, textcolor, lists';
-    editor.settings.toolbar = 'removeformat | styleselect bold italic underline | forecolor backcolor | alignleft aligncenter alignright | bullist numlist outdent indent | link image table | ace';
-
-    editor.settings.cleanup = false;
-    editor.settings.verify_html = false;
-    editor.settings.min_height = 200;
-}
-
-
-$('document').ready(function(){
-    $('.toggleswitch').bootstrapToggle();
-
+document.addEventListener('DOMContentLoaded', () => {
     window.Voyager = window.Voyager || {};
     window.Voyager.confirmCallbacks = window.Voyager.confirmCallbacks || {};
-    window.Voyager.confirmCallbacks.siteSettingsRemove = function({ trigger }) {
-        var $form = $(trigger).closest('form');
-        if (!$form.length) {
+    window.Voyager.confirmCallbacks.siteSettingsRemove = ({ trigger }) => {
+        if (!trigger) {
             return true;
         }
-        var removeType = $(trigger).data('remove-type');
-        var fieldName = $(trigger).closest('[data-field-name]').data('field-name');
+        const form = trigger.closest('form');
+        if (!form) {
+            return true;
+        }
+        const removeType = trigger.dataset.removeType;
+        const holder = trigger.closest('[data-field-name]');
+        const fieldName = holder ? holder.dataset.fieldName : null;
         if (!removeType || !fieldName) {
             return true;
         }
-        var $input = $form.find('input[name="' + removeType + '"]');
-        if (!$input.length) {
-            $input = $('<input type="hidden">').attr('name', removeType).appendTo($form);
+        let input = form.querySelector(`input[name="${removeType}"]`);
+        if (!input) {
+            input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = removeType;
+            form.appendChild(input);
         }
-        $input.val(fieldName);
-        $form.submit();
+        input.value = fieldName;
+        form.submit();
         return true;
     };
 });
