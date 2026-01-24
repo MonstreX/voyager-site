@@ -14,7 +14,7 @@
 
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
 
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/voyager-site/css/app.css') }}" rel="stylesheet">
 
 </head>
 <body>
@@ -27,11 +27,9 @@
 
     @yield('page-footer')
 
-    <script src="{{ mix('js/vendor.js') }}"></script>
-
     @stack('javascript')
 
-    <script src="{{ mix('js/app.js') }}"></script>
+    <script type="module" src="{{ asset('vendor/voyager-site/js/app.js') }}"></script>
 
 </body>
 </html>

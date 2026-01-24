@@ -70,7 +70,7 @@ class InstallCommand extends Command
         $this->info('Publishing the Voyager Site assets, database, and config files');
 
         // Publish only relevant resources on install
-        $tags = ['config', 'seeds'];
+        $tags = ['config', 'assets', 'seeds'];
 
         $this->call('vendor:publish', ['--provider' => VoyagerSiteServiceProvider::class, '--tag' => $tags, '--force' => true]);
 

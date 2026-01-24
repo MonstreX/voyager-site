@@ -88,6 +88,9 @@ class VoyagerSiteServiceProvider extends ServiceProvider
         $publishablePath = dirname(__DIR__).'/publishable';
 
         $publishable = [
+            'assets' => [
+                "{$publishablePath}/assets/" => public_path('vendor/voyager-site'),
+            ],
             'seeds' => [
                 "{$publishablePath}/database/seeds/" => database_path('seeds'),
             ],
