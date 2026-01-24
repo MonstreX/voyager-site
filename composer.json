@@ -14,8 +14,8 @@
     "keywords": ["Laravel", "Voyager"],
     "require": {
         "monstrex/voyager": "*",
-        "liquid/liquid": "^1.4",
-        "webwizo/laravel-shortcodes": "^1.0.20",
+        "liquid/liquid": "^1.4.44",
+        "webwizo/laravel-shortcodes": "^1.0.27",
         "ext-json": "*"
     },
     "require-dev": {
