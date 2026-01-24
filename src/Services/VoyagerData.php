@@ -4,10 +4,10 @@
 namespace MonstreX\VoyagerSite\Services;
 
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
 use MonstreX\VoyagerSite\Contracts\VoyagerData as VoyagerDataContract;
 use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Facades\Voyager;
+use TCG\Voyager\Media\ImageProcessor;
 use Schema;
 use Str;
 
@@ -283,14 +283,12 @@ class VoyagerData implements VoyagerDataContract
         if(!Storage::disk(config('voyager.storage.disk'))->exists($target_path_full)) {
             try {
 
-                $image = Image::make(\Storage::disk(config('voyager.storage.disk'))->get($image_url));
+                $image = ImageProcessor::make(Storage::disk(config('voyager.storage.disk'))->get($image_url));
 
                 if ($width && $height) {
                     $image->fit($width, $height);
-                } elseif($width || $height) {
-                    $image->resize($width, $height, function ($constraint) {
-                        $constraint->aspectRatio();
-                    });
+                } elseif ($width || $height) {
+                    $image->resize($width, $height);
                 }
 
                 $image->encode($format, $quality);
