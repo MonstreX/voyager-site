@@ -24,14 +24,26 @@
         <div class="page-content code container-fluid">
             <div class="panel panel-bordered">
                 <div class="panel-body">
-                    <div class="row">
-                        @foreach($config->fields as $key_field => $field)
+                    @php $sectionOpen = false; @endphp
+                    @foreach($config->fields as $key_field => $field)
 
                             @php $class = isset($field->class)? $field->class : "" @endphp
 
                             @if(isset($field->type) && $field->type === 'section')
-                                <h3 class="col-md-12"><i class="{{$field->icon}}"></i><span>{{$field->label}}</span></h3>
+                                @if($sectionOpen)
+                                    </div>
+                                    @php $sectionOpen = false; @endphp
+                                @endif
+                                <div class="site-settings-section-title">
+                                    <h3 class="col-md-12"><i class="{{$field->icon}}"></i><span>{{$field->label}}</span></h3>
+                                </div>
+                                <div class="site-settings-fields row">
+                                    @php $sectionOpen = true; @endphp
                             @else
+                                @if(!$sectionOpen)
+                                    <div class="site-settings-fields row">
+                                        @php $sectionOpen = true; @endphp
+                                @endif
 
                                 @php $help_code = !config('voyager.show_dev_tips')? "" : "<span class='config-help'><strong>site_setting</strong>(<i>'".$key.".".$key_field."'</i>)</span>"; @endphp
 
@@ -157,8 +169,10 @@
                                     </div>
                                 @endif
                             @endif
-                        @endforeach
-                    </div>
+                    @endforeach
+                    @if($sectionOpen)
+                        </div>
+                    @endif
                 </div>
             </div>
 
