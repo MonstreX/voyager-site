@@ -1,6 +1,6 @@
 # Voyager Site
 
-> Внимание: это новая мажорная версия `voyager-site`, несовместимая со старой. Архивная версия хранится отдельно.
+> Important: this is a new major release of `voyager-site` with breaking changes. The package has been redesigned to align with the current Voyager fork and updated media stack. If you need the legacy implementation, use the archived release instead.
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
