@@ -102,9 +102,9 @@ class VoyagerBlock implements VoyagerBlockContract
             $images = [];
             foreach ($block->getMedia('images') as $key => $image) {
                 $images[] = [
-                    'url' => $image->getUrl(),
-                    'full_url' => $image->getFullUrl(),
-                    'props' => $image->toArray()['custom_properties'],
+                    'url' => $image->url(),
+                    'full_url' => $image->fullUrl(),
+                    'props' => $image->props,
                 ];
             }
             // Prepare Data Sources Vars if present
@@ -128,10 +128,10 @@ class VoyagerBlock implements VoyagerBlockContract
                         $images = $block->getMedia($row->field);
 
                         foreach ($images as $key => $image) {
-                            $fields_data[$row->field][$key]['url'] = $image->getUrl();
-                            $fields_data[$row->field][$key]['full_url'] = $image->getFullUrl();
-                            $fields_data[$row->field][$key]['path'] = $image->getPath();
-                            $fields_data[$row->field][$key]['props'] = $image->toArray()['custom_properties'];
+                            $fields_data[$row->field][$key]['url'] = $image->url();
+                            $fields_data[$row->field][$key]['full_url'] = $image->fullUrl();
+                            $fields_data[$row->field][$key]['path'] = $image->path;
+                            $fields_data[$row->field][$key]['props'] = $image->props;
                         }
 
                     } else {
@@ -168,26 +168,6 @@ class VoyagerBlock implements VoyagerBlockContract
             return $template->render($vars);
         } else {
             return '';
-        }
-    }
-
-    public function renderLayout($layout, $page)
-    {
-        $layoutFields = json_decode($layout);
-        if($layoutFields) {
-            $html = "";
-            foreach ($layoutFields as $field) {
-                if ($field->type === 'Block') {
-                    $html .= $this->render($field->key);
-                } elseif ($field->type === 'Form') {
-                    $html .= $this->renderForm($field->key);
-                } elseif ($field->type === 'Field') {
-                    $html .= $page->{$field->key};
-                }
-            }
-            return $html;
-        } else {
-            return "";
         }
     }
 

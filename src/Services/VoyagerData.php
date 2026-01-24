@@ -155,9 +155,9 @@ class VoyagerData implements VoyagerDataContract
                         $images = $record->getMedia($row->field);
 
                         foreach ($images as $key => $image) {
-                            $images[$key]->url = $image->getUrl();
-                            $images[$key]->full_url = $image->getFullUrl();
-                            $images[$key]->path = $image->getPath();
+                            $images[$key]->url = $image->url();
+                            $images[$key]->full_url = $image->fullUrl();
+                            $images[$key]->path = $image->path;
                         }
                         $record->{$row->field} = $images->toArray();
                     }

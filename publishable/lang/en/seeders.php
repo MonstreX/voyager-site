@@ -28,7 +28,6 @@ return [
         'image'            => 'Image',
         'images_files'     => 'Images / Files',
         'content'          => 'Content',
-        'layout'           => 'Page layout',
         'language_key'     => 'Language key',
         'english'          => 'English',
         'russian'          => 'Russian',
@@ -46,7 +45,6 @@ return [
         'meta_description' => 'META Description',
         'meta_keywords'    => 'META Keywords',
         'tab_images'       => 'Media',
-        'tab_layout'       => 'Page layout',
         'tab_seo'          => 'SEO',
         'tab_options'      => 'Options',
         'tab_attributes'   => 'Attributes',
@@ -108,9 +106,9 @@ return [
             'site_app_name' => 'Site APP Name',
             'site_root_url' => 'Site URL',
 
-            'site_title_value' => 'The Voyager Site',
+            'site_title_value' => 'The Voyager CMS',
             'site_description_value' => 'Voyager site description',
-            'site_app_name_value' => 'Voyager-Site',
+            'site_app_name_value' => 'voyager-site',
 
             'section_captcha' => 'Google Recaptcha2',
             'site_captcha_site_key' => 'Captcha Public Key',

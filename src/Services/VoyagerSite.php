@@ -27,12 +27,8 @@ class VoyagerSite implements VoyagerSiteContract
                 foreach ($data->fields as $field_name => $field) {
                     if($field->type != 'section' && $field->type != 'route') {
                         if($field->type === 'media') {
-                            $media = $group->getMedia($field_name);
-                            if (count($media) > 0) {
-                                $this->setting_cache[$group->key][$field_name] = $group->getMedia($field_name)[0]->getFullUrl();
-                            } else {
-                                $this->setting_cache[$group->key][$field_name] = '';
-                            }
+                            $media = $group->getFirstMedia($field_name);
+                            $this->setting_cache[$group->key][$field_name] = $media ? $media->fullUrl() : '';
                         } else {
                             $this->setting_cache[$group->key][$field_name] = $field->value;
                         }
@@ -75,8 +71,13 @@ class VoyagerSite implements VoyagerSiteContract
      */
     public function storeMediaFile(Model $class, $field):string
     {
-        $result = $class->addMediaFromRequest($field)->toMediaCollection($field);
-        return $result;
+        $file = request()->file($field);
+        if (!$file) {
+            return '';
+        }
+
+        $media = $class->addMedia($file, $field)->save();
+        return $media ? (string) $media->id : '';
     }
 
     /**

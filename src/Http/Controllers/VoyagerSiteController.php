@@ -11,6 +11,7 @@ use Str;
 
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\VoyagerBaseController;
+use TCG\Voyager\Services\Media\MediaService;
 
 use MonstreX\VoyagerSite\Notifications\SendForm;
 use MonstreX\VoyagerSite\Models\SiteSetting as Settings;
@@ -62,7 +63,13 @@ class VoyagerSiteController extends VoyagerBaseController
         } elseif($request->has('remove_media')) {
             foreach ($config->fields as $key_field => $field) {
                 if ($key_field === trim($request->remove_media)) {
-                    $settings->clearMediaCollection($key_field);
+                    $mediaItems = $settings->getMedia($key_field);
+                    if ($mediaItems && $mediaItems->count()) {
+                        $service = app(MediaService::class);
+                        $mediaItems->each(function ($media) use ($service) {
+                            $service->deleteMedia($media);
+                        });
+                    }
                     $config->fields->{$key_field}->value = '';
                 }
             }
@@ -81,12 +88,16 @@ class VoyagerSiteController extends VoyagerBaseController
                     }
                 } elseif ($field->type === 'media') {
                     if($request->hasFile($key_field)) {
-                        $settings->clearMediaCollection($key_field);
-                        $media = $settings->addMediaFromRequest($key_field)
-                            ->setFileName($this->getFileName($request->file($key_field)))
-                            ->toMediaCollection($key_field);
+                        $mediaItems = $settings->getMedia($key_field);
+                        if ($mediaItems && $mediaItems->count()) {
+                            $service = app(MediaService::class);
+                            $mediaItems->each(function ($media) use ($service) {
+                                $service->deleteMedia($media);
+                            });
+                        }
 
-                        $config->fields->{$key_field}->value = $media->id;
+                        $media = $settings->addMedia($request->file($key_field), $key_field)->save();
+                        $config->fields->{$key_field}->value = $media ? $media->id : '';
                     }
                 }
             }
@@ -208,7 +219,7 @@ class VoyagerSiteController extends VoyagerBaseController
         $filename = pathinfo($fullName, PATHINFO_FILENAME);
         $extension = pathinfo($fullName, PATHINFO_EXTENSION);
 
-        return config('voyager-extension.slug_filenames')? Str::slug($filename) . '.' . $extension : $fullName;
+        return Str::slug($filename) . '.' . $extension;
     }
 
 }

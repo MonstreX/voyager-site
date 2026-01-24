@@ -174,17 +174,9 @@ if (!function_exists('render_form')) {
     }
 }
 
-if (!function_exists('render_layout')) {
-    function render_layout($layout, $page)
-    {
-        return VBlock::renderLayout($layout, $page);
-    }
-}
-
 if (!function_exists('get_block_field')) {
     function get_block_field($block, $field)
     {
         return VBlock::getBlockField($block, $field);
     }
 }
-

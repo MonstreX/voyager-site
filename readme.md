@@ -1,5 +1,7 @@
 # Voyager Site
 
+> Внимание: это новая мажорная версия `voyager-site`, несовместимая со старой. Архивная версия хранится отдельно.
+
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
 [![Build Status][ico-travis]][link-travis]
@@ -15,7 +17,6 @@ Using this package you can rapidly and easily build small and medium-size scale 
 - Flexible Block / Widget management module, to build parts of your site pages.
 - Form management system, including AJAX sending.
 - [Liquid template](https://packagist.org/packages/liquid/liquid) subsystem for blocks/widgets and forms.
-- Page layout construction using flexible Blocks/Widgets. 
 - [Shortcodes](https://github.com/webwizo/laravel-shortcodes) integrated.
 - Localizations from DB table, where you can easily keep and manage your translations.
 - Advanced site settings module, including mail smtp settings and a mail sending test out of the box.
@@ -23,7 +24,7 @@ Using this package you can rapidly and easily build small and medium-size scale 
 ## Installation
 
 > #### Requirement
-> You should fully install the package [Voyager Extension](https://github.com/MonstreX/voyager-extension) before.
+> You should install the package [Voyager](https://github.com/monstrex/voyager) before.
 
 Via Composer
 
@@ -641,34 +642,6 @@ AJAX Example:
 </div>
 ```
 
-### Page layout render 
-
-The special system allows you to manage group of the blocks or forms and fields on a certain page.
-You can easily add/remove blocks, forms and fields (and sort them) in the edit page mode and then render using helper:
-```blade
-{{ render_layout($page->layout, $page) }}
-``` 
-Where $page is a page instance.
-
-Or manually:
-```blade
-@if ($layoutFields = json_decode($page->layout))
-    @if ($layoutFields)
-        @foreach($layoutFields as $field)
-            @if($field->type === 'Block')
-                {!! render_block($field->key) !!}
-            @elseif ($field->type === 'Form')
-                {!! render_form($field->key) !!}
-            @elseif ($field->type === 'Field')
-                <div class="page-content">
-                    {!! $page->{$field->key} !!}
-                </div>
-            @endif
-        @endforeach
-    @endif
-@endif
-```
-
 ## Built-in Shortcodes
 
 **block** - Render a block. Ex: [block name="top-line"]  
@@ -757,7 +730,6 @@ Where:
 **render_block($key)** - Render block.  
 **render_region($key, $path = null)** - Render region (group of blocks with the same region/group key).  
 **render_form($key, $subject = null, $suffix = null)** - Render form with a given key. Accept also Subject field and Suffix for using in a form.  
-**render_layout($layout, $page)** - Render Page Layout (page group of blocks, forms and page fields).    
 **get_block_field($block_key, $field_name)** - Return field value of a given block key.  
     
 

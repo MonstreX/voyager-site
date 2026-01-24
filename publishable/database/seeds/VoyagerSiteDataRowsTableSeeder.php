@@ -265,7 +265,6 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'delete'       => 1,
                 'order'        => 8,
                 'details'      => [
-                    'view'  => 'voyager-extension::bread.fields.block-region',
                     'model' => '\\MonstreX\\VoyagerSite\\Models\\BlockRegion',
                     'table' => 'block_regions',
                     'type' => 'belongsTo',
@@ -387,9 +386,6 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'add'          => 1,
                 'delete'       => 1,
                 'order'        => 13,
-                'details'      => [
-                    'view'  => 'voyager-extension::bread.fields.block-urls',
-                ],
             ])->save();
         }
 
@@ -1053,29 +1049,6 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
             ])->save();
         }
 
-
-        $dataRow = $this->dataRow($pageDataType, 'layout');
-        if (!$dataRow->exists) {
-            $dataRow->fill([
-                'type'         => 'adv_page_layout',
-                'display_name' => __('voyager-site::seeders.data_rows.layout'),
-                'required'     => 0,
-                'browse'       => 0,
-                'read'         => 1,
-                'edit'         => 1,
-                'add'          => 1,
-                'delete'       => 1,
-                'order'        => 10,
-                'details'      => [
-                    'tab_title' => __('voyager-site::seeders.data_rows.tab_layout'),
-                    'layout_fields' => [
-                        'content' => __('voyager-site::seeders.data_rows.content'),
-                    ],
-                    'block_model' => 'MonstreX\\VoyagerSite\\Models\\Block',
-                    'form_model' => 'MonstreX\\VoyagerSite\\Models\\Form',
-                ],
-            ])->save();
-        }
 
         $dataRow = $this->dataRow($pageDataType, 'seo');
         if (!$dataRow->exists) {

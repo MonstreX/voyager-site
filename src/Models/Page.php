@@ -3,13 +3,12 @@
 namespace MonstreX\VoyagerSite\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use TCG\Voyager\Traits\HasMedia;
 
 
-class Page extends Model implements HasMedia
+class Page extends Model
 {
-    use InteractsWithMedia;
+    use HasMedia;
 
     protected $perPage = 50;
     protected $guarded = [];

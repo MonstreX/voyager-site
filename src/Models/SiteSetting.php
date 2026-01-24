@@ -3,17 +3,16 @@
 namespace MonstreX\VoyagerSite\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use TCG\Voyager\Traits\HasMedia;
 
 /**
  * Class Block.
  *
  * @package namespace App\Models;
  */
-class SiteSetting extends Model implements HasMedia
+class SiteSetting extends Model
 {
-    use InteractsWithMedia;
+    use HasMedia;
 
     /**
      * The attributes that are mass assignable.

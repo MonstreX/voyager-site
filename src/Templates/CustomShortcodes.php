@@ -35,7 +35,7 @@ class CustomShortcodes
 
         if ((count($images) > 0 && $index >= 0 && $index < count($images)) || $shortcode->url) {
             // Process images
-            $image_origin = $image_src = $shortcode->url?? $images[$index]->getUrl();
+        $image_origin = $image_src = $shortcode->url?? $images[$index]->url();
 
             $class = $shortcode->class;
             $lightbox_class = $shortcode->lightbox_class;

@@ -90,7 +90,14 @@
                                         <label for="{{$key_field}}">{{$field->label}}</label> {!! $help_code !!}
                                         @if(isset($field->value) && !empty($field->value))
                                             <div data-field-name="{{$key_field}}">
-                                                <a href="#" class="voyager-x remove-single-image" style="position:absolute;"></a>
+                                                <a
+                                                    href="#"
+                                                    class="voyager-x remove-single-image"
+                                                    style="position:absolute;"
+                                                    data-confirm-target="#confirm_delete_modal"
+                                                    data-confirm-callback="Voyager.confirmCallbacks.siteSettingsRemove"
+                                                    data-confirm-name="{{ $field->value }}"
+                                                    data-remove-type="remove_image"></a>
                                                 <img src="@if( !filter_var($field->value, FILTER_VALIDATE_URL)){{ get_file( $field->value ) }}@else{{ "" }}@endif"
                                                      style="max-width:200px; height:auto; clear:both; display:block; padding:2px; border:1px solid #ddd; margin-bottom:10px;">
                                             </div>
@@ -101,16 +108,27 @@
                                     <div class="form-group {{ $class }}">
                                         <label for="{{$key_field}}">{{$field->label}}</label> {!! $help_code !!}
                                         @if(isset($field->value) && !empty($field->value))
+                                            @php $media = $settings->getFirstMedia($key_field); @endphp
                                             <div data-field-name="{{$key_field}}">
-                                                <a href="#" class="voyager-x remove-single-media" style="position:absolute;"></a>
-                                                @php $media = $settings->getMedia($key_field)[0] @endphp
-                                                @if(explode('/', $media->mime_type)[0] === 'image')
-                                                    <img class="image-type" src="{{ $media->getFullUrl() }}">
-                                                @else
-                                                    <img class="file-type" src="{{ voyager_extension_asset('icons/files/'.explode('/', $media->mime_type)[1].'.svg') }}">
+                                                <a
+                                                    href="#"
+                                                    class="voyager-x remove-single-media"
+                                                    style="position:absolute;"
+                                                    data-confirm-target="#confirm_delete_modal"
+                                                    data-confirm-callback="Voyager.confirmCallbacks.siteSettingsRemove"
+                                                    data-confirm-name="{{ $media ? $media->file_name : '' }}"
+                                                    data-remove-type="remove_media"></a>
+                                                @if($media)
+                                                    @if(explode('/', $media->mime_type)[0] === 'image')
+                                                        <img class="image-type" src="{{ $media->fullUrl() }}">
+                                                    @else
+                                                        <img class="file-type" src="{{ voyager_asset('icons/files/'.explode('/', $media->mime_type)[1].'.svg') }}">
+                                                    @endif
                                                 @endif
                                             </div>
-                                            <span class="adv-media-files-filename">{{ Str::limit($media->file_name, 100, ' (...)') }} <i class="@if($media->size > 100000) large @endif">{{ $media->human_readable_size }}</i></span>
+                                            @if($media)
+                                                <span class="adv-media-files-filename">{{ Str::limit($media->file_name, 100, ' (...)') }} <i class="{{ $media->size > 100000 ? 'large' : '' }}">{{ $media->sizeForHumans() }}</i></span>
+                                            @endif
                                         @endif
                                         <input id="{{$key_field}}" type="file" name="{{$key_field}}">
                                     </div>
@@ -151,6 +169,15 @@
         </div>
     </form>
 
+    @include('voyager::components.modal-confirm', [
+        'id' => 'confirm_delete_modal',
+        'title' => __('voyager::generic.are_you_sure'),
+        'message' => __('voyager::generic.are_you_sure_delete').' \'<span class="confirm_delete_name"></span>\'',
+        'confirmText' => __('voyager::generic.delete_confirm'),
+        'confirmClass' => 'btn-danger',
+        'icon' => 'voyager-warning'
+    ])
+
 @stop
 
 @section('javascript')
@@ -175,7 +202,7 @@ function tinymce_setup_callback(editor)
     console.log('setup tinyMCE...');
 
     editor.settings.external_plugins = {
-        'ace': '{{ voyager_extension_asset('js/ace/plugin.js') }}'
+        'ace': '{{ voyager_asset('js/ace/plugin.js') }}'
     }
 
     editor.settings.plugins = 'link, image, -ace, textcolor, lists';
@@ -190,29 +217,26 @@ function tinymce_setup_callback(editor)
 $('document').ready(function(){
     $('.toggleswitch').bootstrapToggle();
 
-    $('.page-content').on('click', '.remove-single-image, .remove-single-media', function () {
-
-        var $field_type = 'remove_image';
-        if($(this).hasClass('remove-single-media')) {
-            $field_type = 'remove_media';
+    window.Voyager = window.Voyager || {};
+    window.Voyager.confirmCallbacks = window.Voyager.confirmCallbacks || {};
+    window.Voyager.confirmCallbacks.siteSettingsRemove = function({ trigger }) {
+        var $form = $(trigger).closest('form');
+        if (!$form.length) {
+            return true;
         }
-
-        vext.dialogActionRequest({
-            'title': '<i class="voyager-trash"></i> {{ __("voyager::generic.delete_question") }}',
-            'message': '{{ __("voyager::generic.delete_question") }}',
-            'fields': '<input type="hidden" name="' + $field_type + '" value="' + $(this).parent().data('field-name') +'">',
-            'class': 'vext-dialog-warning',
-            'yes': '{{ __('voyager-extension::bread.dialog_button_remove') }}',
-            'url': '{{ route('voyager.site-settings.save', $key) }}',
-            'method': 'POST',
-            'method_field': '',
-            'csrf_field': '{{ csrf_field() }}'
-        });
-
-    });
+        var removeType = $(trigger).data('remove-type');
+        var fieldName = $(trigger).closest('[data-field-name]').data('field-name');
+        if (!removeType || !fieldName) {
+            return true;
+        }
+        var $input = $form.find('input[name="' + removeType + '"]');
+        if (!$input.length) {
+            $input = $('<input type="hidden">').attr('name', removeType).appendTo($form);
+        }
+        $input.val(fieldName);
+        $form.submit();
+        return true;
+    };
 });
 </script>
 @stop
-
-
-

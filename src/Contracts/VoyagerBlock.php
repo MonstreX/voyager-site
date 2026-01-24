@@ -16,8 +16,6 @@ interface VoyagerBlock
 
     public function renderRegion($region_name, $path = null);
 
-    public function renderLayout($layout, $page);
-
     public function getByID($id);
 
     public function getByKey($key);
