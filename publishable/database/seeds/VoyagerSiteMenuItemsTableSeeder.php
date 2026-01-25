@@ -18,48 +18,33 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
 
         // CONTENT ROOT MENU
         $contentTitle = __('voyager-site::seeders.menu_items.content');
-        $structureMenuItem = MenuItem::where('menu_id', $menu->id)
-            ->whereNull('route')
-            ->where('url', '')
-            ->whereNull('parent_id')
-            ->where(function ($query) use ($contentTitle) {
-                $query->where('title', $contentTitle)
-                    ->orWhere('icon_class', 'voyager-medal-rank-star');
-            })
-            ->first();
-
-        if ($structureMenuItem) {
-            if ($refresh) {
-                $structureMenuItem->fill([
-                    'title' => $contentTitle,
-                    'target' => '_self',
-                    'icon_class' => 'voyager-medal-rank-star',
-                    'color' => null,
-                    'parent_id' => null,
-                    'order' => 99,
-                ])->save();
-            }
-        } else {
-            $structureMenuItem = MenuItem::create([
-                'menu_id' => $menu->id,
+        $structureMenuItem = $this->seedMenuItem(
+            $refresh,
+            $menu,
+            'voyager_site.content',
+            ['route' => null, 'icon_class' => 'voyager-medal-rank-star', 'url' => ''],
+            [
                 'title' => $contentTitle,
+                'key' => 'voyager_site.content',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-medal-rank-star',
                 'color' => null,
                 'parent_id' => null,
                 'order' => 99,
-            ]);
-        }
+            ]
+        );
 
 
         // PAGES
         $this->seedMenuItem(
             $refresh,
             $menu,
-            ['route' => 'voyager.pages.index'],
+            'voyager_site.pages',
+            ['route' => 'voyager.pages.index', 'icon_class' => 'voyager-file-text'],
             [
                 'title' => __('voyager-site::seeders.menu_items.pages'),
+                'key' => 'voyager_site.pages',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-file-text',
@@ -73,9 +58,11 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         $this->seedMenuItem(
             $refresh,
             $menu,
-            ['route' => 'voyager.blocks.index'],
+            'voyager_site.blocks',
+            ['route' => 'voyager.blocks.index', 'icon_class' => 'voyager-puzzle'],
             [
                 'title' => __('voyager-site::seeders.menu_items.block_and_widgets'),
+                'key' => 'voyager_site.blocks',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-puzzle',
@@ -89,9 +76,11 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         $this->seedMenuItem(
             $refresh,
             $menu,
-            ['route' => 'voyager.forms.index'],
+            'voyager_site.forms',
+            ['route' => 'voyager.forms.index', 'icon_class' => 'voyager-window-list'],
             [
                 'title' => __('voyager-site::seeders.menu_items.forms'),
+                'key' => 'voyager_site.forms',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-window-list',
@@ -105,9 +94,11 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         $this->seedMenuItem(
             $refresh,
             $menu,
-            ['route' => 'voyager.system-pages.index'],
+            'voyager_site.system_pages',
+            ['route' => 'voyager.system-pages.index', 'icon_class' => 'voyager-file-code'],
             [
                 'title' => __('voyager-site::seeders.menu_items.system_pages'),
+                'key' => 'voyager_site.system_pages',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-file-code',
@@ -122,9 +113,11 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         $this->seedMenuItem(
             $refresh,
             $menu,
-            ['route' => 'voyager.localizations.index'],
+            'voyager_site.localizations',
+            ['route' => 'voyager.localizations.index', 'icon_class' => 'voyager-font'],
             [
                 'title' => __('voyager-site::seeders.menu_items.localizations'),
+                'key' => 'voyager_site.localizations',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-font',
@@ -139,9 +132,11 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         $this->seedMenuItem(
             $refresh,
             $menu,
-            ['route' => 'voyager.site-settings.index'],
+            'voyager_site.site_settings',
+            ['route' => 'voyager.site-settings.index', 'icon_class' => 'voyager-tools'],
             [
                 'title' => __('voyager-site::seeders.menu_items.site_settings'),
+                'key' => 'voyager_site.site_settings',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-tools',
@@ -155,9 +150,11 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         $this->seedMenuItem(
             $refresh,
             $menu,
-            ['route' => 'voyager.block-regions.index'],
+            'voyager_site.block_regions',
+            ['route' => 'voyager.block-regions.index', 'icon_class' => 'voyager-crop'],
             [
                 'title' => __('voyager-site::seeders.menu_items.regions'),
+                'key' => 'voyager_site.block_regions',
                 'url' => '',
                 'target' => '_self',
                 'icon_class' => 'voyager-crop',
@@ -172,19 +169,58 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
 
     }
 
-    protected function seedMenuItem(bool $refresh, Menu $menu, array $criteria, array $payload): MenuItem
+    protected function seedMenuItem(bool $refresh, Menu $menu, string $key, array $criteria, array $payload): MenuItem
     {
         $criteria = array_merge(['menu_id' => $menu->id], $criteria);
         $payload = array_merge(['menu_id' => $menu->id], $payload);
 
-        $item = MenuItem::where($criteria)->first();
-        if ($item) {
-            if ($refresh) {
-                $item->fill($payload)->save();
+        $itemByKey = MenuItem::whereNotNull('key')
+            ->where('menu_id', $menu->id)
+            ->where('key', $key)
+            ->first();
+        $itemByCriteria = MenuItem::where($criteria)->whereNull('key')->first();
+        if (!$itemByCriteria) {
+            $itemByCriteria = MenuItem::where($criteria)->first();
+        }
+
+        if ($itemByCriteria && $itemByKey && $itemByCriteria->id !== $itemByKey->id) {
+            if (!$refresh) {
+                return $itemByKey;
             }
-            return $item;
+            $itemByKey->delete();
+            if (empty($itemByCriteria->key)) {
+                $itemByCriteria->key = $key;
+            }
+            $itemByCriteria->fill($this->refreshPayload($payload));
+            $itemByCriteria->save();
+            return $itemByCriteria;
+        }
+
+        if ($itemByKey) {
+            if ($refresh) {
+                $itemByKey->fill($this->refreshPayload($payload))->save();
+            }
+            return $itemByKey;
+        }
+
+        if ($itemByCriteria) {
+            if (empty($itemByCriteria->key)) {
+                $itemByCriteria->key = $key;
+            }
+            if ($refresh) {
+                $itemByCriteria->fill($this->refreshPayload($payload));
+            }
+            $itemByCriteria->save();
+            return $itemByCriteria;
         }
 
         return MenuItem::create($payload);
+    }
+
+    protected function refreshPayload(array $payload): array
+    {
+        unset($payload['parent_id'], $payload['order']);
+
+        return $payload;
     }
 }
