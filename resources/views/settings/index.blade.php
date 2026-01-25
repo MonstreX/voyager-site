@@ -132,7 +132,7 @@
                                                     data-remove-type="remove_media"></a>
                                                 @if($media)
                                                     @if(explode('/', $media->mime_type)[0] === 'image')
-                                                        <img class="image-type" src="{{ $media->fullUrl() }}">
+                                                        <img class="image-type" src="{{ $media->fullUrl() }}" style="max-height:100px; width:auto;">
                                                     @else
                                                         <img class="file-type" src="{{ voyager_asset('icons/files/'.explode('/', $media->mime_type)[1].'.svg') }}">
                                                     @endif

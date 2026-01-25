@@ -254,6 +254,16 @@ if (!function_exists('seo_meta')) {
             return url($value);
         };
 
+        $resolveMediaUrl = static function ($value): string {
+            if (is_numeric($value) && class_exists(\TCG\Voyager\Models\Media::class)) {
+                $media = \TCG\Voyager\Models\Media::find((int)$value);
+                if ($media) {
+                    return $media->fullUrl();
+                }
+            }
+            return (string)$value;
+        };
+
         $modelTitle = '';
         if (is_object($model) && isset($model->title)) {
             $modelTitle = $model->title;
@@ -296,6 +306,7 @@ if (!function_exists('seo_meta')) {
         if (empty($ogImage)) {
             $ogImage = $globalSeo['og_image'] ?? '';
         }
+        $ogImage = $resolveMediaUrl($ogImage);
         if (!empty($ogImage) && !str_starts_with($ogImage, 'http')) {
             $ogImage = url($ogImage);
         }
@@ -305,6 +316,7 @@ if (!function_exists('seo_meta')) {
             $globalSeo['twitter_image'] ?? '',
             $ogImage,
         ]);
+        $twitterImage = $resolveMediaUrl($twitterImage);
         if (!empty($twitterImage) && !str_starts_with($twitterImage, 'http')) {
             $twitterImage = url($twitterImage);
         }
