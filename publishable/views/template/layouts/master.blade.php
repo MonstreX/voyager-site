@@ -9,8 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
     <title>{{ $seo['title'] }}</title>
-    <meta name="description" content="{{ $seo['description'] }}">
-    <meta name="description" content="{{ $seo['keywords'] }}">
+    {!! seo_tags($page ?? null) !!}
 
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
 
