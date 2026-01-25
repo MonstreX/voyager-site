@@ -243,6 +243,17 @@ if (!function_exists('seo_meta')) {
         $globalSeo = site_settings_group('seo') ?? [];
         $generalSettings = site_settings_group('general') ?? [];
 
+        $normalizeUrl = static function ($value): string {
+            $value = trim((string)$value);
+            if ($value === '') {
+                return '';
+            }
+            if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                return $value;
+            }
+            return url($value);
+        };
+
         $modelTitle = '';
         if (is_object($model) && isset($model->title)) {
             $modelTitle = $model->title;
@@ -257,10 +268,26 @@ if (!function_exists('seo_meta')) {
             $modelImage = $model['image'];
         }
 
-        $canonicalUrl = $modelSeo['canonical_url'] ?? '';
-        if (empty($canonicalUrl)) {
-            $canonicalUrl = url()->current();
+        $modelUrl = '';
+        if (is_object($model)) {
+            if (method_exists($model, 'getUrl')) {
+                $modelUrl = $model->getUrl();
+            } elseif (isset($model->url)) {
+                $modelUrl = $model->url;
+            } elseif (isset($model->link)) {
+                $modelUrl = $model->link;
+            }
+        } elseif (is_array($model)) {
+            $modelUrl = $model['url'] ?? $model['link'] ?? '';
         }
+
+        $canonicalUrl = $modelSeo['canonical_url'] ?? '';
+        $canonicalUrl = get_first_not_empty([
+            $canonicalUrl,
+            $modelUrl,
+            url()->current(),
+        ]);
+        $canonicalUrl = $normalizeUrl($canonicalUrl);
 
         $ogImage = $modelSeo['og_image'] ?? '';
         if (empty($ogImage) && !empty($modelImage)) {
@@ -273,18 +300,31 @@ if (!function_exists('seo_meta')) {
             $ogImage = url($ogImage);
         }
 
+        $twitterImage = get_first_not_empty([
+            $modelSeo['twitter_image'] ?? '',
+            $globalSeo['twitter_image'] ?? '',
+            $ogImage,
+        ]);
+        if (!empty($twitterImage) && !str_starts_with($twitterImage, 'http')) {
+            $twitterImage = url($twitterImage);
+        }
+
+        $seoTitle = get_first_not_empty([
+            $modelSeo['seo_title'] ?? '',
+            $modelTitle,
+            $globalSeo['seo_title'] ?? '',
+            $generalSettings['site_title'] ?? config('app.name'),
+        ]);
+
+        $metaDescription = get_first_not_empty([
+            $modelSeo['meta_description'] ?? '',
+            $globalSeo['meta_description'] ?? '',
+            $generalSettings['site_description'] ?? '',
+        ]);
+
         return [
-            'seo_title' => get_first_not_empty([
-                $modelSeo['seo_title'] ?? '',
-                $modelTitle,
-                $globalSeo['seo_title'] ?? '',
-                $generalSettings['site_title'] ?? config('app.name'),
-            ]),
-            'meta_description' => get_first_not_empty([
-                $modelSeo['meta_description'] ?? '',
-                $globalSeo['meta_description'] ?? '',
-                $generalSettings['site_description'] ?? '',
-            ]),
+            'seo_title' => $seoTitle,
+            'meta_description' => $metaDescription,
             'meta_keywords' => get_first_not_empty([
                 $modelSeo['meta_keywords'] ?? '',
                 $globalSeo['meta_keywords'] ?? '',
@@ -292,14 +332,11 @@ if (!function_exists('seo_meta')) {
             'canonical_url' => $canonicalUrl,
             'og_title' => get_first_not_empty([
                 $modelSeo['og_title'] ?? '',
-                $modelSeo['seo_title'] ?? '',
-                $modelTitle,
-                $globalSeo['seo_title'] ?? '',
+                $seoTitle,
             ]),
             'og_description' => get_first_not_empty([
                 $modelSeo['og_description'] ?? '',
-                $modelSeo['meta_description'] ?? '',
-                $globalSeo['meta_description'] ?? '',
+                $metaDescription,
             ]),
             'og_image' => $ogImage,
             'og_type' => get_first_not_empty([
@@ -320,15 +357,13 @@ if (!function_exists('seo_meta')) {
             'twitter_site' => $globalSeo['twitter_site'] ?? '',
             'twitter_title' => get_first_not_empty([
                 $modelSeo['og_title'] ?? '',
-                $modelSeo['seo_title'] ?? '',
-                $modelTitle,
+                $seoTitle,
             ]),
             'twitter_description' => get_first_not_empty([
                 $modelSeo['og_description'] ?? '',
-                $modelSeo['meta_description'] ?? '',
-                $globalSeo['meta_description'] ?? '',
+                $metaDescription,
             ]),
-            'twitter_image' => $ogImage,
+            'twitter_image' => $twitterImage,
         ];
     }
 }
@@ -337,6 +372,19 @@ if (!function_exists('seo_tags')) {
     function seo_tags($model = null): \Illuminate\Support\HtmlString
     {
         $seo = seo_meta($model);
+        $settings = site_settings_group('seo') ?? [];
+        $isEnabled = static function ($value): bool {
+            if (is_bool($value)) {
+                return $value;
+            }
+            $value = strtolower(trim((string)$value));
+            return in_array($value, ['1', 'true', 'yes', 'on'], true);
+        };
+
+        $enableCanonical = $isEnabled($settings['enable_canonical'] ?? false);
+        $enableOg = $isEnabled($settings['enable_og'] ?? false);
+        $enableTwitter = $isEnabled($settings['enable_twitter'] ?? false);
+
         $html = '';
 
         if (!empty($seo['meta_description'])) {
@@ -345,43 +393,47 @@ if (!function_exists('seo_tags')) {
         if (!empty($seo['meta_keywords'])) {
             $html .= '<meta name="keywords" content="'.e($seo['meta_keywords']).'">'."\n";
         }
-        if (!empty($seo['canonical_url'])) {
+        if ($enableCanonical && !empty($seo['canonical_url'])) {
             $html .= '<link rel="canonical" href="'.e($seo['canonical_url']).'">'."\n";
         }
 
-        if (!empty($seo['og_title'])) {
-            $html .= '<meta property="og:title" content="'.e($seo['og_title']).'">'."\n";
-        }
-        if (!empty($seo['og_description'])) {
-            $html .= '<meta property="og:description" content="'.e($seo['og_description']).'">'."\n";
-        }
-        if (!empty($seo['og_image'])) {
-            $html .= '<meta property="og:image" content="'.e($seo['og_image']).'">'."\n";
-        }
-        if (!empty($seo['og_type'])) {
-            $html .= '<meta property="og:type" content="'.e($seo['og_type']).'">'."\n";
-        }
-        if (!empty($seo['og_url'])) {
-            $html .= '<meta property="og:url" content="'.e($seo['og_url']).'">'."\n";
-        }
-        if (!empty($seo['og_site_name'])) {
-            $html .= '<meta property="og:site_name" content="'.e($seo['og_site_name']).'">'."\n";
+        if ($enableOg) {
+            if (!empty($seo['og_title'])) {
+                $html .= '<meta property="og:title" content="'.e($seo['og_title']).'">'."\n";
+            }
+            if (!empty($seo['og_description'])) {
+                $html .= '<meta property="og:description" content="'.e($seo['og_description']).'">'."\n";
+            }
+            if (!empty($seo['og_image'])) {
+                $html .= '<meta property="og:image" content="'.e($seo['og_image']).'">'."\n";
+            }
+            if (!empty($seo['og_type'])) {
+                $html .= '<meta property="og:type" content="'.e($seo['og_type']).'">'."\n";
+            }
+            if (!empty($seo['og_url'])) {
+                $html .= '<meta property="og:url" content="'.e($seo['og_url']).'">'."\n";
+            }
+            if (!empty($seo['og_site_name'])) {
+                $html .= '<meta property="og:site_name" content="'.e($seo['og_site_name']).'">'."\n";
+            }
         }
 
-        if (!empty($seo['twitter_card'])) {
-            $html .= '<meta name="twitter:card" content="'.e($seo['twitter_card']).'">'."\n";
-        }
-        if (!empty($seo['twitter_site'])) {
-            $html .= '<meta name="twitter:site" content="'.e($seo['twitter_site']).'">'."\n";
-        }
-        if (!empty($seo['twitter_title'])) {
-            $html .= '<meta name="twitter:title" content="'.e($seo['twitter_title']).'">'."\n";
-        }
-        if (!empty($seo['twitter_description'])) {
-            $html .= '<meta name="twitter:description" content="'.e($seo['twitter_description']).'">'."\n";
-        }
-        if (!empty($seo['twitter_image'])) {
-            $html .= '<meta name="twitter:image" content="'.e($seo['twitter_image']).'">'."\n";
+        if ($enableTwitter) {
+            if (!empty($seo['twitter_card'])) {
+                $html .= '<meta name="twitter:card" content="'.e($seo['twitter_card']).'">'."\n";
+            }
+            if (!empty($seo['twitter_site'])) {
+                $html .= '<meta name="twitter:site" content="'.e($seo['twitter_site']).'">'."\n";
+            }
+            if (!empty($seo['twitter_title'])) {
+                $html .= '<meta name="twitter:title" content="'.e($seo['twitter_title']).'">'."\n";
+            }
+            if (!empty($seo['twitter_description'])) {
+                $html .= '<meta name="twitter:description" content="'.e($seo['twitter_description']).'">'."\n";
+            }
+            if (!empty($seo['twitter_image'])) {
+                $html .= '<meta name="twitter:image" content="'.e($seo['twitter_image']).'">'."\n";
+            }
         }
 
         return new \Illuminate\Support\HtmlString($html);

@@ -152,10 +152,25 @@ return [
 
         'seo' => [
             'title' => 'СЕО',
+            'enable_canonical' => 'Включить Canonical URL',
+            'enable_og' => 'Включить Open Graph',
+            'enable_twitter' => 'Включить Twitter Card',
             'seo_title_template' => 'Шаблон СЕО Заголовка (TITLE)',
             'seo_title' => 'Заголовок (SEO TITLE) по умолчанию',
             'meta_description' => 'META Описание по умолчанию',
             'meta_keywords' => 'META Ключевые слова по умолчанию',
+            'section_og' => 'Open Graph',
+            'og_site_name' => 'Open Graph название сайта',
+            'og_type' => 'Open Graph тип',
+            'og_type_website' => 'Сайт',
+            'og_type_article' => 'Статья',
+            'og_image' => 'Open Graph изображение',
+            'section_twitter' => 'Twitter',
+            'twitter_card' => 'Twitter тип карточки',
+            'twitter_card_summary' => 'Сводка',
+            'twitter_card_summary_large' => 'Сводка с большим изображением',
+            'twitter_site' => 'Twitter сайт',
+            'twitter_image' => 'Twitter изображение',
         ],
 
         'theme' => [

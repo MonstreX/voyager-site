@@ -12,7 +12,7 @@ Using this package you can rapidly and easily build small and medium-size scale 
 ## Features
 
 - Basic Page management module, including systems pages.
-- Basic SEO implementation - Seo title, Meta Description and Meta Keywords parameters.
+- SEO with basic meta, optional Open Graph/Twitter tags, and canonical URL.
 - Breadcrumbs implementation.
 - Flexible Block / Widget management module, to build parts of your site pages.
 - Form management system, including AJAX sending.
@@ -91,6 +91,7 @@ $mail = site_setting('mail.to_address');
 
 The settings have built-in SMTP mail parameters and the mail sending test function.
 ![Site settings - Mail](/docs/images/settings-mail.png)
+SEO settings include the base meta fields and optional Open Graph/Twitter/common fields with feature toggles.
 
 You can easily modify settings or add new ones using JSON-like setting fields configuration by clicking on the Edit action.
 ```json
@@ -332,6 +333,23 @@ site setting **seo.meta_description**, if the setting is empty then takes value 
 **META Keywords** - from the page seo fields group if an appropriate field is not empty, otherwise checks a 
 site setting **seo.meta_keywords**.
 > You can override the **META Keywords** value with method **VPage::setMetaKeywords('new keywords')**.
+
+### Open Graph, Twitter, Canonical
+
+Open Graph, Twitter, and Canonical tags are rendered by the `seo_tags()` helper and are **disabled by default**.  
+Enable them in **Site Settings → SEO**:
+
+- **Enable canonical URL tag**
+- **Enable Open Graph tags**
+- **Enable Twitter Card tags**
+
+Auto-generated values:
+- **Canonical URL** defaults to the current URL (or model URL if provided).
+- **OG/Twitter title** uses the resolved SEO title.
+- **OG/Twitter description** uses the resolved meta description.
+
+Global fields (Site Settings → SEO) provide shared defaults (site name, type, images, card type, etc).  
+Per-page overrides for OG/Twitter can be provided via `seo_meta()` input (model `seoMeta()` or array), but page fields are **not** extended by default.
 
 
 ### Page Breadcrumbs
@@ -771,11 +789,30 @@ Example with `<picture>` and breakpoints:
 **get_block_field($block_key, $field_name)** - Return field value of a given block key.  
     
 **seo_meta($modelOrArray)** - Return SEO data array (with fallbacks from settings).  
-**seo_tags($modelOrArray)** - Render `<meta>` and `<link rel="canonical">` tags.  
+**seo_tags($modelOrArray)** - Render meta tags. Canonical/OG/Twitter are rendered **only when enabled** in SEO settings.  
 
 Example:
 ```blade
 {!! seo_tags($page) !!}
+```
+
+You can override any SEO field by passing an array or by implementing `seoMeta()` on a model.  
+Supported keys:
+
+- `seo_title`, `meta_description`, `meta_keywords`
+- `canonical_url`
+- `og_title`, `og_description`, `og_image`, `og_type`, `og_site_name`
+- `twitter_card`, `twitter_site`, `twitter_title`, `twitter_description`, `twitter_image`
+
+Example:
+```blade
+{!! seo_tags([
+    'seo_title' => 'Landing page',
+    'meta_description' => 'Short description',
+    'canonical_url' => 'https://example.com/landing',
+    'og_image' => '/storage/og.jpg',
+    'twitter_card' => 'summary_large_image',
+]) !!}
 ```
 
 ### Sitemap
@@ -859,6 +896,17 @@ Available sitemap options:
   - **changefreq**, **priority** - Per-route defaults.
 - **static** - Static paths to include.
 - **defaults** - Fallback `changefreq` and `priority`.
+
+### Scripts manager
+
+Scripts are rendered via `scripts()` helper **as raw content** (no `<script>` wrapper is added).
+
+Example:
+```blade
+{!! scripts('head') !!}
+{!! scripts('body_start') !!}
+{!! scripts('body_end') !!}
+```
 
 
 

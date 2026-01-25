@@ -153,10 +153,25 @@ return [
 
         'seo' => [
             'title' => 'SEO',
+            'enable_canonical' => 'Enable canonical URL tag',
+            'enable_og' => 'Enable Open Graph tags',
+            'enable_twitter' => 'Enable Twitter Card tags',
             'seo_title_template' => 'SEO title template',
             'seo_title' => 'Default SEO page title',
             'meta_description' => 'Default META page description',
             'meta_keywords' => 'Default META page keywords',
+            'section_og' => 'Open Graph',
+            'og_site_name' => 'Open Graph site name',
+            'og_type' => 'Open Graph type',
+            'og_type_website' => 'Website',
+            'og_type_article' => 'Article',
+            'og_image' => 'Open Graph image',
+            'section_twitter' => 'Twitter',
+            'twitter_card' => 'Twitter card type',
+            'twitter_card_summary' => 'Summary',
+            'twitter_card_summary_large' => 'Summary large image',
+            'twitter_site' => 'Twitter site',
+            'twitter_image' => 'Twitter image',
         ],
 
         'theme' => [
