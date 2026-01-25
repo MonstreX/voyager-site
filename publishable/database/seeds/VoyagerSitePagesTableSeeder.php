@@ -11,23 +11,25 @@ class VoyagerSitePagesTableSeeder extends Seeder
      */
     public function run()
     {
-        $record = Page::firstOrCreate([
-            'title' => __('voyager-site::seeders.pages.home_title'),
-            'status' => 1,
-            'slug' => 'home',
-        ]);
+        $refresh = config('voyager-site.seed_refresh', false);
+        $this->seedPage($refresh, Page::class, 'home', __('voyager-site::seeders.pages.home_title'));
+        $this->seedPage($refresh, SystemPage::class, 'error-403', __('voyager-site::seeders.system_pages.403_title'));
+        $this->seedPage($refresh, SystemPage::class, 'error-404', __('voyager-site::seeders.system_pages.404_title'));
 
-        $record = SystemPage::firstOrCreate([
-            'title' => __('voyager-site::seeders.system_pages.403_title'),
-            'status' => 1,
-            'slug' => 'error-403',
-        ]);
+    }
 
-        $record = SystemPage::firstOrCreate([
-            'title' => __('voyager-site::seeders.system_pages.404_title'),
+    protected function seedPage(bool $refresh, string $model, string $slug, string $title): void
+    {
+        $payload = [
+            'title' => $title,
             'status' => 1,
-            'slug' => 'error-404',
-        ]);
+        ];
 
+        if ($refresh) {
+            $model::updateOrCreate(['slug' => $slug], $payload);
+            return;
+        }
+
+        $model::firstOrCreate(['slug' => $slug], $payload);
     }
 }

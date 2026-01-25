@@ -47,4 +47,9 @@ return [
      */
     'template_filters' => null,
 
+    /*
+     *  Seed refresh flag (used by install --refresh)
+     */
+    'seed_refresh' => false,
+
 ];

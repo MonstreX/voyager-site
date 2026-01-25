@@ -36,6 +36,8 @@ class InstallCommand extends Command
     {
         return [
             ['force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production', null],
+            ['refresh', null, InputOption::VALUE_NONE, 'Refresh Voyager Site seed data', null],
+            ['locale', null, InputOption::VALUE_OPTIONAL, 'Locale to use while refreshing seed data', null],
         ];
     }
 
@@ -55,6 +57,11 @@ class InstallCommand extends Command
     {
         $status = $this->detectInstallStatus();
         if ($status['installed']) {
+            if ($this->option('refresh')) {
+                $this->refreshSeedData();
+                return;
+            }
+
             $this->info('Voyager Site is already installed.');
             $this->line('If you need to remove it, run: php artisan voyager-site:uninstall');
             return;
@@ -85,9 +92,31 @@ class InstallCommand extends Command
         }
 
         $this->info('Seeding data into the database');
+        if ($this->option('refresh')) {
+            $this->applySeedRefreshOptions();
+        }
         $this->seed('VoyagerSiteDatabaseSeeder');
 
         $this->info('Successfully installed Voyager Site Package! Enjoy');
+    }
+
+    protected function refreshSeedData()
+    {
+        $this->info('Refreshing Voyager Site seed data');
+        $this->applySeedRefreshOptions();
+        $this->seed('VoyagerSiteDatabaseSeeder');
+        $this->info('Seed data refresh completed.');
+    }
+
+    protected function applySeedRefreshOptions()
+    {
+        $locale = $this->option('locale');
+        if ($locale) {
+            app()->setLocale($locale);
+            $this->line('Seeding locale: ' . $locale);
+        }
+
+        config(['voyager-site.seed_refresh' => true]);
     }
 
     protected function detectInstallStatus()

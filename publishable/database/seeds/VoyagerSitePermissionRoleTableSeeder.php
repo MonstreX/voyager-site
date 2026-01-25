@@ -13,6 +13,7 @@ class VoyagerSitePermissionRoleTableSeeder extends Seeder
      */
     public function run()
     {
+        $refresh = config('voyager-site.seed_refresh', false);
         $role = Role::where('name', 'admin')->firstOrFail();
 
         $permissions = Permission::all();

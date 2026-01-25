@@ -11,6 +11,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
      */
     public function run()
     {
+        $refresh = config('voyager-site.seed_refresh', false);
         $regionDataType = DataType::where('slug', 'block-regions')->firstOrFail();
         $blockDataType = DataType::where('slug', 'blocks')->firstOrFail();
         $formDataType = DataType::where('slug', 'forms')->firstOrFail();
@@ -23,7 +24,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
          *  BLOCK REGIONS
          */
         $dataRow = $this->dataRow($regionDataType, 'id');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.id'),
@@ -38,7 +39,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($regionDataType, 'title');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.title'),
@@ -56,7 +57,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($regionDataType, 'key');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.region_key'),
@@ -71,7 +72,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($regionDataType, 'color');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'color',
                 'display_name' => __('voyager-site::seeders.data_rows.color'),
@@ -86,7 +87,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($regionDataType, 'order');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.order'),
@@ -101,7 +102,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($regionDataType, 'created_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.created_at'),
@@ -116,7 +117,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($regionDataType, 'updated_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.updated_at'),
@@ -135,7 +136,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
          *  BLOCKS
          */
         $dataRow = $this->dataRow($blockDataType, 'id');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.id'),
@@ -155,7 +156,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($blockDataType, 'status');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'checkbox',
                 'display_name' => __('voyager-site::seeders.data_rows.status'),
@@ -180,7 +181,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($blockDataType, 'title');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.title'),
@@ -208,7 +209,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
 
         $dataRow = $this->dataRow($blockDataType, 'key');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.block_key'),
@@ -237,7 +238,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($blockDataType, 'region_id');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'select_dropdown',
                 'display_name' => __('voyager-site::seeders.data_rows.region_position'),
@@ -253,7 +254,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
         //block_belongsto_position_relationship
         $dataRow = $this->dataRow($blockDataType, 'block_belongsto_block_region_relationship');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'relationship',
                 'display_name' => __('voyager-site::seeders.data_rows.region_position'),
@@ -281,7 +282,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($blockDataType, 'content');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'code_editor',
                 'display_name' => __('voyager-site::seeders.data_rows.block_content'),
@@ -300,7 +301,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($blockDataType, 'images');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'adv_media_files',
                 'display_name' => __('voyager-site::seeders.data_rows.images_files'),
@@ -333,7 +334,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
 
         $dataRow = $this->dataRow($blockDataType, 'details');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'code_editor',
                 'display_name' => __('voyager-site::seeders.data_rows.options'),
@@ -353,7 +354,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
 
         $dataRow = $this->dataRow($blockDataType, 'rules');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'radio_btn',
                 'display_name' => __('voyager-site::seeders.data_rows.url_paths'),
@@ -376,7 +377,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
 
         $dataRow = $this->dataRow($blockDataType, 'urls');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text_area',
                 'display_name' => __('voyager-site::seeders.data_rows.page_urls'),
@@ -395,7 +396,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
 
         $dataRow = $this->dataRow($blockDataType, 'order');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.order'),
@@ -410,7 +411,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($blockDataType, 'created_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.created_at'),
@@ -428,7 +429,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($blockDataType, 'updated_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.updated_at'),
@@ -447,7 +448,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
          *  FORMS
          */
         $dataRow = $this->dataRow($formDataType, 'id');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.id'),
@@ -467,7 +468,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($formDataType, 'status');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'checkbox',
                 'display_name' => __('voyager-site::seeders.data_rows.status'),
@@ -492,7 +493,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($formDataType, 'title');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.title'),
@@ -513,7 +514,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($formDataType, 'key');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.form_key'),
@@ -534,7 +535,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($formDataType, 'content');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'code_editor',
                 'display_name' => __('voyager-site::seeders.data_rows.form_content'),
@@ -553,7 +554,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($formDataType, 'details');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'code_editor',
                 'display_name' => __('voyager-site::seeders.data_rows.options'),
@@ -572,7 +573,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($formDataType, 'order');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.order'),
@@ -587,7 +588,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($formDataType, 'created_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.created_at'),
@@ -606,7 +607,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($formDataType, 'updated_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.updated_at'),
@@ -624,7 +625,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
          * LOCALIZATIONS
          */
         $dataRow = $this->dataRow($localizationDataType, 'id');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => 'ID',
@@ -644,7 +645,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($localizationDataType, 'key');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.language_key'),
@@ -662,7 +663,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($localizationDataType, 'en');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.english'),
@@ -677,7 +678,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($localizationDataType, 'ru');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.russian'),
@@ -693,7 +694,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
 
         $dataRow = $this->dataRow($localizationDataType, 'created_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.created_at'),
@@ -712,7 +713,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($localizationDataType, 'updated_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.updated_at'),
@@ -732,7 +733,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
          *  SITE SETTINGS
          */
         $dataRow = $this->dataRow($settingsDataType, 'id');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.id'),
@@ -752,7 +753,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($settingsDataType, 'title');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.setting_name'),
@@ -776,7 +777,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($settingsDataType, 'key');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.setting_group'),
@@ -791,7 +792,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($settingsDataType, 'details');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'code_editor',
                 'display_name' => __('voyager-site::seeders.data_rows.options'),
@@ -810,7 +811,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($settingsDataType, 'order');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.order'),
@@ -825,7 +826,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($settingsDataType, 'created_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.created_at'),
@@ -844,7 +845,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($settingsDataType, 'updated_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.updated_at'),
@@ -865,7 +866,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
          *  PAGES
          */
         $dataRow = $this->dataRow($pageDataType, 'id');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.id'),
@@ -882,7 +883,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'parent_id');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.parent'),
@@ -900,7 +901,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'status');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'checkbox',
                 'display_name' => __('voyager-site::seeders.data_rows.status'),
@@ -924,7 +925,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'menu');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'checkbox',
                 'display_name' => __('voyager-site::seeders.data_rows.show_in_menu'),
@@ -948,7 +949,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'title');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.title'),
@@ -975,7 +976,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'slug');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.slug'),
@@ -1006,7 +1007,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
 
         $dataRow = $this->dataRow($pageDataType, 'content');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'rich_text_box',
                 'display_name' => __('voyager-site::seeders.data_rows.content'),
@@ -1021,7 +1022,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'image');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'adv_image',
                 'display_name' => __('voyager-site::seeders.data_rows.image'),
@@ -1039,7 +1040,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'images');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'adv_media_files',
                 'display_name' => __('voyager-site::seeders.data_rows.images_files'),
@@ -1055,7 +1056,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
 
         $dataRow = $this->dataRow($pageDataType, 'seo');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'adv_fields_group',
                 'display_name' => __('voyager-site::seeders.data_rows.seo_group'),
@@ -1087,7 +1088,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'details');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'code_editor',
                 'display_name' => __('voyager-site::seeders.data_rows.options'),
@@ -1107,7 +1108,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'order');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.order'),
@@ -1125,7 +1126,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'created_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.created_at'),
@@ -1146,7 +1147,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($pageDataType, 'updated_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.updated_at'),
@@ -1167,7 +1168,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
          *  SYSTEM PAGES
          */
         $dataRow = $this->dataRow($systemPageDataType, 'id');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.id'),
@@ -1184,7 +1185,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($systemPageDataType, 'status');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'checkbox',
                 'display_name' => __('voyager-site::seeders.data_rows.status'),
@@ -1208,7 +1209,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($systemPageDataType, 'title');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.title'),
@@ -1235,7 +1236,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($systemPageDataType, 'slug');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'text',
                 'display_name' => __('voyager-site::seeders.data_rows.slug'),
@@ -1266,7 +1267,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
 
 
         $dataRow = $this->dataRow($systemPageDataType, 'content');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'rich_text_box',
                 'display_name' => __('voyager-site::seeders.data_rows.content'),
@@ -1281,7 +1282,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($systemPageDataType, 'image');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'adv_image',
                 'display_name' => __('voyager-site::seeders.data_rows.image'),
@@ -1296,7 +1297,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($systemPageDataType, 'images');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'adv_media_files',
                 'display_name' => __('voyager-site::seeders.data_rows.images_files'),
@@ -1311,7 +1312,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($systemPageDataType, 'details');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'code_editor',
                 'display_name' => __('voyager-site::seeders.data_rows.options'),
@@ -1330,7 +1331,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($systemPageDataType, 'order');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'number',
                 'display_name' => __('voyager-site::seeders.data_rows.order'),
@@ -1345,7 +1346,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($systemPageDataType, 'created_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.created_at'),
@@ -1366,7 +1367,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
         }
 
         $dataRow = $this->dataRow($systemPageDataType, 'updated_at');
-        if (!$dataRow->exists) {
+        if ($refresh || !$dataRow->exists) {
             $dataRow->fill([
                 'type'         => 'timestamp',
                 'display_name' => __('voyager-site::seeders.data_rows.updated_at'),

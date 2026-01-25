@@ -10,10 +10,11 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
      */
     public function run()
     {
+        $refresh = config('voyager-site.seed_refresh', false);
 
         // BLOCK REGIONS
         $dataType = $this->dataType('slug', 'block-regions');
-        if (!$dataType->exists) {
+        if ($refresh || !$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'block_regions',
                 'display_name_singular' => __('voyager-site::seeders.data_types.block_regions.singular'),
@@ -36,7 +37,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
 
         // BLOCKS
         $dataType = $this->dataType('slug', 'blocks');
-        if (!$dataType->exists) {
+        if ($refresh || !$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'blocks',
                 'display_name_singular' => __('voyager-site::seeders.data_types.blocks.singular'),
@@ -59,7 +60,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
 
         // FORMS
         $dataType = $this->dataType('slug', 'forms');
-        if (!$dataType->exists) {
+        if ($refresh || !$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'forms',
                 'display_name_singular' => __('voyager-site::seeders.data_types.forms.singular'),
@@ -82,7 +83,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
 
         // LOCALIZATIONS
         $dataType = $this->dataType('slug', 'localizations');
-        if (!$dataType->exists) {
+        if ($refresh || !$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'localizations',
                 'display_name_singular' => __('voyager-site::seeders.data_types.localizations.singular'),
@@ -105,7 +106,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
 
         // SETTINGS
         $dataType = $this->dataType('slug', 'site-settings');
-        if (!$dataType->exists) {
+        if ($refresh || !$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'site_settings',
                 'display_name_singular' => __('voyager-site::seeders.data_types.site_settings.singular'),
@@ -128,7 +129,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
 
         // PAGES
         $dataType = $this->dataType('slug', 'pages');
-        if (!$dataType->exists) {
+        if ($refresh || !$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'pages',
                 'display_name_singular' => __('voyager-site::seeders.data_types.pages.singular'),
@@ -151,7 +152,7 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
 
         // SYSTEM PAGES
         $dataType = $this->dataType('slug', 'system-pages');
-        if (!$dataType->exists) {
+        if ($refresh || !$dataType->exists) {
             $dataType->fill([
                 'name'                  => 'system_pages',
                 'display_name_singular' => __('voyager-site::seeders.data_types.system_pages.singular'),

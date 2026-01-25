@@ -10,6 +10,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
      */
     public function run()
     {
+        $refresh = config('voyager-site.seed_refresh', false);
         /*
          *  GENERAL SETTINGS
          */
@@ -89,12 +90,13 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             ],
         ];
 
-        $record = Setting::firstOrCreate([
-            'title' => __('voyager-site::seeders.settings.general.title'),
-            'key' => 'general',
-            'order' => 1,
-            'details' => json_encode($details,JSON_PRETTY_PRINT),
-        ]);
+        $this->seedSetting(
+            $refresh,
+            'general',
+            __('voyager-site::seeders.settings.general.title'),
+            1,
+            json_encode($details, JSON_PRETTY_PRINT)
+        );
 
 
         /*
@@ -182,12 +184,13 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             ],
         ];
 
-        $record = Setting::firstOrCreate([
-            'title' => __('voyager-site::seeders.settings.mail.title'),
-            'key' => 'mail',
-            'order' => 2,
-            'details' => json_encode($details,JSON_PRETTY_PRINT),
-        ]);
+        $this->seedSetting(
+            $refresh,
+            'mail',
+            __('voyager-site::seeders.settings.mail.title'),
+            2,
+            json_encode($details, JSON_PRETTY_PRINT)
+        );
 
 
         /*
@@ -222,12 +225,13 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             ],
         ];
 
-        $record = Setting::firstOrCreate([
-            'title' => __('voyager-site::seeders.settings.seo.title'),
-            'key' => 'seo',
-            'order' => 3,
-            'details' => json_encode($details,JSON_PRETTY_PRINT),
-        ]);
+        $this->seedSetting(
+            $refresh,
+            'seo',
+            __('voyager-site::seeders.settings.seo.title'),
+            3,
+            json_encode($details, JSON_PRETTY_PRINT)
+        );
 
 
         /*
@@ -250,12 +254,29 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             ],
         ];
 
-        $record = Setting::firstOrCreate([
-            'title' => __('voyager-site::seeders.settings.theme.title'),
-            'key' => 'theme',
-            'order' => 4,
-            'details' => json_encode($details,JSON_PRETTY_PRINT),
-        ]);
+        $this->seedSetting(
+            $refresh,
+            'theme',
+            __('voyager-site::seeders.settings.theme.title'),
+            4,
+            json_encode($details, JSON_PRETTY_PRINT)
+        );
 
+    }
+
+    protected function seedSetting(bool $refresh, string $key, string $title, int $order, string $details): void
+    {
+        $payload = [
+            'title' => $title,
+            'order' => $order,
+            'details' => $details,
+        ];
+
+        if ($refresh) {
+            Setting::updateOrCreate(['key' => $key], $payload);
+            return;
+        }
+
+        Setting::firstOrCreate(['key' => $key], $payload);
     }
 }
