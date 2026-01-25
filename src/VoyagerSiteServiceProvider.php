@@ -5,6 +5,7 @@ namespace MonstreX\VoyagerSite;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Schema;
 use Validator;
 use GuzzleHttp\Client;
 use Route;
@@ -190,25 +191,54 @@ class VoyagerSiteServiceProvider extends ServiceProvider
      */
     protected function overrideConfig()
     {
-        $settings = app(Settings::class);
-        $mail = $settings->getSettingsGroup('mail');
+        try {
+            if (!Schema::hasTable('site_settings')) {
+                return;
+            }
 
-        config()->set('mail', [
-            'driver'     => $mail['driver']? :'smtp',
-            'host'       => $mail['host']? :'smtp.mailgun.org',
-            'port'       => $mail['port']? : 587,
-            'from'       => [
-                'address' => $mail['from_address']? :'hello@example.com',
-                'name' => $mail['from_name']? :'Example',
-            ],
-            'encryption' => $mail['encryption']? ($mail['encryption'] === 'NONE'? null : strtolower($mail['encryption']) ) :'tls',
-            'username'   => $mail['username']? :config('mail.username'),
-            'password'   => $mail['password']? :config('mail.password'),
+            $settings = app(Settings::class);
+            $mail = $settings->getSettingsGroup('mail');
+            if (empty($mail)) {
+                return;
+            }
+
+            $mail = collect($mail)
+                ->map(function ($value) {
+                    return is_string($value) ? trim($value) : $value;
+                })
+                ->all();
+
+            $driver = strtolower((string) ($mail['driver'] ?? config('mail.default', 'smtp')));
+            $encryptionSource = strtoupper((string) ($mail['encryption'] ?? config('mail.mailers.smtp.encryption')));
+            $encryption = $encryptionSource === 'NONE' ? null : strtolower($encryptionSource);
+
+            config([
+                'mail.default' => $driver,
+                'mail.from.address' => $mail['from_address'] ?? config('mail.from.address'),
+                'mail.from.name' => $mail['from_name'] ?? config('mail.from.name'),
             ]);
 
-        $general = $settings->getSettingsGroup('general');
+            if ($driver === 'smtp') {
+                config([
+                    'mail.mailers.smtp' => array_replace_recursive(config('mail.mailers.smtp', []), [
+                        'transport' => 'smtp',
+                        'host' => $mail['host'] ?? config('mail.mailers.smtp.host'),
+                        'port' => isset($mail['port']) ? (int) $mail['port'] : config('mail.mailers.smtp.port'),
+                        'username' => $mail['username'] ?? config('mail.mailers.smtp.username'),
+                        'password' => $mail['password'] ?? config('mail.mailers.smtp.password'),
+                        'encryption' => $encryption,
+                        'timeout' => 10,
+                    ]),
+                ]);
+            }
 
-        config()->set('app.name', $general['site_app_name']?? config('app.name'));
+            $general = $settings->getSettingsGroup('general');
+            if (!empty($general['site_app_name'])) {
+                config(['app.name' => $general['site_app_name']]);
+            }
+        } catch (\Exception $e) {
+            // Ignore configuration errors during early boot.
+        }
 
     }
 

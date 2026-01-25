@@ -34,14 +34,16 @@ class VoyagerData implements VoyagerDataContract
 
         $model = $this->getModel($modelSlug);
 
-        if (Voyager::translatable($model)) {
-            $data = $model::with('translations')->where($field, $value)->first();
-        } else {
-            $data = $model::where($field, $value)->first();
-        }
-
-        if (!$model) {
+        if ($model) {
+            if (Voyager::translatable($model)) {
+                $data = $model::with('translations')->where($field, $value)->first();
+            } else {
+                $data = $model::where($field, $value)->first();
+            }
+        } elseif ($modelSlug) {
             $data = DB::table($modelSlug)->where($field, $value)->first();
+        } else {
+            $data = null;
         }
 
         // Drop 404 Error if not found or published (status = 0)
@@ -63,6 +65,9 @@ class VoyagerData implements VoyagerDataContract
     public function findByField(string $modelSlug, string $field, $value, string $order = 'order', string $direction = 'ASC')
     {
         $model = $this->getModel($modelSlug);
+        if (!$model) {
+            return collect();
+        }
 
         $data = $model::where([$field => $value, 'status' => 1])->orderBy($order, $direction)->get();
 
@@ -72,7 +77,7 @@ class VoyagerData implements VoyagerDataContract
     /*
      *  Get Model using given model name (like 'Page')
      */
-    private function getModel($modelSlug):object
+    private function getModel($modelSlug):?object
     {
         if (!$modelSlug) {
             // Default mode is a Page
@@ -81,13 +86,16 @@ class VoyagerData implements VoyagerDataContract
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $modelSlug)->first();
 
-        if ($dataType) {
-            $model = app($dataType->model_name);
-        } else {
-            $model = app(config('voyager.models.namespace').$modelSlug);
+        if ($dataType && !empty($dataType->model_name) && class_exists($dataType->model_name)) {
+            return app($dataType->model_name);
         }
 
-        return $model;
+        $fallbackModel = config('voyager.models.namespace').$modelSlug;
+        if (class_exists($fallbackModel)) {
+            return app($fallbackModel);
+        }
+
+        return null;
     }
 
     /*
@@ -144,10 +152,10 @@ class VoyagerData implements VoyagerDataContract
         // Load related Media Data if needed and convert it to an array
         // It is necessary Only for accessing in Liquid templates
         $dataType = Voyager::model('DataType')->where('slug', '=', $model_slug)->first();
-        $rows = $dataType->rows()->get();
+        $rows = $dataType ? $dataType->rows()->get() : collect();
 
         foreach ($data_records as $record) {
-            if ($rows) {
+            if ($rows && $rows->count()) {
                 foreach ($rows as $row) {
                     // Check for only Medialibrary types
                     if ($row->type === 'adv_image' || $row->type === 'adv_media_files') {

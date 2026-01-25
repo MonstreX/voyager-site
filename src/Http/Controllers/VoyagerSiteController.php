@@ -4,6 +4,8 @@ namespace MonstreX\VoyagerSite\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\MessageBag;
 use Notification;
 use Validator;
 use Arr;
@@ -116,73 +118,93 @@ class VoyagerSiteController extends VoyagerBaseController
      */
     public function sendForm(Request $request)
     {
-        if ($request->isMethod('post')) {
+        $message_type = 'unknown';
+        $messages = [];
+        $validator = null;
 
-            $message_type = 'unknown';
-            $messages = [];
-
-            $formFields = $request->except(['_token', '_form_alias', '_mail_to', 'g-recaptcha-response']);
-
-            if ($form = VBlock::getFormByKey($request->_form_alias)) {
-                $options = json_decode($form->details);
-            }
-
-            // Validation
-            if (isset($options->validator)) {
-                $validator_messages = isset($options->messages)? (array) $options->messages : null;
-                $validator = Validator::make($request->all(), (array) $options->validator, $validator_messages);
-                if(!$validator->passes()) {
-                    $errors = $validator->errors()->all();
-                    $message_type = 'error-validation';
-                    foreach ($errors as $error) {
-                        $messages[] = $error;
-                    }
-                }
-            }
-
-            // Try to send if no errors
-            if(!isset($errors)) {
-                try {
-                    // Use email_to address from global site settings or from the local form options
-                    $to_address = str_replace(' ','', isset($options->to_address)?
-                        $options->to_address :
-                        site_setting('mail.to_address'));
-
-                    // If we have override email to address - we use this one
-                    if($request->has('_mail_to')) {
-                        $to_address = site_setting($request->input('_mail_to'));
-                    }
-
-                    $emails = explode(',', $to_address);
-
-                    Notification::route('mail', $emails)->notify(new SendForm($formFields, $request));
-
-                    $message_type = 'success';
-                    $messages[] = __('voyager-site::mail.send_for_success_message');
-
-                } catch (\Swift_TransportException $e)  {
-                    $message_type = 'error';
-                    $messages[] = $e->getMessage();
-                    \Log::alert('voyager-site::mail.log_error_message'. $e->getMessage());
-                }
-            }
-
+        $formAlias = $request->input('_form_alias');
+        if (!$formAlias) {
+            return $this->respondForm($request, 'error', ['Form alias is missing.']);
         }
 
+        $form = VBlock::getFormByKey($formAlias);
+        if (!$form) {
+            return $this->respondForm($request, 'error', ['Form not found.']);
+        }
+
+        $options = json_decode($form->details ?? '') ?: (object) [];
+
+        if (isset($options->validator)) {
+            $validator_messages = isset($options->messages) ? (array) $options->messages : [];
+            $validator = Validator::make($request->all(), (array) $options->validator, $validator_messages);
+            if (!$validator->passes()) {
+                $message_type = 'error-validation';
+                $messages = $validator->errors()->all();
+                return $this->respondForm($request, $message_type, $messages, $validator);
+            }
+        }
+
+        $formFields = $request->except(['_token', '_form_alias', '_mail_to', 'g-recaptcha-response']);
+
+        try {
+            $to_address = str_replace(' ', '', $options->to_address ?? site_setting('mail.to_address'));
+
+            if ($request->filled('_mail_to')) {
+                $to_address = site_setting($request->input('_mail_to'), $to_address);
+            }
+
+            $emails = collect(explode(',', (string) $to_address))
+                ->map(function ($email) {
+                    return trim($email);
+                })
+                ->filter()
+                ->values()
+                ->all();
+
+            if (empty($emails)) {
+                throw new \RuntimeException('Email address is not configured.');
+            }
+
+            Notification::route('mail', $emails)->notify(new SendForm($formFields, $request));
+
+            $message_type = 'success';
+            $messages[] = __('voyager-site::mail.send_for_success_message');
+        } catch (\Throwable $e) {
+            $message_type = 'error';
+            $messages[] = $e->getMessage();
+            Log::alert('voyager-site::mail.log_error_message'. $e->getMessage());
+        }
+
+        return $this->respondForm($request, $message_type, $messages, $validator);
+    }
+
+    protected function respondForm(Request $request, string $type, array $messages, $validator = null)
+    {
         if ($request->ajax()) {
             $messages_html = '<ul>';
             foreach ($messages as $message) {
-                $messages_html .= '<li>'.$message.'</li>';
+                $messages_html .= '<li>'.e($message).'</li>';
             }
             $messages_html .= '</ul>';
-            return response()->json(['type' => $message_type, 'messages' => $messages_html]);
-        } else {
-
-
-
-            return redirect()->back()->withInput()->withErrors($validator);
-            //->with(['form_status' => $message_type, 'form_messages' => $messages]);
+            return response()->json(['type' => $type, 'messages' => $messages_html], $type === 'success' ? 200 : 422);
         }
+
+        $response = redirect()->back()->withInput();
+
+        if ($validator instanceof \Illuminate\Contracts\Support\MessageBag || $validator instanceof \Illuminate\Validation\Validator) {
+            $response = $response->withErrors($validator);
+        } elseif ($type === 'error-validation') {
+            $bag = new MessageBag();
+            foreach ($messages as $message) {
+                $bag->add('form', $message);
+            }
+            $response = $response->withErrors($bag);
+        }
+
+        return $response->with([
+            'form_status' => $type,
+            'form_messages' => $messages,
+        ]);
     }
 
 
@@ -192,25 +214,43 @@ class VoyagerSiteController extends VoyagerBaseController
      */
     public function sendTestMail(Request $request)
     {
-
         $formFields = [
             'subject' => __('voyager-site::mail.send_test_mail_subject') . site_setting('general.site_app_name'),
             'message' => __('voyager-site::mail.send_test_mail_message'),
         ];
 
-        $emails = explode(',', site_setting('mail.to_address'));
         try {
-            Notification::route('mail', $emails)->notify(new SendForm($formFields, $request));
-            $error = null;
-        } catch (\Swift_TransportException $e) {
-            $error = $e;
-        }
+            $to_address = site_setting('mail.to_address');
+            $emails = collect(explode(',', (string) $to_address))
+                ->map(function ($email) {
+                    return trim($email);
+                })
+                ->filter()
+                ->values()
+                ->all();
 
-        return view('voyager-site::settings.mail-sent')->with([
-            'title' => __('voyager-site::mail.send_test_mail_title'),
-            'content' => __('voyager-site::mail.send_test_mail_success_message'),
-            'error' => $error
-        ]);
+            if (empty($emails)) {
+                return view('voyager-site::settings.mail-sent')->with([
+                    'title' => __('voyager-site::mail.send_test_mail_title'),
+                    'content' => null,
+                    'error' => 'Email address is not configured.',
+                ]);
+            }
+
+            Notification::route('mail', $emails)->notify(new SendForm($formFields, $request));
+
+            return view('voyager-site::settings.mail-sent')->with([
+                'title' => __('voyager-site::mail.send_test_mail_title'),
+                'content' => __('voyager-site::mail.send_test_mail_success_message'),
+                'error' => null,
+            ]);
+        } catch (\Throwable $e) {
+            return view('voyager-site::settings.mail-sent')->with([
+                'title' => __('voyager-site::mail.send_test_mail_title'),
+                'content' => null,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     private function getFileName($file)

@@ -36,6 +36,9 @@ class CustomShortcodes
         if ((count($images) > 0 && $index >= 0 && $index < count($images)) || $shortcode->url) {
             // Process images
         $image_origin = $image_src = $shortcode->url?? $images[$index]->url();
+            $image_format = null;
+            $image_title = '';
+            $image_alt = '';
 
             $class = $shortcode->class;
             $lightbox_class = $shortcode->lightbox_class;
@@ -49,7 +52,7 @@ class CustomShortcodes
             // Crop if required
             if ($shortcode->crop) {
                 $size = explode(',', $shortcode->crop);
-                if (count($size) === 2 && is_numeric($size[0]) && is_numeric($size[0])) {
+                if (count($size) === 2 && is_numeric($size[0]) && is_numeric($size[1])) {
                     $image_format = $format? get_image_or_create($image_origin, $size[0], $size[1], $format) : null;
                     $image_src = get_image_or_create($image_origin, $size[0], $size[1]);
                 }
@@ -57,12 +60,17 @@ class CustomShortcodes
 
             $image_src  =  $shortcode->url?? $image_src;
 
+            if (!$shortcode->url && isset($images[$index])) {
+                $image_title = $images[$index]->getCustomProperty('title');
+                $image_alt = $images[$index]->getCustomProperty('alt');
+            }
+
             return view('voyager-site::shortcodes.image')->with([
                 'image_origin' => $image_origin,
                 'image_format' => $image_format,
                 'image_src' => $image_src,
-                'image_title' => $images[$index]->getCustomProperty('title'),
-                'image_alt' => $images[$index]->getCustomProperty('alt'),
+                'image_title' => $image_title,
+                'image_alt' => $image_alt,
                 'format' => $format,
                 'picture' => $picture,
                 'width' => $width,
