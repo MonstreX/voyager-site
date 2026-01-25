@@ -265,6 +265,7 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'delete'       => 1,
                 'order'        => 8,
                 'details'      => [
+                    'view'  => 'voyager-site::bread.fields.block-region',
                     'model' => '\\MonstreX\\VoyagerSite\\Models\\BlockRegion',
                     'table' => 'block_regions',
                     'type' => 'belongsTo',
@@ -386,6 +387,9 @@ class VoyagerSiteDataRowsTableSeeder extends Seeder
                 'add'          => 1,
                 'delete'       => 1,
                 'order'        => 13,
+                'details'      => [
+                    'view'  => 'voyager-site::bread.fields.block-urls',
+                ],
             ])->save();
         }
 
