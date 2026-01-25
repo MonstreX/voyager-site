@@ -31,6 +31,8 @@ class VoyagerSitePermissionsTableSeeder extends Seeder
         Permission::generateFor('forms');
         Permission::generateFor('localizations');
         Permission::generateFor('site_settings');
+        Permission::generateFor('site_scripts');
+        Permission::generateFor('site_redirects');
         Permission::generateFor('pages');
         Permission::generateFor('system_pages');
     }

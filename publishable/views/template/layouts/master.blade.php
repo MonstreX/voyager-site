@@ -16,8 +16,12 @@
 
     <link href="{{ asset('vendor/voyager-site/css/app.css') }}" rel="stylesheet">
 
+    {!! scripts('head') !!}
+
 </head>
 <body>
+
+    {!! scripts('body_start') !!}
 
     @yield('header')
 
@@ -30,6 +34,8 @@
     @stack('javascript')
 
     <script type="module" src="{{ asset('vendor/voyager-site/js/app.js') }}"></script>
+
+    {!! scripts('body_end') !!}
 
 </body>
 </html>

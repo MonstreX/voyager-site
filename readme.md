@@ -745,12 +745,121 @@ Where:
 **$format** - 'webp', 'png', 'jpg': the image will be converted to webp, png, jpg,   
 **$quality** - quality level of the new image.   
 
+**responsive_image($src, $width, $height = null, $options = [])** - Render responsive `<img>` with `srcset` and `sizes`.  
+**responsive_picture($src, $width, $height = null, $options = [])** - Render responsive `<picture>` with WebP sources and fallback `<img>`.  
+
+Example:
+```blade
+{!! responsive_image($page->image, 800, 600, ['alt' => $page->title, 'class' => 'hero']) !!}
+```
+
+Example with `<picture>` and breakpoints:
+```blade
+{!! responsive_picture($page->image, 1200, 600, [
+    'alt' => $page->title,
+    'formats' => ['webp'],
+    'breakpoints' => [
+        ['media' => '(max-width: 768px)', 'width' => 600, 'height' => 300],
+    ],
+]) !!}
+```
+
 **get_first_not_empty(array $values)** - Returns the first not empty element in a given array.   
 **render_block($key)** - Render block.  
 **render_region($key, $path = null)** - Render region (group of blocks with the same region/group key).  
 **render_form($key, $subject = null, $suffix = null)** - Render form with a given key. Accept also Subject field and Suffix for using in a form.  
 **get_block_field($block_key, $field_name)** - Return field value of a given block key.  
     
+**seo_meta($modelOrArray)** - Return SEO data array (with fallbacks from settings).  
+**seo_tags($modelOrArray)** - Render `<meta>` and `<link rel="canonical">` tags.  
+
+Example:
+```blade
+{!! seo_tags($page) !!}
+```
+
+### Sitemap
+
+Sitemap is available on `/sitemap.xml` when enabled in config:
+
+```php
+'sitemap' => [
+    'enabled' => false,
+    'cache_ttl' => 3600,
+    'include_simple_routes' => false,
+    'exclude' => [
+        'admin/*',
+        'api/*',
+    ],
+    'exclude_names' => [
+        'debugbar.*',
+    ],
+    'routes' => [
+        // Page model by slug
+        'page.show' => [
+            'model' => \MonstreX\VoyagerSite\Models\Page::class,
+            'param' => 'slug',
+            'field' => 'slug',
+            'lastmod' => 'updated_at',
+            'changefreq' => 'weekly',
+            'priority' => 0.8,
+        ],
+
+        // Articles by slug with status filter
+        'articles.show' => [
+            'model' => \App\Models\Article::class,
+            'param' => 'slug',
+            'field' => 'slug',
+            'status' => [
+                'field' => 'status',
+                'value' => [1],
+            ],
+            'lastmod' => 'updated_at',
+            'changefreq' => 'weekly',
+            'priority' => 0.6,
+        ],
+
+        // Routes with multiple parameters
+        'catalog.product' => [
+            'model' => \App\Models\Product::class,
+            'params' => [
+                'category' => 'category.slug',
+                'product' => 'slug',
+            ],
+            'with' => ['category'],
+            'lastmod' => 'updated_at',
+        ],
+    ],
+    'static' => [
+        '/' => ['priority' => 1.0, 'changefreq' => 'daily'],
+        '/about' => ['priority' => 0.8, 'changefreq' => 'monthly'],
+        '/contacts' => ['priority' => 0.7, 'changefreq' => 'monthly'],
+    ],
+    'defaults' => [
+        'changefreq' => 'monthly',
+        'priority' => 0.5,
+    ],
+],
+```
+
+Available sitemap options:
+- **enabled** - Enable sitemap route `/sitemap.xml`.
+- **cache_ttl** - Cache TTL in seconds (0 disables cache).
+- **include_simple_routes** - Include simple GET routes without parameters.
+- **exclude** - URL patterns to exclude (supports `*`).
+- **exclude_names** - Route names to exclude (supports `*`).
+- **routes** - Map route name to model and parameters (see examples above).
+  - **model** - Model class.
+  - **param** or **params** - Route parameter name(s).
+  - **field** - Model field for single param (default `slug`).
+  - **with** - Relations to eager load.
+  - **scope** - Model scope to apply (no arguments).
+  - **status** - Filter: `{ field, value }`, value can be array.
+  - **lastmod** - Field used for `<lastmod>` (default `updated_at`).
+  - **changefreq**, **priority** - Per-route defaults.
+- **static** - Static paths to include.
+- **defaults** - Fallback `changefreq` and `priority`.
+
 
 
 ## Security

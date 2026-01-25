@@ -67,6 +67,8 @@ class VoyagerSiteServiceProvider extends ServiceProvider
             // Load Localization strings
             $localization = app(Localization::class);
             $localization->loadLocalizations();
+            // Register redirects middleware
+            $this->registerRedirectMiddleware();
         }
 
         $this->loadRoutesFrom(__DIR__.'/Routes/routes.php');
@@ -248,6 +250,16 @@ class VoyagerSiteServiceProvider extends ServiceProvider
         Shortcode::register('form', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@form');
         Shortcode::register('div', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@div');
         Shortcode::register('image', 'MonstreX\VoyagerSite\Templates\CustomShortcodes@image');
+    }
+
+    protected function registerRedirectMiddleware()
+    {
+        try {
+            $router = $this->app['router'];
+            $router->pushMiddlewareToGroup('web', \MonstreX\VoyagerSite\Http\Middleware\HandleRedirects::class);
+        } catch (\Throwable $e) {
+            // Router may not be available during early boot.
+        }
     }
 
     protected function registerBlades()

@@ -22,13 +22,13 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
             $refresh,
             $menu,
             'voyager_site.content',
-            ['route' => null, 'icon_class' => 'voyager-medal-rank-star', 'url' => ''],
+            ['route' => null, 'icon_class' => 'voyager-world', 'url' => ''],
             [
                 'title' => $contentTitle,
                 'key' => 'voyager_site.content',
                 'url' => '',
                 'target' => '_self',
-                'icon_class' => 'voyager-medal-rank-star',
+                'icon_class' => 'voyager-world',
                 'color' => null,
                 'parent_id' => null,
                 'order' => 99,
@@ -146,6 +146,42 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
             ]
         );
 
+        // SCRIPTS
+        $this->seedMenuItem(
+            $refresh,
+            $menu,
+            'voyager_site.scripts',
+            ['route' => 'voyager.site-scripts.index', 'icon_class' => 'voyager-code'],
+            [
+                'title' => __('voyager-site::seeders.menu_items.scripts'),
+                'key' => 'voyager_site.scripts',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-code',
+                'color' => null,
+                'parent_id' => $structureMenuItem->id,
+                'order' => 7,
+            ]
+        );
+
+        // REDIRECTS
+        $this->seedMenuItem(
+            $refresh,
+            $menu,
+            'voyager_site.redirects',
+            ['route' => 'voyager.site-redirects.index', 'icon_class' => 'voyager-forward'],
+            [
+                'title' => __('voyager-site::seeders.menu_items.redirects'),
+                'key' => 'voyager_site.redirects',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-forward',
+                'color' => null,
+                'parent_id' => $structureMenuItem->id,
+                'order' => 9,
+            ]
+        );
+
         // REGIONS
         $this->seedMenuItem(
             $refresh,
@@ -160,7 +196,7 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
                 'icon_class' => 'voyager-crop',
                 'color' => null,
                 'parent_id' => $structureMenuItem->id,
-                'order' => 7,
+                'order' => 10,
             ]
         );
 
@@ -173,6 +209,9 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
     {
         $criteria = array_merge(['menu_id' => $menu->id], $criteria);
         $payload = array_merge(['menu_id' => $menu->id], $payload);
+        if (!array_key_exists('route', $payload) && array_key_exists('route', $criteria)) {
+            $payload['route'] = $criteria['route'];
+        }
 
         $itemByKey = MenuItem::whereNotNull('key')
             ->where('menu_id', $menu->id)

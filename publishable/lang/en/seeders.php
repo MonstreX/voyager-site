@@ -48,6 +48,14 @@ return [
         'tab_seo'          => 'SEO',
         'tab_options'      => 'Options',
         'tab_attributes'   => 'Attributes',
+        'script_position'  => 'Position',
+        'script_content'   => 'Script content',
+        'script_details'   => 'Script details',
+        'redirect_from_url' => 'From URL',
+        'redirect_to_url' => 'To URL',
+        'redirect_status_code' => 'Status code',
+        'redirect_hits' => 'Hits',
+        'redirect_last_hit_at' => 'Last hit at',
 
     ],
     'data_types' => [
@@ -71,6 +79,14 @@ return [
             'singular' => 'Site settings',
             'plural'   => 'Site setting',
         ],
+        'site_scripts'     => [
+            'singular' => 'Script',
+            'plural'   => 'Scripts',
+        ],
+        'site_redirects'     => [
+            'singular' => 'Redirect',
+            'plural'   => 'Redirects',
+        ],
         'pages'     => [
             'singular' => 'Page',
             'plural'   => 'Pages',
@@ -81,12 +97,14 @@ return [
         ],
     ],
     'menu_items' => [
-        'content' => 'Content',
+        'content' => 'Site',
         'block_and_widgets' => 'Blocks and Widgets',
         'regions' => 'Block groups',
         'forms' => 'Forms',
         'localizations' => 'Localizations',
         'site_settings' => 'Site settings',
+        'scripts'       => 'Scripts',
+        'redirects'     => 'Redirects',
         'pages'         => 'Pages',
         'system_pages'  => 'System pages',
     ],

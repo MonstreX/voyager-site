@@ -4,6 +4,7 @@ namespace MonstreX\VoyagerSite\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
@@ -55,13 +56,13 @@ class InstallCommand extends Command
      */
     public function handle(Filesystem $filesystem)
     {
+        if ($this->option('refresh')) {
+            $this->refreshSeedData();
+            return;
+        }
+
         $status = $this->detectInstallStatus();
         if ($status['installed']) {
-            if ($this->option('refresh')) {
-                $this->refreshSeedData();
-                return;
-            }
-
             $this->info('Voyager Site is already installed.');
             $this->line('If you need to remove it, run: php artisan voyager-site:uninstall');
             return;
@@ -98,6 +99,7 @@ class InstallCommand extends Command
         $this->seed('VoyagerSiteDatabaseSeeder');
 
         $this->info('Successfully installed Voyager Site Package! Enjoy');
+        $this->clearCaches();
     }
 
     protected function refreshSeedData()
@@ -106,6 +108,7 @@ class InstallCommand extends Command
         $this->applySeedRefreshOptions();
         $this->seed('VoyagerSiteDatabaseSeeder');
         $this->info('Seed data refresh completed.');
+        $this->clearCaches();
     }
 
     protected function applySeedRefreshOptions()
@@ -127,6 +130,8 @@ class InstallCommand extends Command
             'forms',
             'localizations',
             'site_settings',
+            'site_scripts',
+            'site_redirects',
             'pages',
             'system_pages',
         ];
@@ -136,6 +141,8 @@ class InstallCommand extends Command
             'forms',
             'localizations',
             'site-settings',
+            'site-scripts',
+            'site-redirects',
             'pages',
             'system-pages',
         ];
@@ -187,6 +194,8 @@ class InstallCommand extends Command
             'forms',
             'localizations',
             'site_settings',
+            'site_scripts',
+            'site_redirects',
             'pages',
             'system_pages',
         ];
@@ -194,5 +203,14 @@ class InstallCommand extends Command
         return array_values(array_filter($tables, function ($table) {
             return !Schema::hasTable($table);
         }));
+    }
+
+    protected function clearCaches(): void
+    {
+        try {
+            $this->call('cache:clear');
+        } catch (\Throwable $e) {
+            Cache::flush();
+        }
     }
 }

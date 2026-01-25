@@ -127,6 +127,52 @@ class VoyagerSiteDataTypesTableSeeder extends Seeder
             ])->save();
         }
 
+        // SCRIPTS
+        $dataType = $this->dataType('slug', 'site-scripts');
+        if ($refresh || !$dataType->exists) {
+            $dataType->fill([
+                'name'                  => 'site_scripts',
+                'display_name_singular' => __('voyager-site::seeders.data_types.site_scripts.singular'),
+                'display_name_plural'   => __('voyager-site::seeders.data_types.site_scripts.plural'),
+                'icon'                  => 'voyager-code',
+                'model_name'            => 'MonstreX\\VoyagerSite\\Models\\Script',
+                'policy_name'           => '',
+                'controller'            => '',
+                'generate_permissions'  => 1,
+                'description'           => '',
+                'details'               => [
+                    'order_column' => 'order',
+                    'order_display_column' => 'title',
+                    'order_direction' => 'asc',
+                    'default_search_key' => null,
+                    'scope' => null,
+                ],
+            ])->save();
+        }
+
+        // REDIRECTS
+        $dataType = $this->dataType('slug', 'site-redirects');
+        if ($refresh || !$dataType->exists) {
+            $dataType->fill([
+                'name'                  => 'site_redirects',
+                'display_name_singular' => __('voyager-site::seeders.data_types.site_redirects.singular'),
+                'display_name_plural'   => __('voyager-site::seeders.data_types.site_redirects.plural'),
+                'icon'                  => 'voyager-random',
+                'model_name'            => 'MonstreX\\VoyagerSite\\Models\\Redirect',
+                'policy_name'           => '',
+                'controller'            => '',
+                'generate_permissions'  => 1,
+                'description'           => '',
+                'details'               => [
+                    'order_column' => null,
+                    'order_display_column' => null,
+                    'order_direction' => null,
+                    'default_search_key' => null,
+                    'scope' => null,
+                ],
+            ])->save();
+        }
+
         // PAGES
         $dataType = $this->dataType('slug', 'pages');
         if ($refresh || !$dataType->exists) {

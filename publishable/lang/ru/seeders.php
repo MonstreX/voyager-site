@@ -48,6 +48,14 @@ return [
         'tab_seo'          => 'СЕО',
         'tab_options'      => 'Опции',
         'tab_attributes'   => 'Дополнительно',
+        'script_position'  => 'Позиция',
+        'script_content'   => 'Содержимое скрипта',
+        'script_details'   => 'Детали скрипта',
+        'redirect_from_url' => 'Исходный URL',
+        'redirect_to_url' => 'Целевой URL',
+        'redirect_status_code' => 'Код ответа',
+        'redirect_hits' => 'Переходы',
+        'redirect_last_hit_at' => 'Последний переход',
 
     ],
     'data_types' => [
@@ -71,6 +79,14 @@ return [
             'singular' => 'Настройки сайта',
             'plural'   => 'Настройки сайта',
         ],
+        'site_scripts'     => [
+            'singular' => 'Скрипт',
+            'plural'   => 'Скрипты',
+        ],
+        'site_redirects'     => [
+            'singular' => 'Редирект',
+            'plural'   => 'Редиректы',
+        ],
         'pages'     => [
             'singular' => 'Страница',
             'plural'   => 'Страницы',
@@ -81,12 +97,14 @@ return [
         ],
     ],
     'menu_items' => [
-        'content' => 'Контент',
+        'content' => 'Сайт',
         'block_and_widgets' => 'Блоки и Виджеты',
         'regions' => 'Группы блоков',
         'forms' => 'Формы',
         'localizations' => 'Локализации',
         'site_settings' => 'Настройки сайта',
+        'scripts'       => 'Скрипты',
+        'redirects'     => 'Редиректы',
         'pages'         => 'Страницы',
         'system_pages'  => 'Системные страницы',
     ],

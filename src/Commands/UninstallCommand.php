@@ -4,6 +4,7 @@ namespace MonstreX\VoyagerSite\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\Console\Input\InputOption;
 use TCG\Voyager\Models\DataRow;
@@ -53,6 +54,7 @@ class UninstallCommand extends Command
         $this->removeMigrationRecords();
 
         $this->info('Successfully uninstalled Voyager Site package.');
+        $this->clearCaches();
     }
 
     protected function gatherTargets()
@@ -63,6 +65,8 @@ class UninstallCommand extends Command
             'forms',
             'localizations',
             'site_settings',
+            'site_scripts',
+            'site_redirects',
             'pages',
             'system_pages',
         ];
@@ -72,6 +76,8 @@ class UninstallCommand extends Command
             'forms',
             'localizations',
             'site-settings',
+            'site-scripts',
+            'site-redirects',
             'pages',
             'system-pages',
         ];
@@ -82,6 +88,8 @@ class UninstallCommand extends Command
             'voyager.system-pages.index',
             'voyager.localizations.index',
             'voyager.site-settings.index',
+            'voyager.site-scripts.index',
+            'voyager.site-redirects.index',
             'voyager.block-regions.index',
         ];
 
@@ -174,6 +182,8 @@ class UninstallCommand extends Command
             'forms',
             'localizations',
             'site_settings',
+            'site_scripts',
+            'site_redirects',
             'pages',
             'system_pages',
         ];
@@ -209,6 +219,8 @@ class UninstallCommand extends Command
             'forms',
             'localizations',
             'site_settings',
+            'site_scripts',
+            'site_redirects',
             'pages',
             'system_pages',
         ];
@@ -234,9 +246,20 @@ class UninstallCommand extends Command
             '2020_03_03_000002_create_localizations_table',
             '2020_03_03_000003_create_site_settings_table',
             '2020_03_03_000004_create_site_pages_table',
+            '2026_02_05_000001_create_site_scripts_table',
+            '2026_02_05_000002_create_site_redirects_table',
             '2026_02_01_000000_drop_layout_from_pages_table',
         ];
 
         DB::table('migrations')->whereIn('migration', $migrations)->delete();
+    }
+
+    protected function clearCaches(): void
+    {
+        try {
+            $this->call('cache:clear');
+        } catch (\Throwable $e) {
+            Cache::flush();
+        }
     }
 }
