@@ -27,8 +27,16 @@ class ResponsiveImageService
         $alt = $options['alt'] ?? '';
         $class = $options['class'] ?? '';
         $lazy = $options['lazy'] ?? true;
+        $strict = $options['strict'] ?? true;
         $sizes = $options['sizes'] ?? $this->generateDefaultSizes($width);
         $srcsetWidths = $options['srcset'] ?? $this->generateSrcsetWidths($width);
+
+        if ($strict) {
+            $options['formats'] = $options['formats'] ?? [$format];
+            $options['fallback'] = $options['fallback'] ?? $format;
+            $options['strict'] = true;
+            return $this->picture($src, $width, $height, $options);
+        }
 
         $mainSrc = VData::getImageOrCreate($src, $width, $height, $format, $quality);
         $srcset = $this->generateSrcset($src, $width, $height, $srcsetWidths, $format, $quality);
@@ -54,7 +62,7 @@ class ResponsiveImageService
         }
 
         foreach ($options as $key => $value) {
-            if (!in_array($key, ['format', 'quality', 'alt', 'class', 'lazy', 'sizes', 'srcset'], true)) {
+            if (!in_array($key, ['format', 'quality', 'alt', 'class', 'lazy', 'sizes', 'srcset', 'strict', 'formats', 'fallback'], true)) {
                 $attrs[$key] = $value;
             }
         }
@@ -74,10 +82,15 @@ class ResponsiveImageService
         $sizes = $options['sizes'] ?? $this->generateDefaultSizes($width);
         $srcsetWidths = $options['srcset'] ?? $this->generateSrcsetWidths($width);
         $breakpoints = $options['breakpoints'] ?? [];
+        $strict = $options['strict'] ?? true;
         $formats = $options['formats'] ?? ['webp'];
         $fallbackFormat = $options['fallback'] ?? $this->detectOriginalFormat($src);
 
         $html = "<picture>\n";
+
+        if (empty($breakpoints) && $strict) {
+            $breakpoints = $this->generateAutoBreakpoints($width, $height, $srcsetWidths);
+        }
 
         foreach ($breakpoints as $bp) {
             $bpWidth = $bp['width'];
@@ -91,9 +104,11 @@ class ResponsiveImageService
             }
         }
 
-        foreach ($formats as $format) {
-            $srcset = $this->generateSrcset($src, $width, $height, $srcsetWidths, $format, $quality);
-            $html .= "    <source type=\"image/{$format}\" srcset=\"{$srcset}\" sizes=\"{$sizes}\">\n";
+        if (!$strict) {
+            foreach ($formats as $format) {
+                $srcset = $this->generateSrcset($src, $width, $height, $srcsetWidths, $format, $quality);
+                $html .= "    <source type=\"image/{$format}\" srcset=\"{$srcset}\" sizes=\"{$sizes}\">\n";
+            }
         }
 
         $fallbackSrc = VData::getImageOrCreate($src, $width, $height, $fallbackFormat, $quality);
@@ -148,7 +163,7 @@ class ResponsiveImageService
 
         foreach ($this->defaultMultipliers as $multiplier) {
             $w = (int) round($baseWidth * $multiplier);
-            if ($w <= 2400 && $w >= 100) {
+            if ($w <= 2400 && $w >= 100 && $w <= $baseWidth) {
                 $widths[] = $w;
             }
         }
@@ -173,6 +188,31 @@ class ResponsiveImageService
         }
 
         return implode(', ', $sizes);
+    }
+
+    protected function generateAutoBreakpoints(int $baseWidth, ?int $baseHeight, array $widths): array
+    {
+        $breakpoints = [];
+        $widths = array_values($widths);
+        sort($widths);
+
+        $last = count($widths) - 1;
+        foreach ($widths as $index => $width) {
+            if ($index === $last) {
+                continue;
+            }
+
+            $height = $baseHeight ? (int) round($baseHeight * ($width / $baseWidth)) : null;
+
+            $breakpoints[] = [
+                'media' => "(max-width: {$width}px)",
+                'width' => $width,
+                'height' => $height,
+                'srcset' => [$width],
+            ];
+        }
+
+        return $breakpoints;
     }
 
     protected function detectOriginalFormat(string $src): string
