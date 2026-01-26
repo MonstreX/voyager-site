@@ -9,11 +9,11 @@
             "homepage": "http://ss-host.ru"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "homepage": "https://github.com/monstrex/voyager-site",
     "keywords": ["Laravel", "Voyager"],
     "require": {
-        "monstrex/voyager": "*",
+        "monstrex/voyager": "^1.8",
         "liquid/liquid": "^1.4.44",
         "webwizo/laravel-shortcodes": "^1.0.27",
         "ext-json": "*"
@@ -24,7 +24,6 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
             "MonstreX\\VoyagerSite\\": "src/"
         }
     },
