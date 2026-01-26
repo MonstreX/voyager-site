@@ -4,28 +4,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-if (!function_exists('translit_cyrillic')) {
-    function translit_cyrillic($string)
+if (!function_exists('slugify_filename')) {
+    function slugify_filename($string)
     {
-        $charlist = [
-            'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G',
-            'Д' => 'D', 'Е' => 'E', 'Ж' => 'J', 'З' => 'Z', 'И' => 'I',
-            'Й' => 'Y', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 'Н' => 'N',
-            'О' => 'O', 'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T',
-            'У' => 'U', 'Ф' => 'F', 'Х' => 'H', 'Ц' => 'TS', 'Ч' => 'CH',
-            'Ш' => 'SH', 'Щ' => 'SCH', 'Ъ' => '', 'Ы' => 'YI', 'Ь' => '',
-            'Э' => 'E', 'Ю' => 'YU', 'Я' => 'YA', 'а' => 'a', 'б' => 'b',
-            'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ж' => 'j',
-            'з' => 'z', 'и' => 'i', 'й' => 'y', 'к' => 'k', 'л' => 'l',
-            'м' => 'm', 'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r',
-            'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h',
-            'ц' => 'ts', 'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sch', 'ъ' => 'y',
-            'ы' => 'yi', 'ь' => '', 'э' => 'e', 'ю' => 'yu', 'я' => 'ya', ' ' => '_',
-        ];
-        return strtr($string, $charlist);
+        $slug = Str::slug((string) $string, '_');
+        return $slug !== '' ? $slug : 'file';
     }
 }
+
 
 if (!function_exists('get_file')) {
     function get_file($file_path)
@@ -71,10 +59,10 @@ if (!function_exists('store_post_files')) {
 if (!function_exists('generate_filename')) {
     function generate_filename($file, $path)
     {
-        $filename = basename(translit_cyrillic($file->getClientOriginalName()), '.'.$file->getClientOriginalExtension());
+        $filename = basename(slugify_filename($file->getClientOriginalName()), '.'.$file->getClientOriginalExtension());
         $filename_counter = 1;
         while (Storage::disk(config('voyager.storage.disk'))->exists($path.$filename.'.'.$file->getClientOriginalExtension())) {
-            $filename = basename(translit_cyrillic($file->getClientOriginalName()), '.'.$file->getClientOriginalExtension()).(string)($filename_counter++);
+            $filename = basename(slugify_filename($file->getClientOriginalName()), '.'.$file->getClientOriginalExtension()).(string)($filename_counter++);
         }
         return $filename;
     }

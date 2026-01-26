@@ -3,6 +3,7 @@
 namespace MonstreX\VoyagerSite\Services;
 
 use Illuminate\Support\HtmlString;
+use VData;
 
 class ResponsiveImageService
 {

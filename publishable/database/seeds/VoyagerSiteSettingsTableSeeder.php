@@ -95,7 +95,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             'general',
             __('voyager-site::seeders.settings.general.title'),
             1,
-            json_encode($details, JSON_PRETTY_PRINT)
+            json_encode($details, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
         );
 
 
@@ -189,7 +189,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             'mail',
             __('voyager-site::seeders.settings.mail.title'),
             2,
-            json_encode($details, JSON_PRETTY_PRINT)
+            json_encode($details, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
         );
 
 
@@ -310,7 +310,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             'seo',
             __('voyager-site::seeders.settings.seo.title'),
             3,
-            json_encode($details, JSON_PRETTY_PRINT)
+            json_encode($details, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
         );
 
 
@@ -339,7 +339,7 @@ class VoyagerSiteSettingsTableSeeder extends Seeder
             'theme',
             __('voyager-site::seeders.settings.theme.title'),
             4,
-            json_encode($details, JSON_PRETTY_PRINT)
+            json_encode($details, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
         );
 
     }
