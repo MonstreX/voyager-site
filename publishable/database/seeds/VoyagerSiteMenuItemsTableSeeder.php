@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 use TCG\Voyager\Models\Menu;
 use TCG\Voyager\Models\MenuItem;
 
@@ -207,19 +208,28 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
 
     protected function seedMenuItem(bool $refresh, Menu $menu, string $key, array $criteria, array $payload): MenuItem
     {
+        $hasKeyColumn = Schema::hasColumn('menu_items', 'key');
         $criteria = array_merge(['menu_id' => $menu->id], $criteria);
         $payload = array_merge(['menu_id' => $menu->id], $payload);
         if (!array_key_exists('route', $payload) && array_key_exists('route', $criteria)) {
             $payload['route'] = $criteria['route'];
         }
 
-        $itemByKey = MenuItem::whereNotNull('key')
-            ->where('menu_id', $menu->id)
-            ->where('key', $key)
-            ->first();
-        $itemByCriteria = MenuItem::where($criteria)->whereNull('key')->first();
-        if (!$itemByCriteria) {
-            $itemByCriteria = MenuItem::where($criteria)->first();
+        if (!$hasKeyColumn) {
+            unset($payload['key']);
+        }
+
+        $itemByKey = null;
+        if ($hasKeyColumn) {
+            $itemByKey = MenuItem::whereNotNull('key')
+                ->where('menu_id', $menu->id)
+                ->where('key', $key)
+                ->first();
+        }
+
+        $itemByCriteria = MenuItem::where($criteria)->first();
+        if ($hasKeyColumn && $itemByCriteria) {
+            $itemByCriteria = MenuItem::where($criteria)->whereNull('key')->first() ?: $itemByCriteria;
         }
 
         if ($itemByCriteria && $itemByKey && $itemByCriteria->id !== $itemByKey->id) {
@@ -227,7 +237,7 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
                 return $itemByKey;
             }
             $itemByKey->delete();
-            if (empty($itemByCriteria->key)) {
+            if ($hasKeyColumn && empty($itemByCriteria->key)) {
                 $itemByCriteria->key = $key;
             }
             $itemByCriteria->fill($this->refreshPayload($payload));
@@ -246,7 +256,7 @@ class VoyagerSiteMenuItemsTableSeeder extends Seeder
         }
 
         if ($itemByCriteria) {
-            if (empty($itemByCriteria->key)) {
+            if ($hasKeyColumn && empty($itemByCriteria->key)) {
                 $itemByCriteria->key = $key;
             }
             if ($refresh) {
