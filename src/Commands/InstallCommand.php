@@ -158,10 +158,15 @@ class InstallCommand extends Command
                 ->all();
         }
 
-        $installed = count($existingTables) === count($tables)
-            && count($existingDataTypes) === count($slugs);
+        $hasAllTables = count($existingTables) === count($tables);
+        $hasAllDataTypes = count($existingDataTypes) === count($slugs);
+        $hasSomeTables = !empty($existingTables) && !$hasAllTables;
+        $hasSomeDataTypes = !empty($existingDataTypes) && !$hasAllDataTypes;
 
-        $hasConflicts = !empty($existingTables) || !empty($existingDataTypes);
+        $installed = $hasAllTables && $hasAllDataTypes;
+
+        // Allow install when all tables exist but BREAD is missing (e.g., migrations were run first).
+        $hasConflicts = $hasSomeTables || $hasSomeDataTypes || (!$hasAllTables && !empty($existingDataTypes));
 
         return [
             'installed' => $installed,
