@@ -23,14 +23,19 @@ class CustomShortcodes
     // [div class="wrapper"] CONTENT [/div]
     public function div($shortcode, $content, $compiler, $name, $viewData)
     {
-        return '<div '. $shortcode->get('class', 'default') .'>' . $content . '</div>';
+        $class = $shortcode->class ?? 'default';
+        if (!is_string($class)) {
+            $class = 'default';
+        }
+        return '<div class="'.e($class).'">' . $content . '</div>';
     }
 
     //[image field="images" index="3" width="50%" height="50%" lightbox="true" picture="true" format="webp" crop="400,400" class="responsive" lightbox_class="image-gallery"]
     //[image url="/storage/images/file.jpg" width="50%" height="50%" lightbox="true" picture="true" format="webp" crop="400,400" class="responsive" lightbox_class="image-gallery"]
     public function image($shortcode, $content, $compiler, $name, $viewData)
     {
-        $images = $viewData['page']->getMedia($shortcode->field?? 'images');
+        $page = $viewData['page'] ?? null;
+        $images = $page ? $page->getMedia($shortcode->field ?? 'images') : [];
         $index = $shortcode->index? (int)$shortcode->index - 1 : 0;
 
         if ((count($images) > 0 && $index >= 0 && $index < count($images)) || $shortcode->url) {
@@ -40,8 +45,14 @@ class CustomShortcodes
             $image_title = '';
             $image_alt = '';
 
-            $class = $shortcode->class;
-            $lightbox_class = $shortcode->lightbox_class;
+            $class = $shortcode->class ?? '';
+            if (!is_string($class)) {
+                $class = '';
+            }
+            $lightbox_class = $shortcode->lightbox_class ?? '';
+            if (!is_string($lightbox_class)) {
+                $lightbox_class = '';
+            }
             $width = $shortcode->width? 'width="' . $shortcode->width .'"' : '';
             $height = $shortcode->height? 'height="' . $shortcode->height .'"' : '';
             $style = $shortcode->width || $shortcode->height? 'style="width: ' . $width . '; height: ' . $height . ';"' : '';

@@ -1,7 +1,7 @@
 @if($picture) <picture> @endif
 @if($lightbox) <a class="{{ $lightbox_class }}" href="{{ url($image_origin) }}"> @endif
 
-    @if($format === 'webp')
+    @if($format === 'webp' && !empty($image_format))
     <source @if($lazy) data-srcset @else srcset @endif="{{ url($image_format) }}" type="image/webp">
     @endif
     <img class="{{ $class }}"
