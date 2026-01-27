@@ -20,6 +20,8 @@ Using this package you can rapidly and easily build small and medium-size scale 
 - [Shortcodes](https://github.com/webwizo/laravel-shortcodes) integrated.
 - Localizations from DB table, where you can easily keep and manage your translations.
 - Advanced site settings module, including mail smtp settings and a mail sending test out of the box.
+- Sitemap generator (configurable, disabled by default).
+- Scripts manager (inject code blocks into head/body positions).
 
 ## Installation
 
