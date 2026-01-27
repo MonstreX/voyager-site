@@ -6,7 +6,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 [![Build Status][ico-travis]][link-travis]
 
-The package is an implementation of a simple but useful subsystem of a basic content organization for the [Voyager Admin Panel](https://github.com/the-control-group/voyager) package.
+The package is an implementation of a simple but useful subsystem of a basic content organization for the [Voyager Admin Panel](https://github.com/monstrex/voyager) package.
 Using this package you can rapidly and easily build small and medium-size scale websites.   
 
 ## Features
@@ -35,6 +35,21 @@ $ composer require monstrex/voyager-site
 Then run install command:
 ``` bash
 $ php artisan voyager-site:install
+```
+
+Install options:
+
+```
+--force        Force operations in production
+--refresh      Refresh Voyager Site seed data only (no migrations)
+--locale=xx    Locale to use while refreshing seed data
+```
+
+Refresh seed data:
+
+```bash
+php artisan voyager-site:install --refresh
+php artisan voyager-site:install --refresh --locale=ru
 ```
 
 Publish config if you need:
@@ -127,8 +142,8 @@ Built-in field types are
 - text
 - number
 - textarea
-- rich_text_box (tinyMCE editor)
-- code_editor (ACE Code Editor)
+- rich_text_box (Jodit editor)
+- code_editor (Ace editor)
 - checkbox
 - radio
 - image (voyager type image) 
@@ -143,6 +158,11 @@ The package provides DB-like localization storage for all strings you need to lo
 Just add language columns to the storage and it'll be used instead a localization in files.  
 
 ![Localizations](/docs/images/localizations.png) 
+
+Example:
+```php
+str_trans('[[en]]Hello[[ru]]Privet');
+```
 
 
 ### Pages
@@ -337,7 +357,7 @@ site setting **seo.meta_keywords**.
 ### Open Graph, Twitter, Canonical
 
 Open Graph, Twitter, and Canonical tags are rendered by the `seo_tags()` helper and are **disabled by default**.  
-Enable them in **Site Settings → SEO**:
+Enable them in **Site Settings -> SEO**:
 
 - **Enable canonical URL tag**
 - **Enable Open Graph tags**
@@ -348,7 +368,7 @@ Auto-generated values:
 - **OG/Twitter title** uses the resolved SEO title.
 - **OG/Twitter description** uses the resolved meta description.
 
-Global fields (Site Settings → SEO) provide shared defaults (site name, type, images, card type, etc).  
+Global fields (Site Settings -> SEO) provide shared defaults (site name, type, images, card type, etc).  
 Per-page overrides for OG/Twitter can be provided via `seo_meta()` input (model `seoMeta()` or array), but page fields are **not** extended by default.
 
 
@@ -633,7 +653,7 @@ More examples:
 {% endfor %}
 ```
 
-Also you can use AJAX form sending. The package implements JS part for AJAX sending, just include jQuery library and this line in your view (or you can use your own JS function):
+Also you can use AJAX form sending. The package implements a small JS helper for AJAX sending (no jQuery required). Include this in your view (or use your own JS function):
 
 ```blade
 @include('voyager-site::mail.send_form_ajax_js')
@@ -748,13 +768,14 @@ class TemplateFilters
 
 ## Helpers
 
-**translit_cyrillic($string)** - Transliteration given cyrillic string into latin symbols string.  
+**slugify_filename($string)** - Normalize a filename into a safe slug (all languages supported by Str::slug).  
 **get_file($file_path)** - Return URL of the given file_path, can unpack JSON voyager file coded format.  
 **store_post_files(Request $request, $slug, $field, $public = 'public')** - Store files given in $request $field and return JSON Voyager array of files links and their original names.  
 **generate_filename($file, $path)** - Return new file name if $file exists on given $path.  
 **site_setting($key, $default = null)** - Return a site setting (or default value).  
 **site_settings_group($group_key)** - Return a group of site settings.  
 **get_image_or_create($image_path, $width, $height, $format, $quality)** - Return link to the requested image with a given width and/or height, format and quality. If it not exists it'll be created.  
+**str_trans($string, $locale = null)** - Translate string tokens like [[en]]...[[ru]]... (returns the current locale by default).  
 
 Where:   
 **$image_path** - Full URL with domain or relative (to domain).  
